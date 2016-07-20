@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">androidApp</string>
-    <string name="title_activity_main">Hello World Snip!</string>
+    <string name="app_name">Snip!</string>
+    <string name="title_activity_main">Title Activity Main</string>
 </resources>
