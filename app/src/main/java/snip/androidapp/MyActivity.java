@@ -24,7 +24,7 @@ public class MyActivity extends Activity {
     private LinkedList<SnipBox> createRandomSnipDataset(int size)
     {
         LinkedList<SnipBox> myDataset = new LinkedList<SnipBox>();
-        for (int i = 0; i < size; ++i)
+        for (int i = 1; i <= size; ++i)
         {
             String snipTitle = "Title" + i;
             String snipText = "Text" + i;
@@ -44,7 +44,7 @@ public class MyActivity extends Activity {
 
     private LinkedList<SnipBox> getListOfSnips()
     {
-        return createRandomSnipDataset(10);
+        return createRandomSnipDataset(15);
     }
 
     @Override
@@ -52,6 +52,7 @@ public class MyActivity extends Activity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_activity);
+
         mRecyclerView = (RecyclerView)findViewById(R.id.snip_recycler_view);
 
         // use this setting to improve performance if you know that changes

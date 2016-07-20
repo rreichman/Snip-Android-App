@@ -31,10 +31,6 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
         ViewHolder vh = new ViewHolder(v);
 
-        //v.findViewById()
-        // set the view's size, margins, paddings and layout parameters
-        // ... TODO:: fill this
-
         return vh;
     }
 
@@ -54,5 +50,10 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     public int getItemCount()
     {
         return mDataset.size();
+    }
+
+    public void add(SnipBox snipBox)
+    {
+        mDataset.addLast(snipBox);
     }
 }
