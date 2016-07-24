@@ -45,6 +45,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.mSnipText = (TextView)view.findViewById(R.id.source);
 
         view.setClickable(true);
+
         view.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View v)
@@ -63,10 +64,12 @@ public class ViewHolder extends RecyclerView.ViewHolder
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)cardView.getLayoutParams();
                 cardView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, newHeight));
                 cardView.setCardBackgroundColor(R.color.snipCardColor);
-                RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.snip_recycler_view);
-                MyAdapter adapter = (MyAdapter)recyclerView.getAdapter();
-                adapter.add(new SnipBox("titleeee", "texttt", "authorrr", new HashMap<String,String>()));
-                adapter.notifyDataSetChanged();
+
+                //RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.snip_recycler_view);
+                //MyAdapter adapter0 = (MyAdapter)cardView.getAdapter();
+                //MyAdapter adapter = (MyAdapter)recyclerView.getAdapter();
+                //adapter.add(new SnipBox("titleeee", "texttt", "authorrr", new HashMap<String,String>()));
+                //adapter.notifyDataSetChanged();
                 //CardView.LayoutParams layoutParams = (CardView.LayoutParams)cardView.getLayoutParams();
                 //layoutParams.height = 300;
                 //cardView.setMinimumHeight(300);

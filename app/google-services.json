@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "1063327640252",
+    "project_id": "firebase-snip"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063327640252:android:152d52a99a09dab6",
+        "android_client_info": {
+          "package_name": "snip.androidapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLmeFS0rUwQAxiDQiiGNAyiiTLyxar7aM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
