@@ -1,8 +1,7 @@
 package snip.androidapp;
 
+import android.graphics.Picture;
 import android.media.Image;
-
-import java.util.HashMap;
 
 /**
  * This holds the data for the content in the app
@@ -12,19 +11,17 @@ import java.util.HashMap;
 public class SnipBox
 {
     public String mSnipTitle;
-    public Image mSnipThumbnail;
-    public String mSnipText;
+    public Picture mSnipThumbnail;
+    public String mSnipSource;
     public String mSnipAuthor;
-    //public String mSnipComments;
-    public HashMap<String,String> mExternalLinks;
 
     public SnipBox() {}
 
-    public SnipBox(String snipTitle, String snipText, String snipAuthor, HashMap<String,String> externalLinks)
+    public SnipBox(String snipTitle, String snipSource, String snipAuthor, Picture snipThumbnail)
     {
         mSnipTitle = snipTitle;
-        mSnipText = snipText;
+        mSnipSource = snipSource;
         mSnipAuthor = snipAuthor;
-        mExternalLinks = new HashMap<String,String>(externalLinks);
+        mSnipThumbnail = snipThumbnail;
     }
 }

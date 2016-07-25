@@ -2,10 +2,13 @@ package snip.androidapp;
 
 import android.app.Activity;
 
+import android.graphics.Picture;
+import android.media.Image;
 import android.os.Bundle;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,23 +22,23 @@ import java.util.List;
 public class MyActivity extends Activity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter<ViewHolder> mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
 
-    private LinkedList<SnipBox> createRandomSnipDataset(int size)
+    public static LinkedList<SnipBox> createRandomSnipDataset(int size, int numberToStartCountingAt)
     {
         LinkedList<SnipBox> myDataset = new LinkedList<SnipBox>();
-        for (int i = 1; i <= size; ++i)
+        for (int i = 0; i < size; ++i)
         {
-            String snipTitle = "Title" + i;
-            String snipText = "Text" + i;
-            String snipAuthor = "Author" + i;
-            String snipSource = "Ynet" + i;
-            String snipWebsite = "www.ynet" + i + ".co.il";
+            int printedNumber = i + numberToStartCountingAt;
+            String snipTitle = "Title" + printedNumber;
+            String snipText = "Text" + printedNumber;
+            String snipAuthor = "Author" + printedNumber;
+            String snipSource = "Ynet" + printedNumber;
+            String snipWebsite = "www.ynet" + printedNumber + ".co.il";
             HashMap<String,String> links = new HashMap<String,String>();
             links.put(snipSource, snipWebsite);
-            SnipBox currentSnipInformation = new SnipBox(
-                snipTitle, snipText, snipAuthor, links
-            );
+            Picture fakePicture = new Picture();
+            SnipBox currentSnipInformation = new SnipBox(snipTitle, snipText, snipAuthor, fakePicture);
             myDataset.addLast(currentSnipInformation);
         }
 
@@ -44,7 +47,7 @@ public class MyActivity extends Activity {
 
     private LinkedList<SnipBox> getListOfSnips()
     {
-        return createRandomSnipDataset(15);
+        return createRandomSnipDataset(15, 1);
     }
 
     @Override
@@ -65,7 +68,9 @@ public class MyActivity extends Activity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter
-        mAdapter = new MyAdapter(getListOfSnips());
+        mAdapter = new MyAdapter(MyActivity.this, getListOfSnips());
         mRecyclerView.setAdapter(mAdapter);
+
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
     }
 }

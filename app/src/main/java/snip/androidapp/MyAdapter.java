@@ -1,13 +1,14 @@
 package snip.androidapp;
 
-import android.media.Image;
+import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -15,11 +16,13 @@ import java.util.LinkedList;
  */
 public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 {
+    private Context mContext;
     private LinkedList<SnipBox> mDataset;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(LinkedList<SnipBox> myDataset)
+    public MyAdapter(Context context, LinkedList<SnipBox> myDataset)
     {
+        mContext = context;
         mDataset = myDataset;
     }
 
@@ -28,10 +31,40 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
-        ViewHolder vh = new ViewHolder(v);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
+        final ViewHolder viewHolder = new ViewHolder(view);
 
-        return vh;
+        viewHolder.mLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Log.d("In onClick", "1");
+                CardView cardView = (CardView)v.findViewById(R.id.card_view);
+                String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
+                //Object ob = cardView.getLayoutParams();
+                int height = cardView.getHeight();
+                int newHeight = 300;
+                if (height > 200)
+                {
+                    // TODO:: make this relative
+                    newHeight = 126;
+                }
+
+                //RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)cardView.getLayoutParams();
+                //cardView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, newHeight));
+                //cardView.setCardBackgroundColor(R.color.snipCardColor);
+
+                //mDataset.addLast(new SnipBox("a", "b", "c", new HashMap<String, String>()));
+                int currentPositionInDataset = viewHolder.getAdapterPosition();
+                mDataset.get(currentPositionInDataset).mSnipSource =
+                        "New Source! " + Integer.toString(currentPositionInDataset + 1);
+                //mDataset.get(getAdapterPosition())
+                notifyDataSetChanged();
+            }
+        });
+
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -41,7 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
         SnipBox currentSnip = mDataset.get(position);
 
         holder.mSnipTitle.setText(currentSnip.mSnipTitle);
-        holder.mSnipText.setText(currentSnip.mSnipText);
+        holder.mSnipSource.setText(currentSnip.mSnipSource);
         holder.mSnipAuthor.setText(currentSnip.mSnipAuthor);
     }
 
@@ -55,5 +88,10 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     public void add(SnipBox snipBox)
     {
         mDataset.addLast(snipBox);
+    }
+
+    public void add(LinkedList<SnipBox> snipBoxList)
+    {
+        mDataset.addAll(snipBoxList);
     }
 }

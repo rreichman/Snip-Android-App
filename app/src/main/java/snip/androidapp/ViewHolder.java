@@ -1,17 +1,12 @@
 package snip.androidapp;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.util.HashMap;
 
 /**
  * Created by ranreichman on 7/20/16.
@@ -21,10 +16,11 @@ import java.util.HashMap;
 // you provide access to all the views for a data item in a view holder
 public class ViewHolder extends RecyclerView.ViewHolder
 {
+    protected RelativeLayout mLayout;
     // each data item is just a string in this case
     protected TextView mSnipTitle;
     //public Image mSnipThumbnail;
-    protected TextView mSnipText;
+    protected TextView mSnipSource;
     protected TextView mSnipAuthor;
     //public TextView mSnipComments;
     //public HashMap<String,String> mExternalLinks;
@@ -40,11 +36,17 @@ public class ViewHolder extends RecyclerView.ViewHolder
     public ViewHolder(View view)
     {
         super(view);
+        this.mLayout = (RelativeLayout)view.findViewById(R.id.recLayout);
         this.mSnipTitle = (TextView)view.findViewById(R.id.headline);
         this.mSnipAuthor = (TextView)view.findViewById(R.id.author);
-        this.mSnipText = (TextView)view.findViewById(R.id.source);
+        this.mSnipSource = (TextView)view.findViewById(R.id.source);
 
         view.setClickable(true);
+
+        /*view.onScroll(new View.OnScrollChangeListener()
+        {
+
+        });
 
         view.setOnClickListener(new View.OnClickListener()
         {
@@ -65,25 +67,8 @@ public class ViewHolder extends RecyclerView.ViewHolder
                 cardView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, newHeight));
                 cardView.setCardBackgroundColor(R.color.snipCardColor);
 
-                //RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.snip_recycler_view);
-                //MyAdapter adapter0 = (MyAdapter)cardView.getAdapter();
-                //MyAdapter adapter = (MyAdapter)recyclerView.getAdapter();
-                //adapter.add(new SnipBox("titleeee", "texttt", "authorrr", new HashMap<String,String>()));
-                //adapter.notifyDataSetChanged();
-                //CardView.LayoutParams layoutParams = (CardView.LayoutParams)cardView.getLayoutParams();
-                //layoutParams.height = 300;
-                //cardView.setMinimumHeight(300);
-
-
-                /*AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
-                dlgAlert.setMessage("This is an alert with no consequence");
-                dlgAlert.setTitle("App Title");
-                dlgAlert.setPositiveButton("OK", null);
-                dlgAlert.setCancelable(true);
-                dlgAlert.create().show();*/
-
             }
         }
-        );
+        );*/
     }
 }
