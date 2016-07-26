@@ -1,6 +1,8 @@
 package snip.androidapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,25 +44,15 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 Log.d("In onClick", "1");
                 CardView cardView = (CardView)v.findViewById(R.id.card_view);
                 String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
-                //Object ob = cardView.getLayoutParams();
-                int height = cardView.getHeight();
-                int newHeight = 300;
-                if (height > 200)
-                {
-                    // TODO:: make this relative
-                    newHeight = 126;
-                }
 
-                //RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)cardView.getLayoutParams();
-                //cardView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, newHeight));
-                //cardView.setCardBackgroundColor(R.color.snipCardColor);
-
-                //mDataset.addLast(new SnipBox("a", "b", "c", new HashMap<String, String>()));
-                int currentPositionInDataset = viewHolder.getAdapterPosition();
-                mDataset.get(currentPositionInDataset).mSnipSource =
-                        "New Source! " + Integer.toString(currentPositionInDataset + 1);
-                //mDataset.get(getAdapterPosition())
-                notifyDataSetChanged();
+                Context context = v.getContext();
+                Intent readsnipScreen = new Intent(context, ReadSnipActivity.class);
+                final int currentPositionInDataset = viewHolder.getAdapterPosition();
+                final int snipID = mDataset.get(currentPositionInDataset).mSnipID;
+                Bundle b = new Bundle();
+                b.putInt("snipID", snipID);
+                readsnipScreen.putExtras(b);
+                context.startActivity(readsnipScreen);
             }
         });
 

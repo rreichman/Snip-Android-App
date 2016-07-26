@@ -19,7 +19,8 @@ import java.util.List;
 /**
  * Created by ranreichman on 7/19/16.
  */
-public class MyActivity extends Activity {
+public class MyActivity extends Activity
+{
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter<ViewHolder> mAdapter;
     private LinearLayoutManager mLayoutManager;
@@ -38,7 +39,9 @@ public class MyActivity extends Activity {
             HashMap<String,String> links = new HashMap<String,String>();
             links.put(snipSource, snipWebsite);
             Picture fakePicture = new Picture();
-            SnipBox currentSnipInformation = new SnipBox(snipTitle, snipText, snipAuthor, fakePicture);
+            // TODO:: obviously important to change this later to real snip ID.
+            int snipID = i + 1;
+            SnipBox currentSnipInformation = new SnipBox(snipTitle, snipText, snipAuthor, fakePicture, snipID);
             myDataset.addLast(currentSnipInformation);
         }
 

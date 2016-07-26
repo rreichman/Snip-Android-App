@@ -17,13 +17,10 @@ import android.widget.TextView;
 public class ViewHolder extends RecyclerView.ViewHolder
 {
     protected RelativeLayout mLayout;
-    // each data item is just a string in this case
     protected TextView mSnipTitle;
     //public Image mSnipThumbnail;
     protected TextView mSnipSource;
     protected TextView mSnipAuthor;
-    //public TextView mSnipComments;
-    //public HashMap<String,String> mExternalLinks;
 
     private DisplayMetrics getScreenDimensions(Context context)
     {
@@ -42,33 +39,5 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.mSnipSource = (TextView)view.findViewById(R.id.source);
 
         view.setClickable(true);
-
-        /*view.onScroll(new View.OnScrollChangeListener()
-        {
-
-        });
-
-        view.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                CardView cardView = (CardView)v.findViewById(R.id.card_view);
-                String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
-                //Object ob = cardView.getLayoutParams();
-                int height = cardView.getHeight();
-                int newHeight = 300;
-                if (height > 200)
-                {
-                    // TODO:: make this relative
-                    newHeight = 126;
-                }
-
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)cardView.getLayoutParams();
-                cardView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, newHeight));
-                cardView.setCardBackgroundColor(R.color.snipCardColor);
-
-            }
-        }
-        );*/
     }
 }

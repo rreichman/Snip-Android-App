@@ -14,14 +14,16 @@ public class SnipBox
     public Picture mSnipThumbnail;
     public String mSnipSource;
     public String mSnipAuthor;
+    public int mSnipID;
 
     public SnipBox() {}
 
-    public SnipBox(String snipTitle, String snipSource, String snipAuthor, Picture snipThumbnail)
+    public SnipBox(String snipTitle, String snipSource, String snipAuthor, Picture snipThumbnail, int snipID)
     {
         mSnipTitle = snipTitle;
         mSnipSource = snipSource;
         mSnipAuthor = snipAuthor;
         mSnipThumbnail = snipThumbnail;
+        mSnipID = snipID;
     }
 }
