@@ -32,45 +32,6 @@ public class ReadSnipActivity extends Activity
         }
     }
 
-    private void doStuffStatically(Bundle savedInstanceState)
-    {
-        setContentView(R.layout.read_snip_activity);
-
-        TextView headline = (TextView)findViewById(R.id.headline);
-        TextView author = (TextView)findViewById(R.id.author);
-        TextView publishTime = (TextView)findViewById(R.id.publishtime);
-        TextView pictureSubtitles = (TextView)findViewById(R.id.pictureSubtitles);
-        TextView fullText = (TextView)findViewById(R.id.fullText);
-        TextView sourceLink1 = (TextView)findViewById(R.id.source1);
-        TextView sourceLink2 = (TextView)findViewById(R.id.source2);
-
-        if ((null != sourceLink1) && (null != sourceLink2))
-        {
-            sourceLink1.setMovementMethod(LinkMovementMethod.getInstance());
-            sourceLink2.setMovementMethod(LinkMovementMethod.getInstance());
-        }
-
-        Bundle b = getIntent().getExtras();
-        int snipID = 0;
-        if (null != b)
-        {
-            snipID = b.getInt("snipID");
-        }
-
-        headline.setText("תמצית: בלה בלה בלה");
-        author.setText("סניפ, נכתב ע״י אלון נבון");
-        publishTime.setText("8 שעות");
-        pictureSubtitles.setText("קבלת פנים לנשיא תאילנד באחד הכפרים");
-        String firstParagraphInSnip = "מלך תאילנד ראמה התשיעי הוא מנהיג המדינה הוותיק ביותר בעולם. הוא הוכתר ב-9 ביוני 1946, ומכהן באופן רשמי מאז 1950! עם זאת, בגיל 88 הוא כבר אינו בקו הבריאות. הוא לא נראה בציבור כבר חודשים, וכנראה נמצא על ערש דווי. מזה שנתיים ארצו נשלטת בידי חונטה צבאית, לכאורה בשמו, והצבא מנצל חוקים דרקוניים האוסרים ביקורת נגד המלך ומשפחתו (והכלב שלו). התקשורת הושתקה, ופוליטיקאים שהעזו להביע התנגדות נלקחו ל״חינוך מחדש״.\n\n";
-        String secondParagraphInSnip = "אולם כעת הצבא עומד בפני בעיה. היורש המיועד, נסיך הכתר, הוא פלייבוי גרוש בשלישית, שהעניק לפודל שלו דרגת מרשל בחיל האוויר ושנוא ע״י הציבור. העברת השלטון אל הבן עלולה לגרום לפגיעה קשה במעמד המלוכה, מקור הלגיטימציה של החונטה הצבאית.\n\n";
-        String thirdParagraphInSnip = "מאז שנות ה-30 ראתה תאילנד לא פחות מתריסר הפיכות מוצלחות, וחוקה חדשה כל ארבע שנים בממוצע. לאורך השנים ראשי הצבא השתמשו במוסד המלוכה כדי להלהיט רגשות לאומיים ולזכות בלגיטימציה להפיכותיהם, ומנגד אפשרו לבית המלוכה לצבור כוח פוליטי וכלכלי. המלך מחזיק כיום נכסים בשווי של 50 מיליארד דולר, אותם הוא ניצל למטרות צדקה (שחיזקו את תדמיתו) וכן להקמת רשת פטרונות רחבה.\n\n";
-        String fourthParagraphInSnip = "ההפיכה האחרונה במדינה התרחשה לאחר עימותים אלימים בין ״החולצות האדומות״, הכפריים ואנשי המעמד הנמוך במדינה, לבין ״החולצות הצהובות״, העירוניים ואנשי המעמד הבינוני-גבוה. עימותים אלה מבטאים את הקרע העמוק בחברה התאילנדית, בה אי השוויון קיצוני אף ביחס למדינות מתפתחות אחרות. על רקע הפערים החברתיים ב-2001 נבחר לראשות הממשלה תקסין שנאווטרה, מוגול תקשורת פופוליסט שהבטיח בריאות חינם וסובסידיות לחקלאים, ואיים על האליטות המסורתיות. הפיכה צבאית ב-2006 הותירה אותו בגלות, אך מפלגתו המשיכה לזכות בכל מערכת בחירות, ולימים הפכה אחותו לראשת הממשלה (אך הודחה בעצמה, בהפיכה נוספת).\n\n";
-        String fifthParagraphInSnip = "בעוד שהדיכוי הצבאי עשוי לאפשר העברה מסודרת של הכתר, נראה שיציבות אמיתית תושג בתאילנד רק ע״י איחוי הקרעים בחברה. התמיכה הנמשכת בתקסין מבטאת את תסכולם האמיתי של תושבי הפריפריה, ורק פשרה בין ״הצהובים״ ל״אדומים״ תאפשר לתאילנד לצעוד קדימה.";
-
-        fullText.setText(
-                firstParagraphInSnip + secondParagraphInSnip + thirdParagraphInSnip + fourthParagraphInSnip + fifthParagraphInSnip);
-    }
-
     private void addLinkDynamicallyToLayout(
             LinearLayout layout, String text, int textSize,
             int marginLeft, int marginTop, int marginRight, int marginDown)
