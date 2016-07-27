@@ -3,19 +3,20 @@ package snip.androidapp;
 import android.app.Activity;
 
 import android.graphics.Picture;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
+import org.json.JSONArray;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 // TODO:: In the CardView layout - To create a card with a shadow, use the card_view:cardElevation attribute
+// TODO:: add Fabric to app
 
 /**
  * Created by ranreichman on 7/19/16.
@@ -26,30 +27,36 @@ public class MyActivity extends Activity
     private RecyclerView.Adapter<ViewHolder> mAdapter;
     private LinearLayoutManager mLayoutManager;
 
-    public static LinkedList<SnipBox> createRandomSnipDataset(int size, int numberToStartCountingAt)
+    public static LinkedList<SnipData> createRandomSnipDataset(int size, int numberToStartCountingAt)
     {
-        LinkedList<SnipBox> myDataset = new LinkedList<SnipBox>();
+        LinkedList<SnipData> myDataset = new LinkedList<SnipData>();
         for (int i = 0; i < size; ++i)
         {
             int printedNumber = i + numberToStartCountingAt;
-            String snipTitle = "Title" + printedNumber;
-            String snipText = "Text" + printedNumber;
+            String snipHeadline = "Headline" + printedNumber;
+            String snipPublisher = "Snip" + printedNumber;
             String snipAuthor = "Author" + printedNumber;
             String snipSource = "Ynet" + printedNumber;
+
+            String snipBody = "Body" + printedNumber;
             String snipWebsite = "www.ynet" + printedNumber + ".co.il";
-            HashMap<String,String> links = new HashMap<String,String>();
-            links.put(snipSource, snipWebsite);
+            LinkedList<Pair<String,String>> links = new LinkedList<Pair<String,String>>();
+            links.addLast(new Pair<String, String>(snipSource, snipWebsite));
             Picture fakePicture = new Picture();
+            Date fakeDate = new Date();
             // TODO:: obviously important to change this later to real snip ID.
-            int snipID = i + 1;
-            SnipBox currentSnipInformation = new SnipBox(snipTitle, snipText, snipAuthor, fakePicture, snipID);
+            long snipID = i + 1;
+            SnipData currentSnipInformation =
+                    new SnipData(snipHeadline, snipPublisher, snipAuthor, snipID, fakeDate, fakePicture,
+                            snipBody,links, new SnipComments());
+
             myDataset.addLast(currentSnipInformation);
         }
 
         return myDataset;
     }
 
-    private LinkedList<SnipBox> getListOfSnips()
+    private LinkedList<SnipData> getListOfSnips()
     {
         return createRandomSnipDataset(15, 1);
     }
@@ -77,14 +84,19 @@ public class MyActivity extends Activity
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
 
-        try
+        // TODO:: move this from here
+
+        /*try
         {
             CollectDataFromInternet dataCollector = new CollectDataFromInternet();
-            String resultData = dataCollector.execute("https://test.snip.today/api/snip").get();
+            String resultData = dataCollector.execute().get();
         }
         catch (Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
+        //LinkedList<ExpandedSnipData> snipsData = CollectDataFromInternet.collectSnipsFromBackend();
+        JSONArray jsonArray = CollectDataFromInternet.convertJsonStringToJsonArray("{\"count\":4,\"next\":\"http://test.snip.today/api/snip/?limit=3&offset=3\",\"previous\":null,\"results\":[{\"id\":3,\"headline\":\"Headline of Snip 1\",\"date\":\"2016-07-25T19:43:57.513000Z\",\"image_link\":\"original_images/markCuban.jpg\",\"body\":\"<p>Body stuff</p>\",\"comments\":[],\"related_links\":[\"Google: http://www.google.com\"]},{\"id\":4,\"headline\":\"Headline of snip 2\",\"date\":\"2016-07-27T07:48:01.545000Z\",\"image_link\":\"original_images/thumbnail_theGuardian.png\",\"body\":\"<p>Body of snip 2</p>\",\"comments\":[],\"related_links\":[\"Facebook: http://www.facebook.com\"]},{\"id\":5,\"headline\":\"Headline of snip 3\",\"date\":\"2016-07-27T07:49:14.571000Z\",\"image_link\":\"original_images/thumbnail_ynet.jpg\",\"body\":\"<p>Body of snip 3</p><p><embed alt=\\\"Another image 3\\\" embedtype=\\\"image\\\" format=\\\"left\\\" id=\\\"4\\\"/><br/></p>\",\"comments\":[],\"related_links\":[\"Ynet: http://www.ynet.co.il\"]}]}");
+        LinkedList<SnipData> SnipDataLinkedList = CollectDataFromInternet.convertJsonArrayToSnipList(jsonArray);
     }
 }

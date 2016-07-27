@@ -46,16 +46,6 @@
                 android:paddingLeft="5dp"/>
 
             <TextView
-                android:id="@+id/source"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="source"
-                android:layout_alignBottom="@+id/thumbnail"
-                android:layout_toRightOf="@+id/thumbnail"
-                android:layout_toEndOf="@+id/thumbnail"
-                android:paddingLeft="5dp"/>
-
-            <TextView
                 android:id="@+id/author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

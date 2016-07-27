@@ -19,10 +19,10 @@ import java.util.LinkedList;
 public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 {
     private Context mContext;
-    private LinkedList<SnipBox> mDataset;
+    private LinkedList<SnipData> mDataset;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(Context context, LinkedList<SnipBox> myDataset)
+    public MyAdapter(Context context, LinkedList<SnipData> myDataset)
     {
         mContext = context;
         mDataset = myDataset;
@@ -48,9 +48,9 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 Context context = v.getContext();
                 Intent readsnipScreen = new Intent(context, ReadSnipActivity.class);
                 final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                final int snipID = mDataset.get(currentPositionInDataset).mSnipID;
+                final long snipID = mDataset.get(currentPositionInDataset).mID;
                 Bundle b = new Bundle();
-                b.putInt("snipID", snipID);
+                b.putLong("snipID", snipID);
                 readsnipScreen.putExtras(b);
                 context.startActivity(readsnipScreen);
             }
@@ -63,11 +63,11 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        SnipBox currentSnip = mDataset.get(position);
+        SnipData currentSnip = mDataset.get(position);
 
-        holder.mSnipTitle.setText(currentSnip.mSnipTitle);
-        holder.mSnipSource.setText(currentSnip.mSnipSource);
-        holder.mSnipAuthor.setText(currentSnip.mSnipAuthor);
+        holder.mSnipTitle.setText(currentSnip.mHeadline);
+        //holder.mSnipSource.setText(currentSnip.mSource);
+        holder.mSnipAuthor.setText(currentSnip.mAuthor);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -77,13 +77,13 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
         return mDataset.size();
     }
 
-    public void add(SnipBox snipBox)
+    public void add(SnipData SnipData)
     {
-        mDataset.addLast(snipBox);
+        mDataset.addLast(SnipData);
     }
 
-    public void add(LinkedList<SnipBox> snipBoxList)
+    public void add(LinkedList<SnipData> SnipDataList)
     {
-        mDataset.addAll(snipBoxList);
+        mDataset.addAll(SnipDataList);
     }
 }
