@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import android.graphics.Picture;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,5 +76,15 @@ public class MyActivity extends Activity
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
+
+        try
+        {
+            CollectDataFromInternet dataCollector = new CollectDataFromInternet();
+            String resultData = dataCollector.execute("https://test.snip.today/api/snip").get();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
