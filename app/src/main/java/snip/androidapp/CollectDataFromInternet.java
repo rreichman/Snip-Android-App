@@ -25,7 +25,6 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
 {
     protected String doInBackground(Void... params)
     {
-        //return getDataFromWebsite(webParams[0], webParams[1].equals("true"), webParams[2], webParams[3]);
         return authenticateAndGetSnipData();
     }
 
@@ -35,11 +34,12 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
         return s.hasNext() ? s.next() : "";
     }
 
+    // TODO:: why does this function receive the getDataURL as a parameter but not the getTokenURL? Maybe OK?
     private static String authenticateAndGetSnipData()
     {
         final String baseAccessURL = "https://test.snip.today/api";
         final String getTokenURL = "/rest-auth/login";
-        final String getDataURL = "/snip";
+        final String getDataURL = "/snip" + SnipCollectionInformation.getInstance().mLastSnipQuery;
 
         final String userEmail = "ran.reichman@gmail.com";
         final String userPassword = "Qwerty123";
@@ -75,7 +75,6 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT_VALUE_IN_MILLISECONDS);
             urlConnection.setRequestMethod(webRequestString.toUpperCase());
             urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
 
             /*if (useRequestProperty)
             {
@@ -88,22 +87,15 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
             if (HttpURLConnection.HTTP_OK != responseCode)
             {
                 Log.d("Response Code Error: ", Integer.toString(responseCode));
+                InputStream errorStream = urlConnection.getErrorStream();
+                returnString = convertInputStreamToString(errorStream);
+                Log.d("error is: ", returnString);
             }
             else
             {
                 InputStream inputStream = urlConnection.getInputStream();
                 returnString = convertInputStreamToString(inputStream);
 
-
-                //JSONObject jsonObject = new JSONObject(jsonString);
-                //jsonObject.get("")
-
-                // TODO:: get the token from the site
-                // TODO:: get string from the stream
-                // TODO:: pass the result to some place outside the thread
-                // TODO:: make the string a JSON
-                // TODO:: turn the JSON into a list of SnipData
-                // TODO:: handle read and connect timeouts
                 // TODO:: make some of the code generic (not snip related)
             }
 
@@ -123,12 +115,11 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
         return returnString;
     }
 
-    public static JSONArray convertJsonStringToJsonArray(String jsonData)
+    public static JSONArray convertJsonStringToJsonArray(JSONObject jsonObject)
     {
         JSONArray jsonArray = new JSONArray();
         try
         {
-            JSONObject jsonObject = new JSONObject(jsonData);
             jsonArray = jsonObject.getJSONArray("results");
             return jsonArray;
         }
@@ -151,7 +142,8 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
         }
         catch (ParseException e)
         {
-            e.printStackTrace();
+            // TODO:: return this later
+            //e.printStackTrace();
         }
 
         return date;
@@ -159,7 +151,7 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
 
     public static LinkedList<SnipData> convertJsonArrayToSnipList(JSONArray jsonArray)
     {
-        LinkedList<SnipData> SnipDataes = new LinkedList<SnipData>();
+        LinkedList<SnipData> snipDataLinkedList = new LinkedList<SnipData>();
 
         try
         {
@@ -174,12 +166,12 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
                 // TODO:: get this from server
                 String author = "Guest gal";
 
-                long id = Long.getLong(jsonObject.getString("id"));
+                long id = Long.parseLong(jsonObject.getString("id"));
                 String dateAsString = jsonObject.getString("date");
                 Date date = convertStringToDate(dateAsString, "MM/dd/yyyy hh:mm:ss aa");
 
                 // TODO:: get the image from the path when it's the correct path
-                String imageLinkPath = jsonObject.getString("image_link");
+                String imageLinkPath = jsonObject.getString("image");
                 Picture image = new Picture();
 
                 String body = jsonObject.getString("body");
@@ -190,39 +182,78 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
                 JSONArray linksJSONArray = jsonObject.getJSONArray("related_links");
                 for (int j = 0; j < linksJSONArray.length(); ++j)
                 {
-                    // TODO:: we need to receive the original articel's author here too
+                    // TODO:: we need to receive the original article's author here too
                     // This is because the format of the link is "website: websiteURL" (Google: www.google.com)
                     String linkString = linksJSONArray.getString(j);
                     String[] splitLinkString = linkString.split(": ");
-                    links.addLast(new Pair<String, String>(splitLinkString[0], splitLinkString[1]));
+                    // TODO:: this is data validation. Should change when source changes
+                    if (splitLinkString.length > 1)
+                    {
+                        links.addLast(new Pair<String, String>(splitLinkString[0], splitLinkString[1]));
+                    }
                 }
 
                 SnipData snipData = new SnipData(
                         headline, publisher, author, id, date, image, body, links, new SnipComments());
+
+                snipDataLinkedList.addLast(snipData);
             }
         }
         catch (JSONException e)
         {
-
-        }
-
-        return SnipDataes;
-    }
-
-    public static LinkedList<SnipData> collectSnipsFromBackend()
-    {
-        String jsonData = "";
-        try
-        {
-            CollectDataFromInternet dataCollector = new CollectDataFromInternet();
-            jsonData = dataCollector.execute().get();
-        }
-        catch (Exception e)
-        {
             e.printStackTrace();
         }
 
-        JSONArray jsonArray = convertJsonStringToJsonArray(jsonData);
-        return convertJsonArrayToSnipList(jsonArray);
+        return snipDataLinkedList;
+    }
+
+    public static LinkedList<SnipData> collectSnipsFromBackend(int amountToCollect)
+    {
+        String jsonDataAsString = "";
+        LinkedList<SnipData> snipsFromBackend = new LinkedList<SnipData>();
+        int snipsCollectedSoFar = 0;
+
+        Log.d("Starting to collect", "snips from internet");
+        while (snipsCollectedSoFar < amountToCollect)
+        {
+            try
+            {
+                CollectDataFromInternet dataCollector = new CollectDataFromInternet();
+                jsonDataAsString = authenticateAndGetSnipData();
+                JSONObject jsonObject = new JSONObject(jsonDataAsString);
+
+                JSONArray jsonArray = convertJsonStringToJsonArray(jsonObject);
+                snipsFromBackend.addAll(convertJsonArrayToSnipList(jsonArray));
+
+                Log.d("jsonArray length", Integer.toString(jsonArray.length()));
+                String fullNextRequest = jsonObject.getString("next");
+                if (fullNextRequest.equals("null"))
+                {
+                    Log.d("fullNext Request", "null");
+                    SnipCollectionInformation.getInstance().mNoMoreSnipsForNow = true;
+                    break;
+                }
+
+                String[] splittedFullNextRequest = fullNextRequest.split("/");
+                String nextQueryString = "/" + splittedFullNextRequest[splittedFullNextRequest.length - 1];
+
+                SnipCollectionInformation.getInstance().mLastSnipQuery = nextQueryString;
+
+                if (0 != jsonArray.length())
+                {
+                    snipsCollectedSoFar += jsonArray.length();
+                }
+                else
+                {
+                    break;
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return snipsFromBackend;
     }
 }
