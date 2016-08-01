@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">Snip</string>
     <string name="title_activity_main">Title Activity Main</string>
-    <string name="economistLink1"><a href="http://www.economist.com/news/asia/21702497-after-ailing-monarch-goes-what-next-twilight-king"/>first economist></string>
-    <string name="economistLink2"><a href="http://www.economist.com/news/leaders/21702467-thailand-ill-prepared-death-its-king-generals-who-hide-behind-throne">כתבה שנייה באקונומיסט</a></string>
 </resources>

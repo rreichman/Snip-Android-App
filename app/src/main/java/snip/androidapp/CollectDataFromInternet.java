@@ -230,12 +230,13 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
                 if (fullNextRequest.equals("null"))
                 {
                     Log.d("fullNext Request", "null");
-                    SnipCollectionInformation.getInstance().mNoMoreSnipsForNow = true;
+                    SnipCollectionInformation.getInstance().mLastSnipQuery = fullNextRequest;
                     break;
                 }
 
                 String[] splittedFullNextRequest = fullNextRequest.split("/");
                 String nextQueryString = "/" + splittedFullNextRequest[splittedFullNextRequest.length - 1];
+                Log.d("nextQueryString is ", nextQueryString);
 
                 SnipCollectionInformation.getInstance().mLastSnipQuery = nextQueryString;
 

@@ -10,11 +10,22 @@ public class AsyncInternetAccessor extends AsyncTask<Void,Void,Void>
 {
     protected Void doInBackground(Void... params)
     {
-        SnipCollectionInformation.getInstance().mSnipsCollectedByNonUIThread =
-                CollectDataFromInternet.collectSnipsFromBackend(
-                        SnipCollectionInformation.getInstance().mAmountOfSnipsPerLoad);
-        Log.d("Accessed snips, size: ",
-                Integer.toString(SnipCollectionInformation.getInstance().mSnipsCollectedByNonUIThread.size()));
+        Log.d("Locking", "");
+        if ((!SnipCollectionInformation.getInstance().mLock.isLocked()) &&
+                (!SnipCollectionInformation.getInstance().mLastSnipQuery.equals("null")))
+        {
+            SnipCollectionInformation.getInstance().mLock.lock();
+
+            SnipCollectionInformation.getInstance().mSnipsCollectedByNonUIThread =
+                    CollectDataFromInternet.collectSnipsFromBackend(
+                            SnipCollectionInformation.getInstance().mAmountOfSnipsPerLoad);
+            Log.d("Accessed snips, size: ",
+                    Integer.toString(SnipCollectionInformation.getInstance().mSnipsCollectedByNonUIThread.size()));
+
+            Log.d("Unlocking", "");
+            SnipCollectionInformation.getInstance().mLock.unlock();
+        }
+
         return null;
     }
 }
