@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,24 +21,69 @@ import java.util.LinkedList;
 public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 {
     private Context mContext;
+    private RecyclerView mRecyclerView;
     private LinkedList<SnipData> mDataset;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(Context context, LinkedList<SnipData> myDataset)
+    public MyAdapter(Context context, RecyclerView recyclerView, LinkedList<SnipData> myDataset)
     {
         mContext = context;
+        mRecyclerView = recyclerView;
         mDataset = myDataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {
         // create a new view
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
 
-        viewHolder.mLayout.setOnClickListener(new View.OnClickListener()
+        view.setOnTouchListener(new View.OnTouchListener() {
+            private GestureDetector gestureDetector = new GestureDetector(parent.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    final int currentPositionInDataset = viewHolder.getAdapterPosition();
+                    mDataset.remove(currentPositionInDataset);
+                    mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
+                    Log.d("TEST", "onDoubleTap");
+                    return super.onDoubleTap(e);
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e)
+                {
+                    Log.d("On Long", "press");
+                    super.onLongPress(e);
+                }
+
+                public boolean onSingleTapConfirmed(MotionEvent e)
+                {
+                    CardView cardView = (CardView)view.findViewById(R.id.card_view);
+                    String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
+
+                    Context context = view.getContext();
+                    Intent readsnipScreen = new Intent(context, ReadSnipActivity.class);
+                    final int currentPositionInDataset = viewHolder.getAdapterPosition();
+                    final long snipID = mDataset.get(currentPositionInDataset).mID;
+                    Bundle b = new Bundle();
+                    b.putLong("snipID", snipID);
+                    readsnipScreen.putExtras(b);
+                    context.startActivity(readsnipScreen);
+                    return super.onSingleTapConfirmed(e);
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                //Log.d("TEST", "Raw event: " + event.getAction() + ", (" + event.getRawX() + ", " + event.getRawY() + ")");
+                return gestureDetector.onTouchEvent(event);
+            }});
+
+        // TODO:: see if we need this after handling all the touching
+        /*viewHolder.mLayout.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -54,7 +101,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 readsnipScreen.putExtras(b);
                 context.startActivity(readsnipScreen);
             }
-        });
+        });*/
 
         return viewHolder;
     }
