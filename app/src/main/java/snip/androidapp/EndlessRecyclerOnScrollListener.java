@@ -29,7 +29,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         {
             Log.d("Not locked", "");
 
-            if (SnipCollectionInformation.getInstance().mSnipsCollectedByNonUIThread.size() > 0)
+            if (SnipCollectionInformation.getInstance().getAmountOfCollectedSnips() > 0)
             {
                 MyAdapter adapter = (MyAdapter) view.getAdapter();
                 LinkedList<SnipData> collectedSnips =
@@ -38,7 +38,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
                 adapter.notifyDataSetChanged();
             }
 
-            if (!SnipCollectionInformation.getInstance().mLastSnipQuery.equals("null"))
+            if (!SnipCollectionInformation.getInstance().getLastSnipQuery().equals("null"))
             {
                 Log.d("collecting data", "");
                 AsyncInternetAccessor accessor = new AsyncInternetAccessor();
@@ -56,19 +56,25 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
-        Log.d("OnScrolled", "");
-
-        // Used this file as reference:
-        // https://github.com/Harrison1/RecyclerViewActivity/blob/master/app/src/main/java/com/harrisonmcguire/recyclerview/EndlessRecyclerOnScrollListener.java
-
-        int visibleItemCount = recyclerView.getChildCount();
-        int totalItemCount = mLinearLayoutManager.getItemCount();
-        int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
-        final int visibleThreshold = 4;
-
-        if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold)
+        try
         {
-            loadMore(recyclerView);
+            Log.d("OnScrolled", "");
+
+            // Used this file as reference:
+            // https://github.com/Harrison1/RecyclerViewActivity/blob/master/app/src/main/java/com/harrisonmcguire/recyclerview/EndlessRecyclerOnScrollListener.java
+
+            int visibleItemCount = recyclerView.getChildCount();
+            int totalItemCount = mLinearLayoutManager.getItemCount();
+            int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+            final int visibleThreshold = 4;
+
+            if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
+                loadMore(recyclerView);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
