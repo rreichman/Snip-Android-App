@@ -30,6 +30,8 @@ public class SnipCollectionInformation {
         return mLastSnipQuery;
     }
 
+    public void cleanLastSnipQuery() { mLastSnipQuery = ""; }
+
     public void setLastSnipQuery(String lastSnipQuery)
     {
         if (null == lastSnipQuery)
