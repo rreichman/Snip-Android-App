@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -39,7 +40,7 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
     {
         final String baseAccessURL = "https://test.snip.today/api";
         final String getTokenURL = "/rest-auth/login";
-        final String getDataURL = "/snip" + SnipCollectionInformation.getInstance().mLastSnipQuery;
+        final String getDataURL = "/snip" + SnipCollectionInformation.getInstance().getLastSnipQuery();
 
         final String userEmail = "ran.reichman@gmail.com";
         final String userPassword = "Qwerty123";
@@ -172,7 +173,7 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
 
                 // TODO:: get the image from the path when it's the correct path
                 String imageLinkPath = jsonObject.getString("image");
-                Picture image = new Picture();
+                SerializableBitmap image = new SerializableBitmap();
 
                 String body = jsonObject.getString("body");
                 LinkedList<Pair<String,String>> links = new LinkedList<Pair<String, String>>();
@@ -230,7 +231,7 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
                 if (fullNextRequest.equals("null"))
                 {
                     Log.d("fullNext Request", "null");
-                    SnipCollectionInformation.getInstance().mLastSnipQuery = fullNextRequest;
+                    SnipCollectionInformation.getInstance().setLastSnipQuery(fullNextRequest);
                     break;
                 }
 
@@ -238,7 +239,7 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
                 String nextQueryString = "/" + splittedFullNextRequest[splittedFullNextRequest.length - 1];
                 Log.d("nextQueryString is ", nextQueryString);
 
-                SnipCollectionInformation.getInstance().mLastSnipQuery = nextQueryString;
+                SnipCollectionInformation.getInstance().setLastSnipQuery(nextQueryString);
 
                 if (0 != jsonArray.length())
                 {
