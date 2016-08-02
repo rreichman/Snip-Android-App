@@ -1,6 +1,8 @@
 package snip.androidapp;
 
-import android.app.Activity;
+//import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import android.graphics.Picture;
 import android.os.Bundle;
@@ -20,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by ranreichman on 7/19/16.
  */
-public class MyActivity extends Activity
+public class MyActivity extends AppCompatActivity
 {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter<ViewHolder> mAdapter;
@@ -66,6 +68,8 @@ public class MyActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_activity);
         //Debug.startMethodTracing("trace");
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
         Log.d("Starting MyActivity", "");
 
