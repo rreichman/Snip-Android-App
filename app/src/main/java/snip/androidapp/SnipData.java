@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.util.Pair;
 
 import java.io.Serializable;
@@ -49,7 +50,7 @@ public class SnipData implements Parcelable, Serializable
 
     public SnipData(Parcel parcel)
     {
-        // TODO:: implement
+        // FUTURE:: implement? is this even necessary?
     }
 
     public SnipData() {}

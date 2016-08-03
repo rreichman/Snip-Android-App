@@ -32,12 +32,13 @@
                 android:layout_weight="0.5"
                 >
             <ImageView
+                android:contentDescription="@string/thumbnailImageDescription"
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:layout_gravity="left"
-                android:src="@drawable/img_test_2"
+                android:src="@drawable/sniplogo"
                 android:adjustViewBounds="true"
                 />
 

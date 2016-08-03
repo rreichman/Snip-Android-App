@@ -22,7 +22,7 @@ public class ExternalLinksData implements Parcelable, Serializable
 
     public ExternalLinksData(Parcel parcle)
     {
-        // TODO:: implement
+        // FUTURE:: implement? do i even need to implement this?
     }
 
     @Override

@@ -12,8 +12,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.MotionEvent;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,6 +55,40 @@ public class MyActivity extends AppCompatActivity
         return SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
     }
 
+    private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback()
+    {
+        return new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDirection)
+            {
+                int currentPositionInDataset = viewHolder.getAdapterPosition();
+                if (ItemTouchHelper.LEFT == swipeDirection)
+                {
+                    ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
+                    mCollectedSnips.remove(currentPositionInDataset);
+                    mAdapter.notifyItemRemoved(currentPositionInDataset);
+                }
+
+                if (ItemTouchHelper.RIGHT == swipeDirection)
+                {
+                    ReactionManager.userSnoozedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
+                    mCollectedSnips.remove(currentPositionInDataset);
+                    mAdapter.notifyItemRemoved(currentPositionInDataset);
+                }
+
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public boolean onMove(
+                    RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
+            {
+                return false;
+            }
+        };
+    }
+
     private void collectDataAndPopulateActivity()
     {
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
@@ -62,42 +97,11 @@ public class MyActivity extends AppCompatActivity
             mCollectedSnips = retrieveSnipsFromInternet();
         }
         // specify an adapter
-        mAdapter = new MyAdapter(MyActivity.this, mRecyclerView, mCollectedSnips);
+        mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips);
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
-                {
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDirection)
-                    {
-                        int currentPositionInDataset = viewHolder.getAdapterPosition();
-                        if (ItemTouchHelper.LEFT == swipeDirection)
-                        {
-                            // TODO:: mark as unlike
-                            mCollectedSnips.remove(currentPositionInDataset);
-                            mAdapter.notifyItemRemoved(currentPositionInDataset);
-                        }
-
-                        if (ItemTouchHelper.RIGHT == swipeDirection)
-                        {
-                            // TODO:: mark as like
-                            mCollectedSnips.remove(currentPositionInDataset);
-                            mAdapter.notifyItemRemoved(currentPositionInDataset);
-                        }
-
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public boolean onMove(
-                            RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
-                    {
-                        return false;
-                    }
-                };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        ItemTouchHelper.SimpleCallback swipeTouchHelperCallback = getSwipeTouchHelperCallback();
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeTouchHelperCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
@@ -330,6 +334,11 @@ public class MyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+        // TODO:: make these do something real
+        logUserIntoCrashlytics();
+        LogUserActions.logContentView("Tweet", "Video", "1234");
+
         try
         {
             retrieveSavedDataFromBundleOrFile(savedInstanceState);
@@ -339,8 +348,15 @@ public class MyActivity extends AppCompatActivity
         {
             e.printStackTrace();
         }
+    }
 
-
+    private void logUserIntoCrashlytics()
+    {
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier("12345");
+        Crashlytics.setUserEmail("testuser@snip.today");
+        Crashlytics.setUserName("Test user");
     }
 
     private void startUI() {

@@ -12,6 +12,7 @@ public class RandomDataGeneration
 {
     public static LinkedList<SnipData> createRandomSnipDataset(int size, int numberToStartCountingAt) {
         LinkedList<SnipData> myDataset = new LinkedList<SnipData>();
+
         for (int i = 0; i < size; ++i) {
             int printedNumber = i + numberToStartCountingAt;
             String snipHeadline = "Headline" + printedNumber;
@@ -25,8 +26,8 @@ public class RandomDataGeneration
             links.addLast(new Pair<String, String>(snipSource, snipWebsite));
             SerializableBitmap fakePicture = new SerializableBitmap();
             Date fakeDate = new Date();
-            // TODO:: obviously important to change this later to real snip ID.
             long snipID = i + 1;
+
             SnipData currentSnipInformation =
                     new SnipData(snipHeadline, snipPublisher, snipAuthor, snipID, fakeDate, fakePicture,
                             snipBody, links, new SnipComments());

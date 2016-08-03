@@ -21,14 +21,10 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         this.mLinearLayoutManager = linearLayoutManager;
     }
 
-    // TODO:: do i need to remove duplicates here? If i ask for 12 snips and then more are added, do i receive a snip twice?
     private void loadMore(RecyclerView view)
     {
-        Log.d("Loading More", "");
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
-            Log.d("Not locked", "");
-
             if (SnipCollectionInformation.getInstance().getAmountOfCollectedSnips() > 0)
             {
                 MyAdapter adapter = (MyAdapter) view.getAdapter();
@@ -40,29 +36,20 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
             if (!SnipCollectionInformation.getInstance().getLastSnipQuery().equals("null"))
             {
-                Log.d("collecting data", "");
                 AsyncInternetAccessor accessor = new AsyncInternetAccessor();
                 accessor.execute();
-                Log.d("finished collecting", "data");
             }
-        }
-        else
-        {
-            Log.d("locked", "");
         }
     }
 
+    // Used this file as reference:
+    // https://github.com/Harrison1/RecyclerViewActivity/blob/master/app/src/main/java/com/harrisonmcguire/recyclerview/EndlessRecyclerOnScrollListener.java
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
         try
         {
-            Log.d("OnScrolled", "");
-
-            // Used this file as reference:
-            // https://github.com/Harrison1/RecyclerViewActivity/blob/master/app/src/main/java/com/harrisonmcguire/recyclerview/EndlessRecyclerOnScrollListener.java
-
             int visibleItemCount = recyclerView.getChildCount();
             int totalItemCount = mLinearLayoutManager.getItemCount();
             int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
