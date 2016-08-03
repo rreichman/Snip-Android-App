@@ -37,7 +37,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         super(view);
         this.mLayout = (RelativeLayout)view.findViewById(R.id.recLayout);
         this.mSnipTitle = (TextView)view.findViewById(R.id.headline);
-        this.mSnipAuthor = (TextView)view.findViewById(R.id.author);
+        //this.mSnipAuthor = (TextView)view.findViewById(R.id.author);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
         //this.mSnipSource = (TextView)view.findViewById(R.id.source);
 

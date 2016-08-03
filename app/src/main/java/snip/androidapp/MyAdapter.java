@@ -114,7 +114,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 
         holder.mSnipTitle.setText(currentSnip.mHeadline);
         //holder.mSnipSource.setText(currentSnip.mSource);
-        holder.mSnipAuthor.setText(currentSnip.mAuthor);
+        //holder.mSnipAuthor.setText(currentSnip.mAuthor);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

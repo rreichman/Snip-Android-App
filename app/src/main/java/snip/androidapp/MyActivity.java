@@ -3,7 +3,7 @@ package snip.androidapp;
 //import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
+import android.view.Menu;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -123,15 +123,11 @@ public class MyActivity extends AppCompatActivity
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
 
         return SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
     }
 
     private void startActivityOperation() {
-        setContentView(R.layout.my_activity);
         mRecyclerView = (RecyclerView) findViewById(R.id.snip_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -324,12 +320,36 @@ public class MyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         retrieveSnipDataFromBundle(savedInstanceState);
         if (null == mCollectedSnips)
         {
             mCollectedSnips = retrieveSnipDataFromFile();
             SnipCollectionInformation.getInstance().setLastSnipQuery(retrieveSnipQueryFromFile());
         }
+
+        setContentView(R.layout.my_activity);
+        setupToolbar();
         startActivityOperation();
+
+
+    }
+
+    private void setupToolbar() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (myToolbar != null) {
+            setSupportActionBar(myToolbar);
+            getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+//            getSupportActionBar().setHomeButtonEnabled(true);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 }
