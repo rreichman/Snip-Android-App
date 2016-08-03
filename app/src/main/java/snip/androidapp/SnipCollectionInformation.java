@@ -21,6 +21,7 @@ public class SnipCollectionInformation
     protected SnipCollectionInformation() {
         mLastSnipQuery = "";
         mLock = new ReentrantLock();
+        mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
     }
 
     public int getAmountOfSnipsPerLoad() {
@@ -35,7 +36,7 @@ public class SnipCollectionInformation
 
     public void setLastSnipQuery(String lastSnipQuery)
     {
-        if (null == lastSnipQuery)
+        if (lastSnipQuery.equals("null"))
         {
             mLastSnipQuery = "";
         }

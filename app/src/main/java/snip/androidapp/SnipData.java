@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.util.Pair;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -23,7 +25,8 @@ public class SnipData implements Parcelable, Serializable
     public String mAuthor;
     public long mID;
     public Date mDate;
-    //public SerializableBitmap mPicture;
+    public String mThumbnailUrl;
+    public Bitmap mThumbnail;
     public String mBody;
     public ExternalLinksData mExternalLinks;
     public SnipComments mComments;
@@ -42,6 +45,7 @@ public class SnipData implements Parcelable, Serializable
         dest.writeString(mAuthor);
         dest.writeLong(mID);
         dest.writeSerializable(mDate);
+        dest.writeString(mThumbnailUrl);
         //dest.writeParcelable(mPicture, flags);
         dest.writeString(mBody);
         dest.writeParcelable(mExternalLinks, flags);
@@ -56,17 +60,18 @@ public class SnipData implements Parcelable, Serializable
     public SnipData() {}
 
     public SnipData(
-            String headline, String publisher, String author, Long id, Date date, SerializableBitmap picture,
-            String body, LinkedList<Pair<String,String>> externalLinks, SnipComments comments)
+            String headline, String publisher, String author, Long id, Date date, String thumbnailUrl,
+            String body, ExternalLinksData externalLinks, SnipComments comments)
     {
         mHeadline = headline;
         mPublisher = publisher;
         mAuthor = author;
         mID = id;
         mDate = date;
-        //mPicture = picture;
+        mThumbnailUrl = thumbnailUrl;
+        mThumbnail = ImageLoader.getInstance().loadImageSync(thumbnailUrl);
         mBody = body;
-        mExternalLinks = new ExternalLinksData(externalLinks);
+        mExternalLinks = externalLinks;
         mComments = comments;
     }
 

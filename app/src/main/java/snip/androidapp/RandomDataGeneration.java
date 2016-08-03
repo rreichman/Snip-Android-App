@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.graphics.Bitmap;
 import android.util.Pair;
 
 import java.util.Date;
@@ -22,15 +23,13 @@ public class RandomDataGeneration
 
             String snipBody = "Body" + printedNumber;
             String snipWebsite = "www.ynet" + printedNumber + ".co.il";
-            LinkedList<Pair<String, String>> links = new LinkedList<Pair<String, String>>();
-            links.addLast(new Pair<String, String>(snipSource, snipWebsite));
-            SerializableBitmap fakePicture = new SerializableBitmap();
+            String bitmapURL = "fakeURL";
             Date fakeDate = new Date();
             long snipID = i + 1;
 
             SnipData currentSnipInformation =
-                    new SnipData(snipHeadline, snipPublisher, snipAuthor, snipID, fakeDate, fakePicture,
-                            snipBody, links, new SnipComments());
+                    new SnipData(snipHeadline, snipPublisher, snipAuthor, snipID, fakeDate,
+                            bitmapURL, snipBody, null, new SnipComments());
 
             myDataset.addLast(currentSnipInformation);
         }

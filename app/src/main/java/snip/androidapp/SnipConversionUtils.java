@@ -1,6 +1,9 @@
 package snip.androidapp;
 
+import android.graphics.Bitmap;
 import android.util.Pair;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,42 +54,24 @@ public class SnipConversionUtils
             {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String headline = jsonObject.getString("headline");
+                String publisher = jsonObject.getString("publisher");
+                String author = jsonObject.getString("author");
+                long id = jsonObject.getLong("id");
 
-                // TODO:: get this from server
-                String publisher = "Snip";
-
-                // TODO:: get this from server
-                String author = "Guest gal";
-
-                long id = Long.parseLong(jsonObject.getString("id"));
                 String dateAsString = jsonObject.getString("date");
                 Date date = convertStringToDate(dateAsString, "MM/dd/yyyy hh:mm:ss aa");
 
-                // TODO:: get the image from the path when it's the correct path
-                String imageLinkPath = jsonObject.getString("image");
-                SerializableBitmap image = new SerializableBitmap();
+                JSONObject thumbnailJsonObject = jsonObject.getJSONObject("thumbnail");
+                String thumbnailWebUrl = thumbnailJsonObject.getString("url");
 
                 String body = jsonObject.getString("body");
-                LinkedList<Pair<String,String>> links = new LinkedList<Pair<String, String>>();
+                ExternalLinksData externalLinksData =
+                        new ExternalLinksData(jsonObject.getJSONArray("related_links"));
 
                 // TODO:: retrieve the comments when comments are implemented
 
-                JSONArray linksJSONArray = jsonObject.getJSONArray("related_links");
-                for (int j = 0; j < linksJSONArray.length(); ++j)
-                {
-                    // TODO:: we need to receive the original article's author here too
-                    // This is because the format of the link is "website: websiteURL" (Google: www.google.com)
-                    String linkString = linksJSONArray.getString(j);
-                    String[] splitLinkString = linkString.split(": ");
-                    // TODO:: this is data validation. Should change when source changes
-                    if (splitLinkString.length > 1)
-                    {
-                        links.addLast(new Pair<String, String>(splitLinkString[0], splitLinkString[1]));
-                    }
-                }
-
                 SnipData snipData = new SnipData(
-                        headline, publisher, author, id, date, image, body, links, new SnipComments());
+                        headline, publisher, author, id, date, thumbnailWebUrl, body, externalLinksData, new SnipComments());
 
                 snipDataLinkedList.addLast(snipData);
             }

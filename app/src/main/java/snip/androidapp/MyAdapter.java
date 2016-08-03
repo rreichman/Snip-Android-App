@@ -2,6 +2,9 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -16,6 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.LinkedList;
 
@@ -67,7 +73,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 context.startActivity(readsnipScreen);
                 return super.onSingleTapConfirmed(e);
             }
-        })
+        });
     }
 
     // Create new views (invoked by the layout manager)
@@ -94,12 +100,12 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        //SnipData currentSnip = mDataset.get(position);
+        SnipData currentSnip = mDataset.get(position);
 
-        //holder.mSnipHeadline.setText(currentSnip.mHeadline);
-        //holder.mSnipSource.setText(currentSnip.mSource);
-        //holder.mSnipAuthor.setText(currentSnip.mAuthor);
-        //holder.mSnipPublisher.setText(currentSnip.mPublisher);
+        holder.mSnipHeadline.setText(currentSnip.mHeadline);
+        holder.mSnipAuthor.setText(currentSnip.mAuthor);
+        holder.mSnipPublisher.setText(currentSnip.mPublisher);
+        holder.mSnipThumbnail.setImageBitmap(currentSnip.mThumbnail);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
