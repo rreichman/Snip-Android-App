@@ -2,7 +2,10 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.LinkedList;
@@ -45,6 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     final int currentPositionInDataset = viewHolder.getAdapterPosition();
+                    // TODO:: handle double tap
                     mDataset.remove(currentPositionInDataset);
                     mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
                     Log.d("TEST", "onDoubleTap");
@@ -52,12 +57,9 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 }
 
                 @Override
-                public void onLongPress(MotionEvent e)
-                {
-                    Log.d("On Long", "press");
-                    super.onLongPress(e);
-                }
+                public void onLongPress(MotionEvent e) { super.onLongPress(e); }
 
+                @Override
                 public boolean onSingleTapConfirmed(MotionEvent e)
                 {
                     CardView cardView = (CardView)view.findViewById(R.id.card_view);
@@ -78,30 +80,8 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                //Log.d("TEST", "Raw event: " + event.getAction() + ", (" + event.getRawX() + ", " + event.getRawY() + ")");
                 return gestureDetector.onTouchEvent(event);
             }});
-
-        // TODO:: see if we need this after handling all the touching
-        /*viewHolder.mLayout.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Log.d("In onClick", "1");
-                CardView cardView = (CardView)v.findViewById(R.id.card_view);
-                String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
-
-                Context context = v.getContext();
-                Intent readsnipScreen = new Intent(context, ReadSnipActivity.class);
-                final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                final long snipID = mDataset.get(currentPositionInDataset).mID;
-                Bundle b = new Bundle();
-                b.putLong("snipID", snipID);
-                readsnipScreen.putExtras(b);
-                context.startActivity(readsnipScreen);
-            }
-        });*/
 
         return viewHolder;
     }
@@ -112,9 +92,10 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     {
         SnipData currentSnip = mDataset.get(position);
 
-        holder.mSnipTitle.setText(currentSnip.mHeadline);
+        holder.mSnipHeadline.setText(currentSnip.mHeadline);
         //holder.mSnipSource.setText(currentSnip.mSource);
-        //holder.mSnipAuthor.setText(currentSnip.mAuthor);
+        holder.mSnipAuthor.setText(currentSnip.mAuthor);
+        holder.mSnipPublisher.setText(currentSnip.mPublisher);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

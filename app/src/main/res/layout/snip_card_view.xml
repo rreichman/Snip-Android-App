@@ -42,11 +42,16 @@
                 />
 
             </LinearLayout>
-            <TextView
-                android:id="@+id/headline"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_toRightOf="@+id/thumbnail">
+            <TextView
+                android:id="@+id/headline"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:maxLines="2"
                 android:text="Hello World Hello WorldHello WorldHello World Hello World"
                 android:paddingLeft="10dp"
@@ -54,13 +59,44 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:textSize="14dp"
-
                 android:textColor="#000"
                 android:gravity="right"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/thumbnail"
-                />
 
+                />
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:maxLines="2"
+                    android:text="Hello World Hello WorldHello WorldHello World Hello World"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="14dp"
+                    android:textColor="#000"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
+
+                    />
+                <TextView
+                    android:id="@+id/publisher"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:maxLines="2"
+                    android:text="Snip"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="14dp"
+                    android:textColor="#000"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
+
+                    />
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

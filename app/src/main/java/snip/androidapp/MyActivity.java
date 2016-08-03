@@ -5,35 +5,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Picture;
 import android.os.Bundle;
 
-import android.os.Environment;
-import android.os.Parcel;
-import android.util.Log;
-import android.util.Pair;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 
 // TODO:: In the CardView layout - To create a card with a shadow, use the card_view:cardElevation attribute
 // TODO:: add Fabric to app
+// TODO:: this file looks terrible. divide it to two or three files.
 
 /**
  * Created by ranreichman on 7/19/16.
@@ -43,76 +36,10 @@ public class MyActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter<ViewHolder> mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeContainer;
     // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
     // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
     private LinkedList<SnipData> mCollectedSnips;
-
-    // Referenced this: http://stackoverflow.com/questions/26422948/how-to-do-swipe-to-delete-cardview-in-android-using-support-library
-    private SwipeableRecyclerViewTouchListener getDefaultTouchListener() {
-        return new SwipeableRecyclerViewTouchListener(mRecyclerView,
-                new SwipeableRecyclerViewTouchListener.SwipeListener() {
-                    @Override
-                    public boolean canSwipeRight(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean canSwipeLeft(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-                            // TODO:: mark as unlike
-                            mCollectedSnips.remove(position);
-                            mAdapter.notifyItemRemoved(position);
-                        }
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-                            // TODO:: mark as snooze
-                            mCollectedSnips.remove(position);
-                            mAdapter.notifyItemRemoved(position);
-                        }
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
-    }
-
-    public static LinkedList<SnipData> createRandomSnipDataset(int size, int numberToStartCountingAt) {
-        LinkedList<SnipData> myDataset = new LinkedList<SnipData>();
-        for (int i = 0; i < size; ++i) {
-            int printedNumber = i + numberToStartCountingAt;
-            String snipHeadline = "Headline" + printedNumber;
-            String snipPublisher = "Snip" + printedNumber;
-            String snipAuthor = "Author" + printedNumber;
-            String snipSource = "Ynet" + printedNumber;
-
-            String snipBody = "Body" + printedNumber;
-            String snipWebsite = "www.ynet" + printedNumber + ".co.il";
-            LinkedList<Pair<String, String>> links = new LinkedList<Pair<String, String>>();
-            links.addLast(new Pair<String, String>(snipSource, snipWebsite));
-            SerializableBitmap fakePicture = new SerializableBitmap();
-            Date fakeDate = new Date();
-            // TODO:: obviously important to change this later to real snip ID.
-            long snipID = i + 1;
-            SnipData currentSnipInformation =
-                    new SnipData(snipHeadline, snipPublisher, snipAuthor, snipID, fakeDate, fakePicture,
-                            snipBody, links, new SnipComments());
-
-            myDataset.addLast(currentSnipInformation);
-        }
-
-        return myDataset;
-    }
-
-    private LinkedList<SnipData> getListOfSnips() {
-        return createRandomSnipDataset(15, 1);
-    }
 
     private LinkedList<SnipData> retrieveSnipsFromInternet() {
         try {
@@ -127,35 +54,91 @@ public class MyActivity extends AppCompatActivity
         return SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
     }
 
-    private void startActivityOperation() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.snip_recycler_view);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
+    private void collectDataAndPopulateActivity()
+    {
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
-        if (null == mCollectedSnips) {
+        if (null == mCollectedSnips)
+        {
             mCollectedSnips = retrieveSnipsFromInternet();
         }
         // specify an adapter
         mAdapter = new MyAdapter(MyActivity.this, mRecyclerView, mCollectedSnips);
         mRecyclerView.setAdapter(mAdapter);
 
-        SwipeableRecyclerViewTouchListener swipeTouchListener = getDefaultTouchListener();
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+                {
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDirection)
+                    {
+                        int currentPositionInDataset = viewHolder.getAdapterPosition();
+                        if (ItemTouchHelper.LEFT == swipeDirection)
+                        {
+                            // TODO:: mark as unlike
+                            mCollectedSnips.remove(currentPositionInDataset);
+                            mAdapter.notifyItemRemoved(currentPositionInDataset);
+                        }
 
-        mRecyclerView.addOnItemTouchListener(swipeTouchListener);
+                        if (ItemTouchHelper.RIGHT == swipeDirection)
+                        {
+                            // TODO:: mark as like
+                            mCollectedSnips.remove(currentPositionInDataset);
+                            mAdapter.notifyItemRemoved(currentPositionInDataset);
+                        }
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {
-        });
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public boolean onMove(
+                            RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
+                    {
+                        return false;
+                    }
+                };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
     }
 
-    private String getFileNameForSnipData()
+    private void startActivityOperation()
     {
-        return "savedSnipData.dat";
+        startUI();
+        mRecyclerView = (RecyclerView) findViewById(R.id.snip_recycler_view);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh()
+            {
+                cleanAppCacheAndStartOver();
+                collectDataAndPopulateActivity();
+                Log.d("Refreshed!", "So refreshing!");
+            }
+        });
+
+        collectDataAndPopulateActivity();
     }
+
+    private String getFileNameForSnipData() { return "savedSnipData.dat"; }
 
     private String getFileNameForSnipQuery()
     {
         return "savedSnipQuery.dat";
+    }
+
+    private String getFullPathForSnipData()
+    {
+        return getFullPathOfFile(getFileNameForSnipData());
+    }
+
+    private String getFullPathForSnipQuery()
+    {
+        return getFullPathOfFile(getFileNameForSnipQuery());
     }
 
     private String getFullPathOfFile(String filename) {
@@ -164,7 +147,7 @@ public class MyActivity extends AppCompatActivity
 
     @Override
     public void onStop() {
-        saveSnipDataToFile();
+        saveAppInformationToFile();
         super.onStop();
     }
 
@@ -235,7 +218,7 @@ public class MyActivity extends AppCompatActivity
             FileOutputStream fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 
-            objectOutputStream.writeObject(mCollectedSnips);
+            objectOutputStream.writeObject(object);
             objectOutputStream.close();
             fileOutputStream.close();
         }
@@ -263,6 +246,29 @@ public class MyActivity extends AppCompatActivity
     {
         saveSnipDataToFile();
         saveSnipQueryToFile();
+    }
+
+    private void deleteFileOnDisk(String fullPathOfFile)
+    {
+        File file = new File(fullPathOfFile);
+        if (file.exists())
+        {
+            file.delete();
+        }
+    }
+
+    private void cleanAppCacheAndStartOver()
+    {
+        mCollectedSnips = null;
+        SnipCollectionInformation.getInstance().cleanLastSnipQuery();
+        deleteAppInformationFiles();
+        startActivityOperation();
+    }
+
+    private void deleteAppInformationFiles()
+    {
+        deleteFileOnDisk(getFullPathForSnipData());
+        deleteFileOnDisk(getFullPathForSnipQuery());
     }
 
     private Object retrieveObjectFromFile(String filename)
@@ -302,17 +308,21 @@ public class MyActivity extends AppCompatActivity
         return (String)retrieveObjectFromFile(getFileNameForSnipQuery());
     }
 
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState)
+    private void retrieveSavedDataFromBundleOrFile(Bundle savedInstanceState)
     {
-        super.onSaveInstanceState(savedInstanceState);
-        // TODO:: The retrieve code is duplicate. fix this.
         retrieveSnipDataFromBundle(savedInstanceState);
         if (null == mCollectedSnips)
         {
             mCollectedSnips = retrieveSnipDataFromFile();
             SnipCollectionInformation.getInstance().setLastSnipQuery(retrieveSnipQueryFromFile());
         }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onSaveInstanceState(savedInstanceState);
+        retrieveSavedDataFromBundleOrFile(savedInstanceState);
         startActivityOperation();
     }
 
@@ -320,19 +330,22 @@ public class MyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        retrieveSnipDataFromBundle(savedInstanceState);
-        if (null == mCollectedSnips)
+        try
         {
-            mCollectedSnips = retrieveSnipDataFromFile();
-            SnipCollectionInformation.getInstance().setLastSnipQuery(retrieveSnipQueryFromFile());
+            retrieveSavedDataFromBundleOrFile(savedInstanceState);
+            startActivityOperation();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
 
+
+    }
+
+    private void startUI() {
         setContentView(R.layout.my_activity);
         setupToolbar();
-        startActivityOperation();
-
-
     }
 
     private void setupToolbar() {
