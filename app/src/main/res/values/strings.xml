@@ -2,5 +2,7 @@
     <string name="app_name">Snip</string>
     <string name="title_activity_main">Title Activity Main</string>
     <string name="action_settings">Settings</string>
+    <string name="thumbnailImageDescription">Placeholder Image</string>
+    <string name="imageOfExpandedSnip">Image of expanded snip</string>
 
 </resources>

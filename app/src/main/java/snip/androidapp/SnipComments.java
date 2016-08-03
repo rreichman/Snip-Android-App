@@ -18,7 +18,7 @@ public class SnipComments implements Parcelable, Serializable
 
     public SnipComments(Parcel parcel)
     {
-        // TODO:: implement
+        // FUTURE:: implement? do i even need to implement this?
     }
 
     @Override

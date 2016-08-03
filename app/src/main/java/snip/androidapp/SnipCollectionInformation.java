@@ -10,7 +10,8 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by ranreichman on 7/31/16.
  */
-public class SnipCollectionInformation {
+public class SnipCollectionInformation
+{
     private static SnipCollectionInformation mInstance = null;
 
     private String mLastSnipQuery;
@@ -20,6 +21,7 @@ public class SnipCollectionInformation {
     protected SnipCollectionInformation() {
         mLastSnipQuery = "";
         mLock = new ReentrantLock();
+        mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
     }
 
     public int getAmountOfSnipsPerLoad() {
@@ -34,7 +36,7 @@ public class SnipCollectionInformation {
 
     public void setLastSnipQuery(String lastSnipQuery)
     {
-        if (null == lastSnipQuery)
+        if (lastSnipQuery.equals("null"))
         {
             mLastSnipQuery = "";
         }
