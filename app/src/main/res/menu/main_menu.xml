@@ -5,7 +5,8 @@
         android:id="@+id/miSearch"
         android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"
-        android:title="Compose"/>
+        android:title="Search"/>
+
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never"/>

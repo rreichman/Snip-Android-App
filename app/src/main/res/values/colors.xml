@@ -2,8 +2,16 @@
 <resources>
     <!-- https://material.google.com/style/color.html#color-color-palette -->
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#23318c</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="snipCardColor">#ffffff</color>
+    <color name="snipCardBackground">#ffffff</color>
+    <color name="snipCardText">#000000</color>
+    <color name="snipText">#000000</color>
+    <color name="snipCardTextSecondary">#616161</color>
+    <color name="app_background">#ffffff</color>
     <color name="indigo">#3F51B5</color>
+    <color name="toolbarTitle">#000000</color>
+    <color name="toolbarBack">#fcc862</color>
+    <color name="divider">#ffc95f</color>
+
 </resources>

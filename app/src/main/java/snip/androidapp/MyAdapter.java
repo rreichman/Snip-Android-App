@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.LinkedList;
@@ -91,11 +93,13 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     public void onBindViewHolder(ViewHolder holder, int position)
     {
         SnipData currentSnip = mDataset.get(position);
-
         holder.mSnipHeadline.setText(currentSnip.mHeadline);
         //holder.mSnipSource.setText(currentSnip.mSource);
         holder.mSnipAuthor.setText(currentSnip.mAuthor);
         holder.mSnipPublisher.setText(currentSnip.mPublisher);
+//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.mLayout.getLayoutParams();
+
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

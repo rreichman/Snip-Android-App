@@ -172,7 +172,7 @@ public class CollectDataFromInternet extends AsyncTask<Void, Void, String>
                 Date date = convertStringToDate(dateAsString, "MM/dd/yyyy hh:mm:ss aa");
 
                 // TODO:: get the image from the path when it's the correct path
-                String imageLinkPath = jsonObject.getString("image");
+                String imageLinkPath = jsonObject.getString("thumbnail");
                 SerializableBitmap image = new SerializableBitmap();
 
                 String body = jsonObject.getString("body");

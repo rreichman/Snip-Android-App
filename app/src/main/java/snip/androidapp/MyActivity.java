@@ -1,6 +1,6 @@
 package snip.androidapp;
 
-//import android.app.Activity;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -109,6 +110,9 @@ public class MyActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView) findViewById(R.id.snip_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -330,6 +334,8 @@ public class MyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        deleteAppInformationFiles();
         try
         {
             retrieveSavedDataFromBundleOrFile(savedInstanceState);
@@ -339,9 +345,22 @@ public class MyActivity extends AppCompatActivity
         {
             e.printStackTrace();
         }
-
-
     }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+//        mAdapter.resetAdapter();
+//         Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            SquareImageView imgView = (SquareImageView) findViewById(R.id.thumbnail);
+//            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) imgView.getLayoutParams();
+//            lp.weight = 0.1f;
+//        }
+    }
+
+
 
     private void startUI() {
         setContentView(R.layout.my_activity);
@@ -352,7 +371,9 @@ public class MyActivity extends AppCompatActivity
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (myToolbar != null) {
             setSupportActionBar(myToolbar);
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+            getSupportActionBar().setLogo(R.drawable.sniplogosmall);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 //            getSupportActionBar().setHomeButtonEnabled(true);
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

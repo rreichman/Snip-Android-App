@@ -15,88 +15,77 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_weight="0.5"
+        card_view:cardElevation="0dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="13dp"
         card_view:cardCornerRadius="0dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="100dp"
             android:orientation="horizontal"
-            android:background="@color/snipCardColor">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                >
-            <ImageView
+            android:background="@color/snipCardBackground"
+            >
+            <snip.androidapp.SquareImageView
                 android:id="@+id/thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="centerCrop"
+                android:src="@drawable/img_test"
                 android:layout_gravity="left"
-                android:src="@drawable/img_test_2"
-                android:adjustViewBounds="true"
+                android:layout_weight="0.3"
                 />
 
-            </LinearLayout>
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_toRightOf="@+id/thumbnail">
+                android:layout_weight="0.7"
+                android:layout_toRightOf="@+id/thumbnail"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                >
+
             <TextView
                 android:id="@+id/headline"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:maxLines="2"
-                android:text="Hello World Hello WorldHello WorldHello World Hello World"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:text="Hello World Hello World Hello World Hello World Hello World"
                 android:textSize="14dp"
-                android:textColor="#000"
+                android:textColor="@color/snipCardText"
                 android:gravity="right"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="3dp"
 
                 />
                 <TextView
-                    android:id="@+id/author"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxLines="2"
-                    android:text="Hello World Hello WorldHello WorldHello World Hello World"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:textSize="14dp"
-                    android:textColor="#000"
-                    android:gravity="right"
-                    android:layout_alignParentRight="true"
-
-                    />
-                <TextView
                     android:id="@+id/publisher"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxLines="2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
                     android:text="Snip"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
                     android:textSize="14dp"
-                    android:textColor="#000"
-                    android:gravity="right"
+                    android:textColor="@color/snipCardTextSecondary"
                     android:layout_alignParentRight="true"
+                    android:layout_below="@id/headline"
+                    />
+
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="Ran Reicman"
+                    android:textSize="14dp"
+                    android:textColor="@color/snipCardTextSecondary"
+                    android:layout_toLeftOf="@id/publisher"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@id/headline"
 
                     />
-            </LinearLayout>
+
+            </RelativeLayout>
+
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
