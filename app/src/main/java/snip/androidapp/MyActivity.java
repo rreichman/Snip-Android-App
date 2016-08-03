@@ -1,8 +1,14 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.*;
 import android.view.Menu;
 import android.os.Bundle;
+import android.content.res.Configuration;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
+
 
 // TODO:: In the CardView layout - To create a card with a shadow, use the card_view:cardElevation attribute
 // TODO:: add Fabric to app
@@ -44,20 +50,18 @@ public class MyActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         ActivityOperations.getInstance(this).initalizeImportantStuff();
 
-        try
-        {
+        try {
             ActivityOperations.getInstance(this).retrieveSavedDataFromBundleOrFile(savedInstanceState);
             ActivityOperations.getInstance(this).startActivityOperation();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -71,24 +75,14 @@ public class MyActivity extends AppCompatActivity
     }
 
 
-
     private void startUI() {
         setContentView(R.layout.my_activity);
-        setupToolbar();
+        BaseToolbar activityToolbar = new BaseToolbar();
+        activityToolbar.setupToolbar(this);
     }
 
-    private void setupToolbar() {
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (myToolbar != null) {
-            setSupportActionBar(myToolbar);
-            getSupportActionBar().setLogo(R.drawable.sniplogosmall);
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-//            getSupportActionBar().setHomeButtonEnabled(true);
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        }
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

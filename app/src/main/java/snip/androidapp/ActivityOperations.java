@@ -130,6 +130,7 @@ public class ActivityOperations
         mRecyclerView = (RecyclerView) mMainActivity.findViewById(R.id.snip_recycler_view);
         mLayoutManager = new LinearLayoutManager(mMainActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(mMainActivity));
         mSwipeContainer = (SwipeRefreshLayout)mMainActivity.findViewById(R.id.swipeContainer);
 
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

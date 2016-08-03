@@ -10,15 +10,17 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by ranreichman on 7/25/16.
  */
-public class ReadSnipActivity extends Activity
+public class ReadSnipActivity extends AppCompatActivity
 {
     private static Spanned fromHtml(String htmlString)
     {
@@ -97,6 +99,8 @@ public class ReadSnipActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.clean_scrollable_activity);
+        BaseToolbar activityToolbar = new BaseToolbar();
+        activityToolbar.setupToolbar(this);
 
         final int DEFAULT_RIGHT_MARGIN = 10;
 
@@ -138,6 +142,15 @@ public class ReadSnipActivity extends Activity
         Button button = new Button(this);
         button.setText("LIKE");
         layout.addView(button);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     @Override
