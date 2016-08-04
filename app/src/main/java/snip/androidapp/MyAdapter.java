@@ -106,7 +106,14 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
         holder.mSnipHeadline.setText(currentSnip.mHeadline);
         holder.mSnipAuthor.setText(currentSnip.mAuthor);
         holder.mSnipPublisher.setText(currentSnip.mPublisher);
-        holder.mSnipThumbnail.setImageBitmap(currentSnip.mThumbnail);
+        if (null == currentSnip.mThumbnail)
+        {
+            holder.mSnipThumbnail.setImageBitmap(currentSnip.mThumbnail);
+        }
+        else
+        {
+            holder.mSnipThumbnail.setImageBitmap(SnipData.getBitmapFromUrl(currentSnip.mThumbnailUrl));
+        }
 //        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.mLayout.getLayoutParams();
 
 

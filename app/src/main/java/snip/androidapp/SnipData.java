@@ -26,7 +26,7 @@ public class SnipData implements Parcelable, Serializable
     public long mID;
     public Date mDate;
     public String mThumbnailUrl;
-    public Bitmap mThumbnail;
+    public transient Bitmap mThumbnail;
     public String mBody;
     public ExternalLinksData mExternalLinks;
     public SnipComments mComments;
@@ -46,7 +46,6 @@ public class SnipData implements Parcelable, Serializable
         dest.writeLong(mID);
         dest.writeSerializable(mDate);
         dest.writeString(mThumbnailUrl);
-        //dest.writeParcelable(mPicture, flags);
         dest.writeString(mBody);
         dest.writeParcelable(mExternalLinks, flags);
         dest.writeParcelable(mComments, flags);
@@ -69,10 +68,15 @@ public class SnipData implements Parcelable, Serializable
         mID = id;
         mDate = date;
         mThumbnailUrl = thumbnailUrl;
-        mThumbnail = ImageLoader.getInstance().loadImageSync(thumbnailUrl);
+        mThumbnail = getBitmapFromUrl(thumbnailUrl);
         mBody = body;
         mExternalLinks = externalLinks;
         mComments = comments;
+    }
+
+    public static Bitmap getBitmapFromUrl(String thumbnailUrl)
+    {
+        return ImageLoader.getInstance().loadImageSync(thumbnailUrl);
     }
 
     public static final Parcelable.Creator<SnipData> CREATOR = new Parcelable.Creator<SnipData>()
