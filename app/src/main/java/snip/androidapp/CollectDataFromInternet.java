@@ -9,12 +9,27 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by ranreichman on 7/27/16.
  */
 public class CollectDataFromInternet
 {
+    public static LinkedList<SnipData> retrieveSnipsFromInternet()
+    {
+        try {
+            AsyncInternetAccessor accessor = new AsyncInternetAccessor();
+            accessor.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
+    }
+
     private static String authenticateAndGetSnipData()
     {
         final String baseAccessURL = "https://test.snip.today/api";

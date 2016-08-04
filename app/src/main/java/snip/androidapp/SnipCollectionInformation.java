@@ -36,13 +36,13 @@ public class SnipCollectionInformation
 
     public void setLastSnipQuery(String lastSnipQuery)
     {
-        if (lastSnipQuery.equals("null"))
+        if (null != lastSnipQuery)
         {
-            mLastSnipQuery = "";
+            mLastSnipQuery = lastSnipQuery;
         }
         else
         {
-            mLastSnipQuery = lastSnipQuery;
+            mLastSnipQuery = "";
         }
     }
 
