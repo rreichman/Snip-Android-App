@@ -42,7 +42,16 @@ public class ExternalLinksData implements Parcelable, Serializable
 
     public ExternalLinksData(Parcel parcle)
     {
-        // FUTURE:: implement? do i even need to implement this?
+        mExternalLinks = new LinkedList<ExternalLinkData>();
+        int amountOfLinks = parcle.readInt();
+        for (int i = 0; i < amountOfLinks; ++i)
+        {
+            String author = parcle.readString();
+            String link = parcle.readString();
+            String title = parcle.readString();
+            ExternalLinkData data = new ExternalLinkData(author, link, title);
+            mExternalLinks.addLast(data);
+        }
     }
 
     @Override
@@ -54,13 +63,14 @@ public class ExternalLinksData implements Parcelable, Serializable
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
+        dest.writeInt(mExternalLinks.size());
         ListIterator<ExternalLinkData> listIterator = mExternalLinks.listIterator();
         while (listIterator.hasNext())
         {
             ExternalLinkData singleLinkData = listIterator.next();
-            dest.writeString(singleLinkData.mTitle);
             dest.writeString(singleLinkData.mAuthor);
             dest.writeString(singleLinkData.mLink);
+            dest.writeString(singleLinkData.mTitle);
         }
     }
 

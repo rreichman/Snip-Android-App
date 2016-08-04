@@ -29,7 +29,7 @@ public class SnipData implements Parcelable, Serializable
     public transient Bitmap mThumbnail;
     public String mBody;
     public ExternalLinksData mExternalLinks;
-    public SnipComments mComments;
+    //public SnipComments mComments;
 
     @Override
     public int describeContents()
@@ -48,15 +48,28 @@ public class SnipData implements Parcelable, Serializable
         dest.writeString(mThumbnailUrl);
         dest.writeString(mBody);
         dest.writeParcelable(mExternalLinks, flags);
-        dest.writeParcelable(mComments, flags);
+        //dest.writeParcelable(mComments, flags);
     }
 
     public SnipData(Parcel parcel)
     {
-        // FUTURE:: implement? is this even necessary?
+        mHeadline = parcel.readString();
+        mPublisher = parcel.readString();
+        mAuthor = parcel.readString();
+        mID = parcel.readLong();
+        mDate = (Date)parcel.readSerializable();
+        mThumbnailUrl = parcel.readString();
+        mBody = parcel.readString();
+        mExternalLinks = parcel.readParcelable(ExternalLinksData.class.getClassLoader());
+        //mComments = parcel.readParcelable(SnipComments.class.getClassLoader());
     }
 
     public SnipData() {}
+
+    public static String getSnipDataString()
+    {
+        return "snipData";
+    }
 
     public SnipData(
             String headline, String publisher, String author, Long id, Date date, String thumbnailUrl,
@@ -71,7 +84,7 @@ public class SnipData implements Parcelable, Serializable
         mThumbnail = getBitmapFromUrl(thumbnailUrl);
         mBody = body;
         mExternalLinks = externalLinks;
-        mComments = comments;
+        //mComments = comments;
     }
 
     public static Bitmap getBitmapFromUrl(String thumbnailUrl)
@@ -84,7 +97,8 @@ public class SnipData implements Parcelable, Serializable
         @Override
         public SnipData createFromParcel(Parcel parcel)
         {
-            return new SnipData(parcel);
+            SnipData snipData = new SnipData(parcel);
+            return snipData;
         }
 
         @Override

@@ -2,6 +2,7 @@ package snip.androidapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +10,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.Button;
@@ -22,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
  */
 public class ReadSnipActivity extends AppCompatActivity
 {
+    protected SnipData mSnipData;
+
     private static Spanned fromHtml(String htmlString)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -94,11 +98,16 @@ public class ReadSnipActivity extends AppCompatActivity
         layout.addView(imageView, params);
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        mSnipData = (SnipData)getIntent().getSerializableExtra(SnipData.getSnipDataString());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.clean_scrollable_activity);
+
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
 

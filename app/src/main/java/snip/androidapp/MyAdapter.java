@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.CardView;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
@@ -65,14 +67,14 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 CardView cardView = (CardView)view.findViewById(R.id.card_view);
                 String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
 
-                Context context = view.getContext();
-                Intent readsnipScreen = new Intent(context, ReadSnipActivity.class);
                 final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                final long snipID = mDataset.get(currentPositionInDataset).mID;
-                Bundle b = new Bundle();
-                b.putLong("snipID", snipID);
-                readsnipScreen.putExtras(b);
-                context.startActivity(readsnipScreen);
+                SnipData snipData = mDataset.get(currentPositionInDataset);
+
+                Context context = view.getContext();
+                Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
+                readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
+
+                context.startActivity(readsnipScreenIntent);
                 return super.onSingleTapConfirmed(e);
             }
         });
