@@ -2,9 +2,11 @@ package snip.androidapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -34,62 +36,46 @@ public class ReadSnipActivity extends AppCompatActivity
         }
     }
 
-    private void addLinkDynamicallyToLayout(
-            LinearLayout layout, String text, int textSize,
-            int marginLeft, int marginTop, int marginRight, int marginDown)
-    {
-        addTextDynamicallyToLayout(layout, text, true, textSize, marginLeft, marginTop, marginRight, marginDown);
-    }
 
-    private void addTextDynamicallyToLayout(
-            LinearLayout layout, String text, int textSize,
-            int marginLeft, int marginTop, int marginRight, int marginDown)
+    private void addTextDynamicallyToLayout(LinearLayout layout, String text, boolean isLink, int styleId)
     {
-        addTextDynamicallyToLayout(layout, text, false, textSize, marginLeft, marginTop, marginRight, marginDown);
-    }
 
-    private void addTextDynamicallyToLayout(
-            LinearLayout layout, String text, boolean isLink, int textSize,
-            int marginLeft, int marginTop, int marginRight, int marginDown)
-    {
-        TextView textView = new TextView(this);
+        SnipTextView textView = new SnipTextView(new ContextThemeWrapper(this, styleId), styleId);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(marginLeft, marginTop, marginRight, marginDown);
-        params.gravity = Gravity.RIGHT;
-        textView.setLayoutParams(params);
+        textView.setGravity(Gravity.RIGHT);
+
+        int margin_horz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
+        int margin_vert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
+        params.setMargins(margin_horz, margin_vert, margin_horz, margin_vert);
+
+        Typeface fontType = Typeface.createFromAsset(getAssets(),"fonts/Heebo-Regular.ttf");
+        textView.setTypeface(fontType);
 
         if (isLink)
         {
             Spanned spanned = fromHtml(text);
             textView.setMovementMethod(LinkMovementMethod.getInstance());
             textView.setText(spanned);
-            textView.setLinkTextColor(ContextCompat.getColor(getApplicationContext(), R.color.indigo));
         }
-        else
-        {
+        else {
             textView.setText(text);
         }
-
-        textView.setTextSize(textSize);
-
+        textView.setLayoutParams(params);
         layout.addView(textView, params);
     }
 
-    private void addPictureDynamicallyToLayout(
-            LinearLayout layout, int pictureId,
-            int marginLeft, int marginTop, int marginRight, int marginDown)
+    private void addPictureDynamicallyToLayout(LinearLayout layout, int pictureId, int styleId)
     {
-        ImageView imageView = new ImageView(this);
+        ImageView imageView = new ImageView(this, null, styleId);
         imageView.setImageResource(pictureId);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
-        // Setting the height to be the same as the width.
+//         Setting the height to be the same as the width.
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displayMetrics.widthPixels);
-        params.setMargins(marginLeft, marginTop, marginRight, marginDown);
 
         layout.addView(imageView, params);
     }
@@ -102,15 +88,15 @@ public class ReadSnipActivity extends AppCompatActivity
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
 
-        final int DEFAULT_RIGHT_MARGIN = 10;
+
 
         LinearLayout layout = (LinearLayout)findViewById(R.id.clean_layout);
         // TextSize, and then Margins are left, top, right, down, in dpi
-        addTextDynamicallyToLayout(layout, "תמצית: מלא תוכן מעניין", 22, 5, 0, DEFAULT_RIGHT_MARGIN, 3);
-        addTextDynamicallyToLayout(layout, "סניפ, נכתב ע״י אלון נבון", 10, 0, 0, DEFAULT_RIGHT_MARGIN, 3);
-        addTextDynamicallyToLayout(layout, "8 שעות", 10, 0, 0, DEFAULT_RIGHT_MARGIN, 3);
-        addPictureDynamicallyToLayout(layout, R.drawable.alonsnipthailand, 0, 2, 0, 2);
-        addTextDynamicallyToLayout(layout, "קבלת פנים למלך באחת מעיירות תאילנד", 10, 0, 1, DEFAULT_RIGHT_MARGIN, 1);
+        addTextDynamicallyToLayout(layout, "תמצית: מלא תוכן מעניין", false, R.style.SingleSnip_Text_Headline);
+        addTextDynamicallyToLayout(layout, "סניפ, נכתב ע״י אלון נבון", false, R.style.SingleSnip_Text_Author);
+        addTextDynamicallyToLayout(layout, "8 שעות", false, R.style.SingleSnip_Text_Author);
+        addPictureDynamicallyToLayout(layout, R.drawable.alonsnipthailand, R.style.SingleSnip_Image);
+        addTextDynamicallyToLayout(layout, "קבלת פנים למלך באחת מעיירות תאילנד", false, R.style.SingleSnip_Text_ImageDesc);
 
         String firstParagraphInSnip = "מלך תאילנד ראמה התשיעי הוא מנהיג המדינה הוותיק ביותר בעולם. הוא הוכתר ב-9 ביוני 1946, ומכהן באופן רשמי מאז 1950! עם זאת, בגיל 88 הוא כבר אינו בקו הבריאות. הוא לא נראה בציבור כבר חודשים, וכנראה נמצא על ערש דווי. מזה שנתיים ארצו נשלטת בידי חונטה צבאית, לכאורה בשמו, והצבא מנצל חוקים דרקוניים האוסרים ביקורת נגד המלך ומשפחתו (והכלב שלו). התקשורת הושתקה, ופוליטיקאים שהעזו להביע התנגדות נלקחו ל״חינוך מחדש״.";
         String secondParagraphInSnip = "אולם כעת הצבא עומד בפני בעיה. היורש המיועד, נסיך הכתר, הוא פלייבוי גרוש בשלישית, שהעניק לפודל שלו דרגת מרשל בחיל האוויר ושנוא ע״י הציבור. העברת השלטון אל הבן עלולה לגרום לפגיעה קשה במעמד המלוכה, מקור הלגיטימציה של החונטה הצבאית.";
@@ -119,16 +105,14 @@ public class ReadSnipActivity extends AppCompatActivity
         String fifthParagraphInSnip = "בעוד שהדיכוי הצבאי עשוי לאפשר העברה מסודרת של הכתר, נראה שיציבות אמיתית תושג בתאילנד רק ע״י איחוי הקרעים בחברה. התמיכה הנמשכת בתקסין מבטאת את תסכולם האמיתי של תושבי הפריפריה, ורק פשרה בין ״הצהובים״ ל״אדומים״ תאפשר לתאילנד לצעוד קדימה.";
 
 
-        addTextDynamicallyToLayout(layout, firstParagraphInSnip, 16, 0, 3, DEFAULT_RIGHT_MARGIN, 3);
-        addTextDynamicallyToLayout(layout, secondParagraphInSnip, 16, 0, 3, DEFAULT_RIGHT_MARGIN, 3);
-        addTextDynamicallyToLayout(layout, thirdParagraphInSnip, 16, 0, 3, DEFAULT_RIGHT_MARGIN, 3);
-        addTextDynamicallyToLayout(layout, fourthParagraphInSnip, 16, 0, 3, DEFAULT_RIGHT_MARGIN, 3);
-        addTextDynamicallyToLayout(layout, fifthParagraphInSnip, 16, 0, 3, DEFAULT_RIGHT_MARGIN, 3);
+        addTextDynamicallyToLayout(layout, firstParagraphInSnip, false, R.style.SingleSnip_Text);
+        addTextDynamicallyToLayout(layout, secondParagraphInSnip, false, R.style.SingleSnip_Text);
+        addTextDynamicallyToLayout(layout, thirdParagraphInSnip, false, R.style.SingleSnip_Text);
+        addTextDynamicallyToLayout(layout, fourthParagraphInSnip, false, R.style.SingleSnip_Text);
+        addTextDynamicallyToLayout(layout, fifthParagraphInSnip, false, R.style.SingleSnip_Text);
 
-        // Differentiator after snip text is over
-        addTextDynamicallyToLayout(layout, "*", 16, 0, 2, DEFAULT_RIGHT_MARGIN, 2);
 
-        addTextDynamicallyToLayout(layout, "מקורות:", 16, 0, 2, DEFAULT_RIGHT_MARGIN, 2);
+        addTextDynamicallyToLayout(layout, "מקורות:", false, R.style.SingleSnip_Text);
 
 
         for (int i = 0; i < 3; ++i)
@@ -136,7 +120,7 @@ public class ReadSnipActivity extends AppCompatActivity
             String textInLink = "הכתבה באקונומיסט" + i;
             String pathOfWebsite = "www.economist.com";
             String htmlLinkString = "<a href=\"" + pathOfWebsite + "\">" + textInLink + "</a>";
-            addLinkDynamicallyToLayout(layout, htmlLinkString, 16, 0, 2, DEFAULT_RIGHT_MARGIN, 2);
+            addTextDynamicallyToLayout(layout, htmlLinkString, true, R.style.SingleSnip_Text);
         }
 
         Button button = new Button(this);
