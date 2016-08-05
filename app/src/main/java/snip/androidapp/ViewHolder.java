@@ -19,11 +19,11 @@ import android.widget.TextView;
 public class ViewHolder extends RecyclerView.ViewHolder
 {
     protected RelativeLayout mLayout;
-    protected TextView mSnipHeadline;
+    protected SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
     //protected TextView mSnipSource;
-    protected TextView mSnipAuthor;
-    protected TextView mSnipPublisher;
+    protected SnipTextView mSnipAuthor;
+    protected SnipTextView mSnipPublisher;
 
     private DisplayMetrics getScreenDimensions(Context context)
     {
@@ -37,9 +37,9 @@ public class ViewHolder extends RecyclerView.ViewHolder
     {
         super(view);
         this.mLayout = (RelativeLayout)view.findViewById(R.id.recLayout);
-        this.mSnipHeadline = (TextView)view.findViewById(R.id.headline);
-        this.mSnipAuthor = (TextView)view.findViewById(R.id.author);
-        this.mSnipPublisher = (TextView)view.findViewById(R.id.publisher);
+        this.mSnipHeadline = (SnipTextView)view.findViewById(R.id.headline);
+        this.mSnipAuthor = (SnipTextView)view.findViewById(R.id.author);
+        this.mSnipPublisher = (SnipTextView)view.findViewById(R.id.publisher);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
 
         view.setClickable(true);
