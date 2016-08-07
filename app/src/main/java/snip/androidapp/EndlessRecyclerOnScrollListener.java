@@ -36,8 +36,8 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
             if (!SnipCollectionInformation.getInstance().getLastSnipQuery().equals("null"))
             {
-                AsyncInternetAccessor accessor = new AsyncInternetAccessor();
-                accessor.execute();
+                //AsyncInternetAccessor accessor = new AsyncInternetAccessor();
+                //accessor.execute();
             }
         }
     }

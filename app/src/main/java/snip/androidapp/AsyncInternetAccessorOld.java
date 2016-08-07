@@ -6,7 +6,7 @@ import android.util.Log;
 /**
  * Created by ranreichman on 7/31/16.
  */
-public class AsyncInternetAccessor extends AsyncTask<Void,Void,Void>
+public class AsyncInternetAccessorOld extends AsyncTask<Void,Void,Void>
 {
     protected Void doInBackground(Void... params)
     {
@@ -16,11 +16,11 @@ public class AsyncInternetAccessor extends AsyncTask<Void,Void,Void>
         {
             SnipCollectionInformation.getInstance().mLock.lock();
 
-            SnipCollectionInformation.getInstance().setCollectedSnips(
+            /*SnipCollectionInformation.getInstance().setCollectedSnips(
                     CollectDataFromInternet.collectSnipsFromBackend(
                             SnipCollectionInformation.getInstance().getAmountOfSnipsPerLoad()));
             Log.d("Accessed snips, size: ",
-                    Integer.toString(SnipCollectionInformation.getInstance().getAmountOfCollectedSnips()));
+                    Integer.toString(SnipCollectionInformation.getInstance().getAmountOfCollectedSnips()));*/
 
             Log.d("Unlocking", "");
             SnipCollectionInformation.getInstance().mLock.unlock();

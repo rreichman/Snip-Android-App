@@ -16,13 +16,23 @@ import android.os.Bundle;
 import android.content.res.Configuration;
 import android.view.View;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -229,14 +239,13 @@ public class MyActivity extends AppCompatActivity
         }
     }
 
-    private void collectDataAndPopulateActivity()
+    private void actualCollectDataAndPopulateActivity()
     {
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
         if (null == mCollectedSnips)
         {
-//            CollectDataFromInternet snipCollector = new CollectDataFromInternet(baseAccessURL, getSnipsBaseURL, "");
-//            mCollectedSnips = snipCollector.retrieveSnipsFromInternet(this);
-            mCollectedSnips = CollectDataFromInternet.retrieveSnipsFromInternet();
+            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(baseAccessURL, getSnipsBaseURL, "");
+            mCollectedSnips = snipCollector.retrieveSnipsFromInternet(this);
         }
         else
         {
@@ -251,6 +260,61 @@ public class MyActivity extends AppCompatActivity
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
+    }
+
+    public void responseFunctionImplementation(JSONObject response, JSONObject params)
+    {
+        Log.d("response", "function");
+    }
+
+    public void errorFunctionImplementation(VolleyError error, JSONObject params)
+    {
+        Log.d("error", "function");
+    }
+
+    private void collectDataAndPopulateActivity()
+    {
+        //actualCollectDataAndPopulateActivity();
+        String url = "https://test.snip.today/api/snip";
+        //String url = "https://test.snip.today/api/rest-auth/login/";
+
+        JSONObject loginJsonParams = new JSONObject();
+        /*try
+        {
+            loginJsonParams.put("email", "ran.reichman@gmail.com");
+            loginJsonParams.put("password", "Qwerty123");
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }*/
+
+        //int requestMethod = Request.Method.POST;
+        int requestMethod = Request.Method.GET;
+
+        HashMap<String,String> headers = new HashMap<String, String>();
+        headers.put("Authorization", "Token ce53a666b61b6ea2a1950ead117bba3fa27b0f62");
+
+        VolleyInternetOperator.responseFunctionInterface responseFunction =
+                new VolleyInternetOperator.responseFunctionInterface() {
+            @Override
+            public void apply(JSONObject response, JSONObject params)
+            {
+                responseFunctionImplementation(response, params);
+            }
+        };
+        VolleyInternetOperator.errorFunctionInterface errorFunction =
+                new VolleyInternetOperator.errorFunctionInterface() {
+            @Override
+            public void apply(VolleyError error, JSONObject params)
+            {
+                errorFunctionImplementation(error, params);
+            }
+        };
+
+        VolleyInternetOperator.accessWebsiteWithVolley(
+                getApplicationContext(), url, requestMethod, loginJsonParams, headers,
+                responseFunction, errorFunction);
     }
 
     public void startActivityOperation()
