@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="0dp"
-    android:id="@+id/recLayout">
-
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <RelativeLayout
         android:id="@+id/clipSwipeBackgroundLeft"
         android:layout_width="0dp"
@@ -48,88 +41,94 @@
             android:src="@drawable/sniplogo"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/card_view"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        card_view:cardElevation="0dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="13dp"
-        card_view:cardCornerRadius="0dp">
-        <LinearLayout
+        android:orientation="horizontal"
+        android:padding="0dp"
+        android:id="@+id/recLayout">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/snipCardBackground"
-            >
-            <snip.androidapp.SquareImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:contentDescription="@string/thumbnailImageDescription"
-                android:scaleType="centerCrop"
-                android:src="@drawable/sniplogo"
-                android:layout_gravity="left"
-                android:layout_weight="0.3"
-                />
-
-            <RelativeLayout
-                android:layout_width="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            card_view:cardElevation="0dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="13dp"
+            card_view:cardCornerRadius="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:layout_toRightOf="@+id/thumbnail"
-                android:paddingRight="12dp"
-                android:paddingLeft="12dp"
+                android:orientation="horizontal"
+                android:background="@color/snipCardBackground"
                 >
-
-                <snip.androidapp.SnipTextView
-                    android:id="@+id/headline"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    android:text="Hello World Hello World Hello World Hello World Hello World"
-                    android:textSize="16dp"
-                    android:textColor="@color/snipCardText"
-                    android:gravity="right"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginBottom="3dp"
-
-                    />
-                <snip.androidapp.SnipTextView
-                    android:id="@+id/publisher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="Snip"
-                    android:textSize="14dp"
-                    android:textColor="@color/snipCardTextSecondary"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/headline"
+                <snip.androidapp.SquareImageView
+                    android:id="@+id/thumbnail"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:contentDescription="@string/thumbnailImageDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/sniplogo"
+                    android:layout_gravity="left"
+                    android:layout_weight="0.3"
                     />
 
-                <snip.androidapp.SnipTextView
-                    android:id="@+id/author"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="Ran Reicman"
-                    android:textSize="14dp"
-                    android:textColor="@color/snipCardTextSecondary"
-                    android:layout_toLeftOf="@id/publisher"
-                    android:layout_marginRight="5dp"
-                    android:layout_below="@id/headline"
+                    android:layout_weight="0.7"
+                    android:layout_toRightOf="@+id/thumbnail"
+                    android:paddingRight="12dp"
+                    android:paddingLeft="12dp"
+                    >
 
-                    />
+                    <snip.androidapp.SnipTextView
+                        android:id="@+id/headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="3"
+                        android:text="Hello World Hello World Hello World Hello World Hello World"
+                        android:textSize="16dp"
+                        android:textColor="@color/snipCardText"
+                        android:gravity="right"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="3dp"
 
-            </RelativeLayout>
+                        />
+                    <snip.androidapp.SnipTextView
+                        android:id="@+id/publisher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="Snip"
+                        android:textSize="14dp"
+                        android:textColor="@color/snipCardTextSecondary"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/headline"
+                        />
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-    </LinearLayout>
+                    <snip.androidapp.SnipTextView
+                        android:id="@+id/author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="Ran Reicman"
+                        android:textSize="14dp"
+                        android:textColor="@color/snipCardTextSecondary"
+                        android:layout_toLeftOf="@id/publisher"
+                        android:layout_marginRight="5dp"
+                        android:layout_below="@id/headline"
 
-</RelativeLayout>
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
+</LinearLayout>

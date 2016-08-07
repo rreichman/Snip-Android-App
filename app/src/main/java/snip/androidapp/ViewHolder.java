@@ -36,7 +36,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     public ViewHolder(View view)
     {
         super(view);
-        this.mForeground = (RelativeLayout)view.findViewById(R.id.clipForeground);
+        this.mForeground = (RelativeLayout)view.findViewById(R.id.recLayout);
         this.mSwipeBackgroundLeft = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundLeft);
         this.mSwipeBackgroundRight = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundRight);
         this.mSnipHeadline = (SnipTextView) view.findViewById(R.id.headline);

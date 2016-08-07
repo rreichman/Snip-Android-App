@@ -89,8 +89,8 @@ public class MyActivity extends AppCompatActivity
         initalizeImportantStuff();
 
 //        DataCacheManagement.retrieveObjectFromFile(this, )
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, LoginActivity.class);
+//        startActivity(intent);
 
         try
         {
