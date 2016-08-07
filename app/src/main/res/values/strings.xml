@@ -5,5 +5,15 @@
     <string name="thumbnailImageDescription">Placeholder Image</string>
     <string name="imageOfExpandedSnip">Image of expanded snip</string>
     <string name="basicFont">Heebo-Regular.ttf</string>
+    <string name="writtenBy">נכתב ע"י </string>
+    <string name="baseAccessURL">https://test.snip.today/api/</string>
+    <string name="signInURL">rest-auth/login/</string>
+    <string name="getSnipsBaseURL">snip/</string>
+    <string name="userTokenFile">userTokenFile</string>
+    <string name="emailField">email</string>
+    <string name="passField">password</string>
+    <string name="tokenField">ley</string>
+    <string name="requestContentType">application/json; charset=utf-8</string>
 
+    <!--http://192.168.1.215:8000/api-->
 </resources>

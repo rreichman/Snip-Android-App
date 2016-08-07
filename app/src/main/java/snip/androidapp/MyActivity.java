@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
@@ -18,6 +19,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.LinkedList;
 
+import butterknife.BindString;
+import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 
@@ -37,6 +40,11 @@ public class MyActivity extends AppCompatActivity
     // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
     // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
     private LinkedList<SnipData> mCollectedSnips;
+
+    @BindString(R.string.baseAccessURL) String baseAccessURL;
+    @BindString(R.string.tokenField) String tokenField;
+    @BindString(R.string.getSnipsBaseURL) String getSnipsBaseURL;
+
 
     @Override
     public void onStop()
@@ -72,7 +80,12 @@ public class MyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
+        ButterKnife.bind(this);
         initalizeImportantStuff();
+
+//        DataCacheManagement.retrieveObjectFromFile(this, )
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
 
         try
         {
@@ -110,17 +123,6 @@ public class MyActivity extends AppCompatActivity
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -175,6 +177,8 @@ public class MyActivity extends AppCompatActivity
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
         if (null == mCollectedSnips)
         {
+//            CollectDataFromInternet snipCollector = new CollectDataFromInternet(baseAccessURL, getSnipsBaseURL, "");
+//            mCollectedSnips = snipCollector.retrieveSnipsFromInternet(this);
             mCollectedSnips = CollectDataFromInternet.retrieveSnipsFromInternet();
         }
         else

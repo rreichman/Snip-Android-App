@@ -22,7 +22,6 @@ public class ViewHolder extends RecyclerView.ViewHolder
     protected SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
     //protected TextView mSnipSource;
-    protected SnipTextView mSnipAuthor;
     protected SnipTextView mSnipPublisher;
 
     private DisplayMetrics getScreenDimensions(Context context)
@@ -38,7 +37,6 @@ public class ViewHolder extends RecyclerView.ViewHolder
         super(view);
         this.mLayout = (RelativeLayout)view.findViewById(R.id.recLayout);
         this.mSnipHeadline = (SnipTextView)view.findViewById(R.id.headline);
-        this.mSnipAuthor = (SnipTextView)view.findViewById(R.id.author);
         this.mSnipPublisher = (SnipTextView)view.findViewById(R.id.publisher);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
 

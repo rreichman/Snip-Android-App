@@ -28,6 +28,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 /**
  * Created by ranreichman on 7/19/16.
@@ -106,8 +107,12 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     {
         SnipData currentSnip = mDataset.get(position);
         holder.mSnipHeadline.setText(currentSnip.mHeadline);
-        holder.mSnipAuthor.setText(currentSnip.mAuthor);
-        holder.mSnipPublisher.setText(currentSnip.mPublisher);
+        String authorPublisher = currentSnip.mPublisher;
+        if (!currentSnip.mAuthor.isEmpty()) {
+            authorPublisher += ", " + currentSnip.mAuthor;
+        }
+        holder.mSnipPublisher.setText(authorPublisher);
+
         if (null == currentSnip.mThumbnail)
         {
             holder.mSnipThumbnail.setImageBitmap(currentSnip.mThumbnail);

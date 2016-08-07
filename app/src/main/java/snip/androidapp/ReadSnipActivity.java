@@ -15,6 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -38,6 +39,11 @@ import java.util.TimeZone;
 public class ReadSnipActivity extends AppCompatActivity
 {
     protected SnipData mSnipData;
+    protected LinearLayout mLayout;
+    protected int mDefMarginHorz;
+    protected int mDefMarginVert;
+    protected int mDefGravity;
+    protected int mDefTextStyle;
 
     private static Spanned fromHtml(String htmlString)
     {
@@ -88,17 +94,16 @@ public class ReadSnipActivity extends AppCompatActivity
     }
 
 
-    private void addTextDynamicallyToLayout(LinearLayout layout, String text, boolean isLink, int styleId)
+    private void addTextDynamicallyToLayout(String text, boolean isLink, int styleId,
+                                            int margin_horz, int margin_vert, int align, int textStyle)
     {
 
         SnipTextView textView = new SnipTextView(new ContextThemeWrapper(this, styleId), styleId);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        textView.setGravity(Gravity.RIGHT);
-
-        int margin_horz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
-        int margin_vert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
+        textView.setGravity(align);
+        textView.setTypeface(textView.getTypeface(), textStyle);
         params.setMargins(margin_horz, margin_vert, margin_horz, margin_vert);
 
         Spanned spanned = fromHtml(text);
@@ -111,29 +116,33 @@ public class ReadSnipActivity extends AppCompatActivity
             textView.setText(spanned.toString().trim());
         }
         textView.setLayoutParams(params);
-        layout.addView(textView, params);
+        mLayout.addView(textView, params);
     }
 
-    private void addPictureDynamicallyToLayout(LinearLayout layout, String url, int styleId)
-    {
-        ImageView imageView = new ImageView(this, null, styleId);
-        Bitmap cur_image = SnipData.getBitmapFromUrl(url);
-        imageView.setImageBitmap(cur_image);
-
-        int screen_height = getResources().getDisplayMetrics().heightPixels;
-        int image_height = cur_image.getHeight();
+    private void fitImageHeightToScreen(ImageView curImage) {
+                int screen_height = getResources().getDisplayMetrics().heightPixels;
+        int image_height = curImage.getHeight();
         double SCREEN_IMAGE_RATIO = 0.75;
         if (image_height > (screen_height * SCREEN_IMAGE_RATIO )) {
             image_height = (int) (screen_height * SCREEN_IMAGE_RATIO );
         }
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        imageView.setAdjustViewBounds(true);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        layout.addView(imageView, params);
     }
 
-    private void parseSnipBodyAndCreateView(LinearLayout layout) {
+    private void addPictureDynamicallyToLayout(String url, int styleId, int margin_horz, int margin_top, int margin_bottom)
+    {
+        ImageView imageView = new ImageView(this, null, styleId);
+        Bitmap curImage = SnipData.getBitmapFromUrl(url);
+        imageView.setImageBitmap(curImage);
+//        fitImageHeightToScreen(ImageView curImage);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(margin_horz, margin_top, margin_horz, margin_bottom);
+        imageView.setAdjustViewBounds(true);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        mLayout.addView(imageView, params);
+    }
+
+    private void parseSnipBodyAndCreateView() {
         try {
             JSONArray bodyElements = new JSONArray(mSnipData.mBody);
             for (int i = 0; i < bodyElements.length(); ++i) {
@@ -143,12 +152,14 @@ public class ReadSnipActivity extends AppCompatActivity
                     case "image":
                         String imageURL = bodyElem.getString("url");
                         String imageTitle = bodyElem.getString("title");
-                        addPictureDynamicallyToLayout(layout, imageURL, R.style.SingleSnip_Image);
-                        addTextDynamicallyToLayout(layout, imageTitle, false, R.style.SingleSnip_Text_ImageDesc);
+                        addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image,0 ,mDefMarginVert, 0);
+                        addTextDynamicallyToLayout(imageTitle, false, R.style.SingleSnip_Text_ImageDesc,
+                                mDefMarginHorz, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
                         break;
                     case "paragraph":
                         String cur_value = bodyElem.getString("value");
-                        addTextDynamicallyToLayout(layout, cur_value, false, R.style.SingleSnip_Text);
+                        addTextDynamicallyToLayout(cur_value, false, R.style.SingleSnip_Text,
+                                mDefMarginHorz, mDefMarginVert, mDefGravity, mDefTextStyle);
                         break;
                 }
             }
@@ -158,28 +169,57 @@ public class ReadSnipActivity extends AppCompatActivity
 
     }
 
-    private void createLinkView(LinearLayout layout, ExternalLinkData link) {
-        String htmlLinkString = "<a href=\"" + link.mLink + "\">" + link.mTitle + " (" + link.mAuthor + ")" + "</a>";
-        addTextDynamicallyToLayout(layout, htmlLinkString, true, R.style.SingleSnip_Text);
+    private void createLinkView(ExternalLinkData link) {
+        String author = "";
+        if ("" != link.mAuthor) {
+            author = " (" + link.mAuthor + ")";
+        }
+        String htmlLinkString = "<a href=\"" + link.mLink + "\">" + link.mTitle + author + "</a>";
+        addTextDynamicallyToLayout(htmlLinkString, true, R.style.SingleSnip_Text,
+                mDefMarginHorz, mDefMarginVert, mDefGravity, mDefTextStyle);
+
     }
 
-    private void addReactionBarToLayout(LinearLayout layout) {
+    private void addReactionBarToLayout() {
         Button button = new Button(this);
         button.setText("LIKE");
-        layout.addView(button);
+        mLayout.addView(button);
     }
 
-    private void buildSnipView(LinearLayout layout) {
-        addTextDynamicallyToLayout(layout, mSnipData.mHeadline, false, R.style.SingleSnip_Text_Headline);
-        addTextDynamicallyToLayout(layout, mSnipData.mAuthor, false, R.style.SingleSnip_Text_Author);
-        addTextDynamicallyToLayout(layout, mSnipData.mPublisher, false, R.style.SingleSnip_Text_Author);
-        addTextDynamicallyToLayout(layout, getDateDiff(mSnipData.mDate, new Date()), false, R.style.SingleSnip_Text_Author);
-        parseSnipBodyAndCreateView(layout);
+    private void addSnipMetaDataToLayout() {
+        String text = getResources().getString(R.string.writtenBy);
+        if ((!mSnipData.mPublisher.isEmpty()) && (!mSnipData.mAuthor.isEmpty())) {
+            text += mSnipData.mPublisher + ", " + mSnipData.mAuthor;
+        }
+        else if (!mSnipData.mAuthor.isEmpty()) {
+            text += mSnipData.mAuthor;
+        }
+        else if (!mSnipData.mPublisher.isEmpty()) {
+            text += mSnipData.mPublisher;
+        }
+        else {
+            text = "";
+        }
+        if (!text.isEmpty()) {
+            addTextDynamicallyToLayout(text, false, R.style.SingleSnip_Text_Author,
+                    mDefMarginHorz, 0, mDefGravity, mDefTextStyle);
+        }
+
+        addTextDynamicallyToLayout(getDateDiff(mSnipData.mDate, new Date()), false,
+                R.style.SingleSnip_Text_Author, mDefMarginHorz, 0, mDefGravity, mDefTextStyle);
+    }
+
+    private void buildSnipView() {
+        addTextDynamicallyToLayout(mSnipData.mHeadline, false, R.style.SingleSnip_Text_Headline,
+                mDefMarginHorz, mDefMarginVert, mDefGravity, Typeface.BOLD);
+        addSnipMetaDataToLayout();
+
+        parseSnipBodyAndCreateView();
         for (int i = 0; i < mSnipData.mExternalLinks.mExternalLinks.size(); ++i) {
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
-            createLinkView(layout, cur_link);
+            createLinkView(cur_link);
         }
-        addReactionBarToLayout(layout);
+        addReactionBarToLayout();
     }
 
     @Override
@@ -193,9 +233,12 @@ public class ReadSnipActivity extends AppCompatActivity
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
 
-        LinearLayout layout = (LinearLayout)findViewById(R.id.clean_layout);
-        buildSnipView(layout);
-
+        mLayout = (LinearLayout)findViewById(R.id.clean_layout);
+        mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
+        mDefMarginVert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
+        mDefGravity = Gravity.RIGHT;
+        mDefTextStyle = Typeface.NORMAL;
+        buildSnipView();
     }
 
 

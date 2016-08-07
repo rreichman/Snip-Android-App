@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary"
     app:contentInsetLeft="0dp"
-    app:contentInsetStart="0dp"
+    app:contentInsetStart="@dimen/basic_margin_horz"
     android:elevation="4dp"
     app:titleTextAppearance="@style/Toolbar.TitleText"
     android:theme="@style/ToolbarTheme">

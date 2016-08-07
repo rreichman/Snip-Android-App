@@ -5,7 +5,10 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 import java.util.concurrent.locks.ReentrantLock;
+
+import butterknife.BindInt;
 
 /**
  * Created by ranreichman on 7/31/16.
@@ -17,6 +20,7 @@ public class SnipCollectionInformation
     private String mLastSnipQuery;
     public LinkedList<SnipData> mSnipsCollectedByNonUIThread;
     public ReentrantLock mLock;
+    private String mTokenKey;
 
     protected SnipCollectionInformation() {
         mLastSnipQuery = "";
@@ -24,8 +28,9 @@ public class SnipCollectionInformation
         mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
     }
 
+
     public int getAmountOfSnipsPerLoad() {
-        return 11;
+        return 10;
     }
 
     public String getLastSnipQuery() {
@@ -44,6 +49,14 @@ public class SnipCollectionInformation
         {
             mLastSnipQuery = "";
         }
+    }
+
+    public void setTokenKey(String token){
+        mTokenKey = token;
+    }
+
+    public String getTokenKey() {
+        return mTokenKey;
     }
 
     public LinkedList<SnipData> getCollectedSnipsAndCleanList()
