@@ -89,7 +89,6 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     {
         SnipData currentSnip = mDataset.get(position);
         holder.mSnipHeadline.setText(currentSnip.mHeadline);
-        holder.mSnipAuthor.setText(currentSnip.mAuthor);
         holder.mSnipPublisher.setText(currentSnip.mPublisher);
         if (null == currentSnip.mThumbnail)
         {

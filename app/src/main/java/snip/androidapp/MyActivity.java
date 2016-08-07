@@ -89,6 +89,7 @@ public class MyActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+    // TODO decide if need to change the images size on rotation
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

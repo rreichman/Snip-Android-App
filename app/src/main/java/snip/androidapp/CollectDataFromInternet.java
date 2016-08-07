@@ -34,11 +34,21 @@ public class CollectDataFromInternet
     {
         final String baseAccessURL = "https://test.snip.today/api";
         final String getTokenURL = "/rest-auth/login";
-        final String getDataURL = "/snip" + SnipCollectionInformation.getInstance().getLastSnipQuery();
-
+        final String getDataURL = "/snip";
+        final String baseQuery = "/?im_width=600&im_height=600";
         final String userEmail = "ran.reichman@gmail.com";
         final String userPassword = "Qwerty123";
         final String emailPasswordString = "email=" + userEmail + "&password=" + userPassword;
+
+        String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
+        String fullRequestURL = baseAccessURL + getDataURL;
+        if (lastRequestURL != "") {
+            fullRequestURL += lastRequestURL;
+        }
+        else {
+            fullRequestURL += baseQuery;
+        }
+
 
         //String unparsedAuthenticationToken = getDataFromWebsite(
         //        baseAccessURL + getTokenURL, "POST", true, "Authorization", "Basic + " + emailPasswordString);
@@ -47,7 +57,7 @@ public class CollectDataFromInternet
         //final String authorizationToken = unparsedAuthenticationToken;
         final String authorizationToken = "";
         return getDataFromWebsite(
-                baseAccessURL + getDataURL, "GET", true, "Authorization: Token", authorizationToken);
+                fullRequestURL, "GET", true, "Authorization: Token", authorizationToken);
     }
 
     public static String getDataFromWebsite(

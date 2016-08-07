@@ -21,10 +21,17 @@ public class ViewHolder extends RecyclerView.ViewHolder
     public RelativeLayout mForeground;
     public RelativeLayout mSwipeBackgroundRight;
     public RelativeLayout mSwipeBackgroundLeft;
-    public TextView mSnipHeadline;
+    public SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
-    public TextView mSnipAuthor;
-    public TextView mSnipPublisher;
+    public SnipTextView mSnipPublisher;
+
+    private DisplayMetrics getScreenDimensions(Context context)
+    {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dimension = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(dimension);
+        return dimension;
+    }
 
     public ViewHolder(View view)
     {
@@ -32,9 +39,8 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.mForeground = (RelativeLayout)view.findViewById(R.id.clipForeground);
         this.mSwipeBackgroundLeft = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundLeft);
         this.mSwipeBackgroundRight = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundRight);
-        this.mSnipHeadline = (TextView)view.findViewById(R.id.headline);
-        this.mSnipAuthor = (TextView)view.findViewById(R.id.author);
-        this.mSnipPublisher = (TextView)view.findViewById(R.id.publisher);
+        this.mSnipHeadline = (SnipTextView) view.findViewById(R.id.headline);
+        this.mSnipPublisher = (SnipTextView) view.findViewById(R.id.publisher);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
 
         view.setClickable(true);

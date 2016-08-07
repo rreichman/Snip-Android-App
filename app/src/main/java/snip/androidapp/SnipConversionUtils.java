@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 /**
  * Created by ranreichman on 8/3/16.
@@ -29,12 +30,14 @@ public class SnipConversionUtils
 
     private static Date convertStringToDate(String dateString, String dateFormatString)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatString);
         Date date = new Date();
 
         try
         {
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             date = dateFormat.parse(dateString);
+
         }
         catch (ParseException e)
         {
@@ -59,7 +62,7 @@ public class SnipConversionUtils
                 long id = jsonObject.getLong("id");
 
                 String dateAsString = jsonObject.getString("date");
-                Date date = convertStringToDate(dateAsString, "MM/dd/yyyy hh:mm:ss aa");
+                Date date = convertStringToDate(dateAsString, "yyyy-MM-dd hh:mm:ss");
 
                 JSONObject thumbnailJsonObject = jsonObject.getJSONObject("thumbnail");
                 String thumbnailWebUrl = thumbnailJsonObject.getString("url");
