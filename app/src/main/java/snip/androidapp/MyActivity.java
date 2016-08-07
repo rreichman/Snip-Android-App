@@ -187,20 +187,30 @@ public class MyActivity extends AppCompatActivity
                     Point screenSize = new Point();
                     display.getSize(screenSize);
 
+                    final View backgroundViewRight = ((ViewHolder) viewHolder).mSwipeBackgroundRight;
+                    final View backgroundViewLeft = ((ViewHolder) viewHolder).mSwipeBackgroundLeft;
+
                     // Swiping Right
                     if (dX > 0)
                     {
-                        final View backgroundView = ((ViewHolder) viewHolder).mSwipeBackgroundRight;
-                        backgroundView.setRight((int) Math.max(dX, 0));
-                        backgroundView.setLeft(0);
+                        Log.d("right is", Integer.toString((int)Math.max(dX, 0)));
+                        backgroundViewRight.setRight((int) Math.max(dX, 0));
+                        backgroundViewRight.setLeft(0);
+
+                        backgroundViewLeft.setRight(0);
+                        backgroundViewLeft.setLeft(0);
                     }
                     // Swiping Left
                     else
                     {
                         final View backgroundView = ((ViewHolder) viewHolder).mSwipeBackgroundLeft;
                         // screenSize.x is the width of the screen
+                        Log.d("left is", Integer.toString((int)(screenSize.x + dX)));
                         backgroundView.setRight(screenSize.x);
                         backgroundView.setLeft((int)(screenSize.x + dX));
+
+                        backgroundViewRight.setRight(0);
+                        backgroundViewRight.setLeft(0);
                     }
                 }
             }
