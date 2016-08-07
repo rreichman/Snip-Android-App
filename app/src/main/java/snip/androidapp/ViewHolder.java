@@ -18,25 +18,20 @@ import android.widget.TextView;
 // you provide access to all the views for a data item in a view holder
 public class ViewHolder extends RecyclerView.ViewHolder
 {
-    protected RelativeLayout mLayout;
-    protected TextView mSnipHeadline;
+    public RelativeLayout mForeground;
+    public RelativeLayout mSwipeBackgroundRight;
+    public RelativeLayout mSwipeBackgroundLeft;
+    public TextView mSnipHeadline;
     public ImageView mSnipThumbnail;
-    //protected TextView mSnipSource;
-    protected TextView mSnipAuthor;
-    protected TextView mSnipPublisher;
-
-    private DisplayMetrics getScreenDimensions(Context context)
-    {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dimension = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(dimension);
-        return dimension;
-    }
+    public TextView mSnipAuthor;
+    public TextView mSnipPublisher;
 
     public ViewHolder(View view)
     {
         super(view);
-        this.mLayout = (RelativeLayout)view.findViewById(R.id.recLayout);
+        this.mForeground = (RelativeLayout)view.findViewById(R.id.clipForeground);
+        this.mSwipeBackgroundLeft = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundLeft);
+        this.mSwipeBackgroundRight = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundRight);
         this.mSnipHeadline = (TextView)view.findViewById(R.id.headline);
         this.mSnipAuthor = (TextView)view.findViewById(R.id.author);
         this.mSnipPublisher = (TextView)view.findViewById(R.id.publisher);

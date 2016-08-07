@@ -5,6 +5,11 @@ package snip.androidapp;
  */
 public class ReactionManager
 {
+    private static void postReactionToServer(String reaction)
+    {
+        // TODO:: implement
+    }
+
     public static void userLikedSnip(long snipID)
     {
         // TODO:: implement

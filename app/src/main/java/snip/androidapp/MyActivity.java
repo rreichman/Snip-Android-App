@@ -1,14 +1,19 @@
 package snip.androidapp;
 
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.os.Bundle;
 import android.content.res.Configuration;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -153,6 +158,48 @@ public class MyActivity extends AppCompatActivity
                     RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
             {
                 return false;
+            }
+
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
+            {
+                getDefaultUIUtil().clearView(((ViewHolder) viewHolder).mForeground);
+            }
+
+            @Override
+            public void onChildDraw(
+                    Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                    float dX, float dY, int actionState, boolean isCurrentlyActive)
+            {
+                final View foregroundView = ((ViewHolder)viewHolder).mForeground;
+                drawBackground(viewHolder, dX, actionState);
+                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+            }
+
+            private void drawBackground(RecyclerView.ViewHolder viewHolder, float dX, int actionState)
+            {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
+                {
+                    Display display = getWindowManager().getDefaultDisplay();
+                    Point screenSize = new Point();
+                    display.getSize(screenSize);
+
+                    // Swiping Right
+                    if (dX > 0)
+                    {
+                        final View backgroundView = ((ViewHolder) viewHolder).mSwipeBackgroundRight;
+                        backgroundView.setRight((int) Math.max(dX, 0));
+                        backgroundView.setLeft(0);
+                    }
+                    // Swiping Left
+                    else
+                    {
+                        final View backgroundView = ((ViewHolder) viewHolder).mSwipeBackgroundLeft;
+                        // screenSize.x is the width of the screen
+                        backgroundView.setRight(screenSize.x);
+                        backgroundView.setLeft((int)(screenSize.x + dX));
+                    }
+                }
             }
         };
     }
