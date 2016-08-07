@@ -2,14 +2,6 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,13 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -65,9 +51,6 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e)
             {
-                CardView cardView = (CardView)view.findViewById(R.id.card_view);
-                String headline = ((TextView)cardView.findViewById(R.id.headline)).getText().toString();
-
                 final int currentPositionInDataset = viewHolder.getAdapterPosition();
                 SnipData snipData = mDataset.get(currentPositionInDataset);
 
@@ -121,9 +104,6 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
         {
             holder.mSnipThumbnail.setImageBitmap(SnipData.getBitmapFromUrl(currentSnip.mThumbnailUrl));
         }
-//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.mLayout.getLayoutParams();
-
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -131,11 +111,6 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     public int getItemCount()
     {
         return mDataset.size();
-    }
-
-    public void add(SnipData SnipData)
-    {
-        mDataset.addLast(SnipData);
     }
 
     public void add(LinkedList<SnipData> SnipDataList)
