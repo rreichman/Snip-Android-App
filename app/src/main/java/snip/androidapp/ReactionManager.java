@@ -44,17 +44,17 @@ public class ReactionManager
 //        ImageView myImageView =(ImageView)((Activity)context).findViewById(R.id.heart);
 //        Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
 //        myImageView.startAnimation(myFadeInAnimation);
-        postReactionToServer(context, snipID, "like");
+        postReactionToServer(snipID, "like");
     }
 
-    public static void userDislikedSnip(Context context, long snipID)
+    public static void userDislikedSnip(long snipID)
     {
-        postReactionToServer(context, snipID, "dislike");
+        postReactionToServer(snipID, "dislike");
     }
 
-    public static void userSnoozedSnip(Context context, long snipID)
+    public static void userSnoozedSnip(long snipID)
     {
-        postReactionToServer(context, snipID, "snooze");
+        postReactionToServer(snipID, "snooze");
     }
 
     public static void reactionSuccess() {
@@ -66,7 +66,7 @@ public class ReactionManager
         Log.d("reaction", "failed");
     }
 
-    public static void postReactionToServer(Context context, long snipID, String reaction) {
+    public static void postReactionToServer(long snipID, String reaction) {
 
         HashMap<String,String> headers =
                 SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
@@ -88,7 +88,7 @@ public class ReactionManager
                     }
                 };
 
-        //Context context = CustomVolleyRequestQueue.getInstance().getContext();
+        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
         String reactionBaseUrl = context.getResources().getString(R.string.reactionBaseURL);
         String url = baseAccessURL + reactionBaseUrl;

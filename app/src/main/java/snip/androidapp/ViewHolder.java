@@ -24,7 +24,6 @@ public class ViewHolder extends RecyclerView.ViewHolder
     public SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
     public SnipTextView mSnipPublisher;
-    public Context mContext;
 
     private DisplayMetrics getScreenDimensions(Context context)
     {
@@ -34,7 +33,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         return dimension;
     }
 
-    public ViewHolder(View view, Context context)
+    public ViewHolder(View view)
     {
         super(view);
         this.mForeground = (RelativeLayout)view.findViewById(R.id.recLayout);
@@ -43,7 +42,6 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.mSnipHeadline = (SnipTextView) view.findViewById(R.id.headline);
         this.mSnipPublisher = (SnipTextView) view.findViewById(R.id.publisher);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
-        this.mContext = context;
 
         view.setClickable(true);
     }

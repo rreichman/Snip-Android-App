@@ -151,7 +151,7 @@ public class MyActivity extends AppCompatActivity
                 int currentPositionInDataset = viewHolder.getAdapterPosition();
                 if (ItemTouchHelper.LEFT == swipeDirection)
                 {
-                    ReactionManager.userDislikedSnip(((ViewHolder)viewHolder).mContext, mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
@@ -159,7 +159,7 @@ public class MyActivity extends AppCompatActivity
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
-                    ReactionManager.userSnoozedSnip(((ViewHolder)viewHolder).mContext, mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userSnoozedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
