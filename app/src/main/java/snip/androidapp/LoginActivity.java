@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity
             mProgressDialog.hide();
 
             SnipCollectionInformation.getInstance().setTokenForWebsiteAccess(response.getString(tokenField));
-            DataCacheManagement.saveObjectToFile(getBaseContext(), tokenJson, userTokenFile);
+            DataCacheManagement.saveObjectToFile(context, tokenJson.toString(), userTokenFile);
         }
         catch (JSONException e)
         {

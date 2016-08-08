@@ -103,7 +103,8 @@ public class MyActivity extends AppCompatActivity
         }
         else
         {
-            try {
+            try
+            {
                 mCollectedSnips = DataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
                 startActivityOperation();
             } catch (Exception e) {
@@ -240,17 +241,28 @@ public class MyActivity extends AppCompatActivity
 
     public void populateActivity()
     {
-        mCollectedSnips = SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
+        if (null == mCollectedSnips)
+        {
+            mCollectedSnips = SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
+        }
 
-        // specify an adapter
-        mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips);
-        mRecyclerView.setAdapter(mAdapter);
+        if ((null == mAdapter) || SnipCollectionInformation.getInstance().getShouldRestartViewAfterCollectionAndReset())
+        {
+            // specify an adapter
+            mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips);
+            mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback swipeTouchHelperCallback = getSwipeTouchHelperCallback();
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeTouchHelperCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+            ItemTouchHelper.SimpleCallback swipeTouchHelperCallback = getSwipeTouchHelperCallback();
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeTouchHelperCallback);
+            itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
+            mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {
+            });
+        }
+        else
+        {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void collectData()
@@ -265,6 +277,7 @@ public class MyActivity extends AppCompatActivity
         else
         {
             addPicturesToSnips();
+            populateActivity();
         }
     }
 
@@ -281,6 +294,7 @@ public class MyActivity extends AppCompatActivity
             @Override
             public void onRefresh()
             {
+                SnipCollectionInformation.getInstance().setShouldRestartViewAfterCollection(true);
                 deleteAppCacheAndStartOver();
                 Log.d("Refreshed!", "So refreshing!");
             }

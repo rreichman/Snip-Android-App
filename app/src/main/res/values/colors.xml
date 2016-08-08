@@ -14,7 +14,8 @@
     <color name="toolbarBack">#fcb954</color>
     <color name="divider">#ffc95f</color>
 
-
+    <color name="snoozeBackground">#6291ff</color>
+    <color name="dislikeBackground">#ff7171</color>
     <color name="primary_dark">#e4951f</color>
     <color name="primary_darker">#ff760d</color>
     <color name="accent">#FFFFFF</color>

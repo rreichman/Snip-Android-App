@@ -49,8 +49,15 @@ public class VolleyInternetOperator
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.d("error", error.getMessage());
-                                errorFunction.apply(error, params);
+                                try
+                                {
+                                    Log.d("error", error.getMessage());
+                                    errorFunction.apply(error, params);
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
                         })
                 {

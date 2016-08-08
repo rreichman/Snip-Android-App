@@ -26,6 +26,7 @@ public class SnipCollectionInformation
     public LinkedList<SnipData> mSnipsCollectedByNonUIThread;
     public ReentrantLock mLock;
     private String mTokenForWebsiteAccess;
+    private boolean mShouldRestartViewAfterCollection;
 
     protected SnipCollectionInformation()
     {
@@ -33,24 +34,37 @@ public class SnipCollectionInformation
         mLock = new ReentrantLock();
         mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
         mTokenForWebsiteAccess = null;
+        mShouldRestartViewAfterCollection = false;
+    }
+
+    public boolean getShouldRestartViewAfterCollectionAndReset()
+    {
+        boolean returnValue = mShouldRestartViewAfterCollection;
+        mShouldRestartViewAfterCollection = false;
+        return returnValue;
+    }
+
+    public void setShouldRestartViewAfterCollection(boolean value)
+    {
+        mShouldRestartViewAfterCollection = value;
     }
 
     private String getWebsiteTokenFromFile(Context context)
     {
         String userTokenFile = context.getResources().getString(R.string.userTokenFile);
-        JSONObject tokenJson =
-                (JSONObject) DataCacheManagement.retrieveObjectFromFile(context, userTokenFile);
-
-        if (null != tokenJson)
+        String tokenJsonAsString =
+                (String)DataCacheManagement.retrieveObjectFromFile(context, userTokenFile);
+        try
         {
-            try
+            if (null != tokenJsonAsString)
             {
+                JSONObject tokenJson = new JSONObject(tokenJsonAsString);
                 return tokenJson.getString(context.getResources().getString(R.string.tokenField));
             }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
         }
 
         return null;

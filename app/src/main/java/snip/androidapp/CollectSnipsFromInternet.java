@@ -31,7 +31,7 @@ public class CollectSnipsFromInternet
 
     private String getSnipsQuery(Context context)
     {
-        final String baseQuery = ""; // "?im_width=600&im_height=600";
+        final String baseQuery = "/?im_width=600&im_height=600";
         String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
         String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
@@ -74,7 +74,8 @@ public class CollectSnipsFromInternet
                 responseFunction, errorFunction);
     }
 
-    public void responseFunctionImplementation(Context context, JSONObject response, JSONObject params)
+    public void responseFunctionImplementation(
+            Context context, JSONObject response, JSONObject params)
     {
         try {
             JSONArray jsonArray = response.getJSONArray("results");
@@ -82,15 +83,18 @@ public class CollectSnipsFromInternet
             int mLastSnipsCollection = jsonArray.length();
             mSnipsCollectedInCurrentSession += mLastSnipsCollection;
             String fullNextRequest = response.getString("next");
-            if (fullNextRequest.equals("null")) {
+            if (fullNextRequest.equals("null"))
+            {
                 SnipCollectionInformation.getInstance().setLastSnipQuery(fullNextRequest);
-                return;
             }
-            String[] splittedFullNextRequest = fullNextRequest.split("/");
-            String nextQueryString = "/" + splittedFullNextRequest[splittedFullNextRequest.length - 1];
-            SnipCollectionInformation.getInstance().setLastSnipQuery(nextQueryString);
+            else
+            {
+                String[] splittedFullNextRequest = fullNextRequest.split("/");
+                String nextQueryString = "/" + splittedFullNextRequest[splittedFullNextRequest.length - 1];
+                SnipCollectionInformation.getInstance().setLastSnipQuery(nextQueryString);
+            }
 
-            if ((mLastSnipsCollection != 0) && (mSnipsCollectedInCurrentSession < mSnipsToCollect))
+            if ((!fullNextRequest.equals("null")) && (mSnipsCollectedInCurrentSession < mSnipsToCollect))
             {
                 retrieveSnipsFromInternet(context);
             }
@@ -103,6 +107,11 @@ public class CollectSnipsFromInternet
         catch (JSONException e)
         {
             e.printStackTrace();
+        }
+
+        if (SnipCollectionInformation.getInstance().mLock.isLocked())
+        {
+            SnipCollectionInformation.getInstance().mLock.unlock();
         }
     }
 
