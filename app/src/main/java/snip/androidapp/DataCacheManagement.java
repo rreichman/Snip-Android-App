@@ -86,10 +86,12 @@ public class DataCacheManagement
 
     public static void saveSnipDataToBundle(Bundle outBundle, LinkedList<SnipData> collectedSnips)
     {
-        outBundle.putInt(DataCacheManagement.getSizeString(), collectedSnips.size());
-        for (int i = 0; i < collectedSnips.size(); ++i)
+        if (null != collectedSnips)
         {
-            outBundle.putParcelable(Integer.toString(i), collectedSnips.get(i));
+            outBundle.putInt(DataCacheManagement.getSizeString(), collectedSnips.size());
+            for (int i = 0; i < collectedSnips.size(); ++i) {
+                outBundle.putParcelable(Integer.toString(i), collectedSnips.get(i));
+            }
         }
     }
 

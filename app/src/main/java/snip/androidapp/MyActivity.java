@@ -56,10 +56,8 @@ public class MyActivity extends AppCompatActivity
     // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
     private LinkedList<SnipData> mCollectedSnips;
 
-    @BindString(R.string.baseAccessURL) String baseAccessURL;
-    @BindString(R.string.tokenField) String tokenField;
-    @BindString(R.string.getSnipsBaseURL) String getSnipsBaseURL;
-
+    // Arbitrarily chose 10 for no reason
+    final int LOGIN_ACTIVITY_CODE = 10;
 
     @Override
     public void onStop()
@@ -98,31 +96,32 @@ public class MyActivity extends AppCompatActivity
         ButterKnife.bind(this);
         initalizeImportantStuff();
 
-//        DataCacheManagement.retrieveObjectFromFile(this, )
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        startActivity(intent);
-
-        try
+        if (null == SnipCollectionInformation.getInstance().getTokenForWebsiteAccess(this))
         {
-            mCollectedSnips = DataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
-            startActivityOperation();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, LOGIN_ACTIVITY_CODE);
         }
-        catch (Exception e)
+        else
         {
-            e.printStackTrace();
+            try {
+                mCollectedSnips = DataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
+                startActivityOperation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-    // TODO decide if need to change the images size on rotation
+
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-//        mAdapter.resetAdapter();
-//         Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            SquareImageView imgView = (SquareImageView) findViewById(R.id.thumbnail);
-//            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) imgView.getLayoutParams();
-//            lp.weight = 0.1f;
-//        }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == LOGIN_ACTIVITY_CODE)
+        {
+            if (resultCode == MyActivity.RESULT_OK)
+            {
+                startActivityOperation();
+            }
+        }
     }
 
     @Override
@@ -239,18 +238,10 @@ public class MyActivity extends AppCompatActivity
         }
     }
 
-    private void actualCollectDataAndPopulateActivity()
+    public void populateActivity()
     {
-        // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
-        if (null == mCollectedSnips)
-        {
-            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(baseAccessURL, getSnipsBaseURL, "");
-            mCollectedSnips = snipCollector.retrieveSnipsFromInternet(this);
-        }
-        else
-        {
-            addPicturesToSnips();
-        }
+        mCollectedSnips = SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
+
         // specify an adapter
         mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips);
         mRecyclerView.setAdapter(mAdapter);
@@ -262,59 +253,19 @@ public class MyActivity extends AppCompatActivity
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
     }
 
-    public void responseFunctionImplementation(JSONObject response, JSONObject params)
+    private void collectData()
     {
-        Log.d("response", "function");
-    }
-
-    public void errorFunctionImplementation(VolleyError error, JSONObject params)
-    {
-        Log.d("error", "function");
-    }
-
-    private void collectDataAndPopulateActivity()
-    {
-        //actualCollectDataAndPopulateActivity();
-        String url = "https://test.snip.today/api/snip";
-        //String url = "https://test.snip.today/api/rest-auth/login/";
-
-        JSONObject loginJsonParams = new JSONObject();
-        /*try
+        // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
+        if (null == mCollectedSnips)
         {
-            loginJsonParams.put("email", "ran.reichman@gmail.com");
-            loginJsonParams.put("password", "Qwerty123");
+            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(getApplicationContext());
+            //mCollectedSnips = snipCollector.retrieveSnipsFromInternet(this);
+            snipCollector.retrieveSnipsFromInternet(this);
         }
-        catch (JSONException e)
+        else
         {
-            e.printStackTrace();
-        }*/
-
-        //int requestMethod = Request.Method.POST;
-        int requestMethod = Request.Method.GET;
-
-        HashMap<String,String> headers = new HashMap<String, String>();
-        headers.put("Authorization", "Token ce53a666b61b6ea2a1950ead117bba3fa27b0f62");
-
-        VolleyInternetOperator.responseFunctionInterface responseFunction =
-                new VolleyInternetOperator.responseFunctionInterface() {
-            @Override
-            public void apply(JSONObject response, JSONObject params)
-            {
-                responseFunctionImplementation(response, params);
-            }
-        };
-        VolleyInternetOperator.errorFunctionInterface errorFunction =
-                new VolleyInternetOperator.errorFunctionInterface() {
-            @Override
-            public void apply(VolleyError error, JSONObject params)
-            {
-                errorFunctionImplementation(error, params);
-            }
-        };
-
-        VolleyInternetOperator.accessWebsiteWithVolley(
-                getApplicationContext(), url, requestMethod, loginJsonParams, headers,
-                responseFunction, errorFunction);
+            addPicturesToSnips();
+        }
     }
 
     public void startActivityOperation()
@@ -335,7 +286,7 @@ public class MyActivity extends AppCompatActivity
             }
         });
 
-        collectDataAndPopulateActivity();
+        collectData();
     }
 
     public void initalizeImportantStuff()
