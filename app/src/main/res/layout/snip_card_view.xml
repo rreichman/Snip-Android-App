@@ -20,7 +20,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:focusable="false"
-            android:src="@drawable/sniplogo"
+            android:src="@drawable/ic_action_heart"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
     <RelativeLayout
@@ -38,7 +38,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:focusable="false"
-            android:src="@drawable/sniplogo"
+            android:src="@drawable/ic_snooze"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
