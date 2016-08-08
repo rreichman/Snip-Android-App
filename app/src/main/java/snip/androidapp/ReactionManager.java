@@ -62,7 +62,7 @@ public class ReactionManager
         Log.d("reaction", "success");
     }
 
-    public static void reactionFailed() {
+    public static void reactionFailed(VolleyError error) {
         Log.d("reaction", "failed");
     }
 
@@ -84,7 +84,7 @@ public class ReactionManager
                     @Override
                     public void apply(VolleyError error, JSONObject params)
                     {
-                        reactionFailed();
+                        reactionFailed(error);
                     }
                 };
 

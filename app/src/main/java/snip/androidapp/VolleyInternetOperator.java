@@ -34,6 +34,14 @@ public class VolleyInternetOperator
 
     }
 
+    public static String parseNetworkErrorResponse(VolleyError volleyError){
+        if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+            return new String(volleyError.networkResponse.data);
+        }
+        return null;
+    }
+
+
     public static void accessWebsiteWithVolley(
             final Context context, String url, int requestMethod,
             final JSONObject params, final HashMap<String, String> additionalHeaders,
@@ -57,13 +65,13 @@ public class VolleyInternetOperator
                                 {
                                     try
                                     {
-                                        Log.d("error", error.getMessage());
+                                        Log.d("error", parseNetworkErrorResponse(error));
                                     }
                                     catch (NullPointerException e)
                                     {
                                         e.printStackTrace();
-                                        errorFunction.apply(error, params);
                                     }
+                                    errorFunction.apply(error, params);
                                 }
                                 catch (Exception e)
                                 {
