@@ -3,6 +3,7 @@ package snip.androidapp;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -23,24 +24,41 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 {
     private RecyclerView mRecyclerView;
     private LinkedList<SnipData> mDataset;
+    private LinearLayoutManager mLinearLayoutManager;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(RecyclerView recyclerView, LinkedList<SnipData> myDataset)
+    public MyAdapter(RecyclerView recyclerView, LinkedList<SnipData> myDataset, LinearLayoutManager linearLayoutManager)
     {
         mRecyclerView = recyclerView;
         mDataset = myDataset;
+        mLinearLayoutManager = linearLayoutManager;
     }
 
     private GestureDetector getGestureDetector(final ViewGroup parent, final View view, final ViewHolder viewHolder)
     {
         return new GestureDetector(parent.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                ReactionManager.userLikedSnip(view.getContext(), mDataset.get(currentPositionInDataset).mID);
+            public boolean onDoubleTap(MotionEvent e)
+            {
+                try
+                {
+                    final int currentPositionInDataset = viewHolder.getAdapterPosition();
+                    ReactionManager.userLikedSnip(view.getContext(), mDataset.get(currentPositionInDataset).mID);
 
-                mDataset.remove(currentPositionInDataset);
-                mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
+                    mDataset.remove(currentPositionInDataset);
+                    mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
+                    EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLinearLayoutManager);
+
+                }
+                catch (IndexOutOfBoundsException e1)
+                {
+                    e1.printStackTrace();
+                }
+                catch (NullPointerException e2)
+                {
+                    e2.printStackTrace();
+                }
+
                 Log.d("TEST", "onDoubleTap");
                 return super.onDoubleTap(e);
             }
@@ -52,13 +70,24 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
             public boolean onSingleTapConfirmed(MotionEvent e)
             {
                 final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                SnipData snipData = mDataset.get(currentPositionInDataset);
+                try
+                {
+                    SnipData snipData = mDataset.get(currentPositionInDataset);
+                    Context context = view.getContext();
+                    Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
+                    readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
 
-                Context context = view.getContext();
-                Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
-                readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
+                    context.startActivity(readsnipScreenIntent);
+                }
+                catch (IndexOutOfBoundsException e1)
+                {
+                    e1.printStackTrace();
+                }
+                catch (NullPointerException e2)
+                {
+                    e2.printStackTrace();
+                }
 
-                context.startActivity(readsnipScreenIntent);
                 return super.onSingleTapConfirmed(e);
             }
         });
