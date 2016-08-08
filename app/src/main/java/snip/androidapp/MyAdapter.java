@@ -99,7 +99,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     {
         // create a new view
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
-        final ViewHolder viewHolder = new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view, parent.getContext());
 
         view.setOnTouchListener(new View.OnTouchListener() {
             private GestureDetector gestureDetector = getGestureDetector(parent, view, viewHolder);

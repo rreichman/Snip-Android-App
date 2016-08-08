@@ -8,9 +8,8 @@
     <string name="writtenBy">נכתב ע"י </string>
     <string name="baseAccessURL">https://test.snip.today/api/</string>
     <string name="signInURL">rest-auth/login/</string>
-    <string name="snipsBaseURL">snip</string>
-    <string name="reactionBaseURL">reaction</string>
-    <string name="snipsBaseQuery">/?im_width=600&amp;im_height=600</string>
+    <string name="reactionBaseURL">reaction/</string>
+    <string name="snipsBaseURL">snip/</string>
     <string name="userTokenFile">userTokenFile</string>
     <string name="emailField">email</string>
     <string name="passField">password</string>

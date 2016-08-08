@@ -30,12 +30,16 @@ public class VolleyInternetOperator
         void apply(VolleyError error, JSONObject params);
     }
 
+    public static void initQueue(Context context) {
+
+    }
+
     public static void accessWebsiteWithVolley(
             final Context context, String url, int requestMethod,
             final JSONObject params, final HashMap<String, String> additionalHeaders,
             final responseFunctionInterface responseFunction, final errorFunctionInterface errorFunction)
     {
-        RequestQueue queue = CustomVolleyRequestQueue.getInstance(context).getRequestQueue();
+        RequestQueue queue = CustomVolleyRequestQueue.getInstance().getRequestQueue();
 
         final CustomJSONObjectRequest jsonRequest =
                 new CustomJSONObjectRequest(requestMethod, url, params,
@@ -51,8 +55,15 @@ public class VolleyInternetOperator
                             public void onErrorResponse(VolleyError error) {
                                 try
                                 {
-                                    Log.d("error", error.getMessage());
-                                    errorFunction.apply(error, params);
+                                    try
+                                    {
+                                        Log.d("error", error.getMessage());
+                                    }
+                                    catch (NullPointerException e)
+                                    {
+                                        e.printStackTrace();
+                                        errorFunction.apply(error, params);
+                                    }
                                 }
                                 catch (Exception e)
                                 {

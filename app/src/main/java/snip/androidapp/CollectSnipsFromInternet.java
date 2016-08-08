@@ -31,7 +31,7 @@ public class CollectSnipsFromInternet
 
     private String getSnipsQuery(Context context)
     {
-        final String baseQuery = context.getResources().getString(R.string.snipsBaseQuery);
+        final String baseQuery = "?im_width=600&im_height=600";
         String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
         String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
@@ -50,7 +50,7 @@ public class CollectSnipsFromInternet
         JSONObject loginJsonParams = new JSONObject();
 
         HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap(context);
+                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
 
         VolleyInternetOperator.responseFunctionInterface responseFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
@@ -90,7 +90,7 @@ public class CollectSnipsFromInternet
             else
             {
                 String[] splittedFullNextRequest = fullNextRequest.split("/");
-                String nextQueryString = "/" + splittedFullNextRequest[splittedFullNextRequest.length - 1];
+                String nextQueryString = splittedFullNextRequest[splittedFullNextRequest.length - 1];
                 SnipCollectionInformation.getInstance().setLastSnipQuery(nextQueryString);
             }
 

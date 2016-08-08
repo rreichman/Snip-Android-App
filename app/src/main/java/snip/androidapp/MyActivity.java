@@ -151,7 +151,7 @@ public class MyActivity extends AppCompatActivity
                 int currentPositionInDataset = viewHolder.getAdapterPosition();
                 if (ItemTouchHelper.LEFT == swipeDirection)
                 {
-                    ReactionManager.userDislikedSnip(viewHolder.itemView.getContext(), mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userDislikedSnip(((ViewHolder)viewHolder).mContext, mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
@@ -159,7 +159,7 @@ public class MyActivity extends AppCompatActivity
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
-                    ReactionManager.userSnoozedSnip(viewHolder.itemView.getContext(), mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userSnoozedSnip(((ViewHolder)viewHolder).mContext, mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
@@ -327,6 +327,7 @@ public class MyActivity extends AppCompatActivity
                         .build();
 
         ImageLoader.getInstance().init(imageLoaderConfiguration);
+        CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
     }
 
     private void logUserIntoCrashlytics()

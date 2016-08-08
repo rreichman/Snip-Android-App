@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class ReactionManager
 //        toast.show();
 //    }
 
-    final String REACTION_LOG_TAG = "Reaction Post";
+    static String REACTION_LOG_TAG = "Reaction Post";
 
     private static void postReactionToServer(String reaction)
     {
@@ -56,18 +57,26 @@ public class ReactionManager
         postReactionToServer(context, snipID, "snooze");
     }
 
-    private static void postReactionToServer(Context context, long snipID, String reaction) {
+    public static void reactionSuccess() {
+        //Log.d(REACTION_LOG_TAG, "Success");
+        Log.d("reaction", "success");
+    }
 
-        JSONObject loginJsonParams = new JSONObject();
+    public static void reactionFailed() {
+        Log.d("reaction", "failed");
+    }
+
+    public static void postReactionToServer(Context context, long snipID, String reaction) {
+
         HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap(context);
+                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
 
         VolleyInternetOperator.responseFunctionInterface responseFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
                     @Override
                     public void apply(Context context, JSONObject response, JSONObject params)
                     {
-                        Log.d(REACTION_LOG_TAG, "Success");
+                        reactionSuccess();
                     }
                 };
         VolleyInternetOperator.errorFunctionInterface errorFunction =
@@ -75,17 +84,25 @@ public class ReactionManager
                     @Override
                     public void apply(VolleyError error, JSONObject params)
                     {
-                        Log.d(REACTION_LOG_TAG, "Fail");
+                        reactionFailed();
                     }
                 };
+
+        //Context context = CustomVolleyRequestQueue.getInstance().getContext();
         String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
-        String reactionBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
-        String query = "/?content_type=snip&content_id=" + Long.toString(snipID) + "&react=" + reaction;
+        String reactionBaseUrl = context.getResources().getString(R.string.reactionBaseURL);
+        String url = baseAccessURL + reactionBaseUrl;
 
-        String url = baseAccessURL + reactionBaseUrl + query;
-
+        JSONObject params = new JSONObject();
+        try {
+            params.put("content_type", "snip");
+            params.put("object_id", Long.toString(snipID));
+            params.put("react", reaction);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         VolleyInternetOperator.accessWebsiteWithVolley(
-                context, url, Request.Method.POST, loginJsonParams, headers,
+                context, url, Request.Method.POST, params, headers,
                 responseFunction, errorFunction);
     }
 
