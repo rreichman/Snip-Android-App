@@ -21,7 +21,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         this.mLinearLayoutManager = linearLayoutManager;
     }
 
-    private void loadMore(RecyclerView view)
+    private static void loadMore(RecyclerView view)
     {
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
@@ -43,17 +43,13 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         }
     }
 
-    // Used this file as reference:
-    // https://github.com/Harrison1/RecyclerViewActivity/blob/master/app/src/main/java/com/harrisonmcguire/recyclerview/EndlessRecyclerOnScrollListener.java
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+    public static void onScrolledLogic(RecyclerView recyclerView, LinearLayoutManager linearLayoutManager)
     {
-        super.onScrolled(recyclerView, dx, dy);
         try
         {
             int visibleItemCount = recyclerView.getChildCount();
-            int totalItemCount = mLinearLayoutManager.getItemCount();
-            int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+            int totalItemCount = linearLayoutManager.getItemCount();
+            int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
             final int visibleThreshold = 4;
 
             if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
@@ -64,6 +60,15 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         {
             e.printStackTrace();
         }
+    }
+
+    // Used this file as reference:
+    // https://github.com/Harrison1/RecyclerViewActivity/blob/master/app/src/main/java/com/harrisonmcguire/recyclerview/EndlessRecyclerOnScrollListener.java
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+    {
+        super.onScrolled(recyclerView, dx, dy);
+        onScrolledLogic(recyclerView, mLinearLayoutManager);
     }
 
     @Override

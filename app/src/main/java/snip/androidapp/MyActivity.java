@@ -154,6 +154,7 @@ public class MyActivity extends AppCompatActivity
                     ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
+                    EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
@@ -161,6 +162,7 @@ public class MyActivity extends AppCompatActivity
                     ReactionManager.userSnoozedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
+                    EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
                 }
 
                 mAdapter.notifyDataSetChanged();
@@ -249,7 +251,7 @@ public class MyActivity extends AppCompatActivity
         if ((null == mAdapter) || SnipCollectionInformation.getInstance().getShouldRestartViewAfterCollectionAndReset())
         {
             // specify an adapter
-            mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips);
+            mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips, mLayoutManager);
             mRecyclerView.setAdapter(mAdapter);
 
             ItemTouchHelper.SimpleCallback swipeTouchHelperCallback = getSwipeTouchHelperCallback();
