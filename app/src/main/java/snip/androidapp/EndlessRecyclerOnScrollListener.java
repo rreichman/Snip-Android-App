@@ -25,6 +25,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     {
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
+            SnipCollectionInformation.getInstance().mLock.lock();
             if (SnipCollectionInformation.getInstance().getAmountOfCollectedSnips() > 0)
             {
                 MyAdapter adapter = (MyAdapter) view.getAdapter();
@@ -36,8 +37,8 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
             if (!SnipCollectionInformation.getInstance().getLastSnipQuery().equals("null"))
             {
-                //AsyncInternetAccessor accessor = new AsyncInternetAccessor();
-                //accessor.execute();
+                CollectSnipsFromInternet collectSnipsFromInternet = new CollectSnipsFromInternet(view.getContext());
+                collectSnipsFromInternet.retrieveSnipsFromInternet(view.getContext());
             }
         }
     }

@@ -22,7 +22,7 @@ public class VolleyInternetOperator
 {
     public interface responseFunctionInterface
     {
-        void apply(JSONObject response, JSONObject params);
+        void apply(Context context, JSONObject response, JSONObject params);
     }
 
     public interface errorFunctionInterface
@@ -31,7 +31,7 @@ public class VolleyInternetOperator
     }
 
     public static void accessWebsiteWithVolley(
-            Context context, String url, int requestMethod,
+            final Context context, String url, int requestMethod,
             final JSONObject params, final HashMap<String, String> additionalHeaders,
             final responseFunctionInterface responseFunction, final errorFunctionInterface errorFunction)
     {
@@ -43,14 +43,21 @@ public class VolleyInternetOperator
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d("got", "response");
-                                responseFunction.apply(response, params);
+                                responseFunction.apply(context, response, params);
                             }
                         },
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.d("error", error.getMessage());
-                                errorFunction.apply(error, params);
+                                try
+                                {
+                                    Log.d("error", error.getMessage());
+                                    errorFunction.apply(error, params);
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
                         })
                 {
@@ -58,11 +65,13 @@ public class VolleyInternetOperator
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         HashMap<String, String> headers = new HashMap<String, String>();
                         headers.put("Content-Type", "application/json; charset=utf-8");
-                        Iterator it = additionalHeaders.entrySet().iterator();
-                        while (it.hasNext())
+                        if (null != additionalHeaders)
                         {
-                            HashMap.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
-                            headers.put(pair.getKey(), pair.getValue());
+                            Iterator it = additionalHeaders.entrySet().iterator();
+                            while (it.hasNext()) {
+                                HashMap.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
+                                headers.put(pair.getKey(), pair.getValue());
+                            }
                         }
                         return headers;
                     }
