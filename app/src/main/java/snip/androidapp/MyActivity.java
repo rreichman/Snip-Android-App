@@ -151,14 +151,14 @@ public class MyActivity extends AppCompatActivity
                 int currentPositionInDataset = viewHolder.getAdapterPosition();
                 if (ItemTouchHelper.LEFT == swipeDirection)
                 {
-                    ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userDislikedSnip(viewHolder.itemView.getContext(), mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
-                    ReactionManager.userSnoozedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userSnoozedSnip(viewHolder.itemView.getContext(), mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                 }

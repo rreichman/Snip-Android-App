@@ -31,7 +31,7 @@ public class CollectSnipsFromInternet
 
     private String getSnipsQuery(Context context)
     {
-        final String baseQuery = "/?im_width=600&im_height=600";
+        final String baseQuery = context.getResources().getString(R.string.snipsBaseQuery);
         String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
         String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);

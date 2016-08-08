@@ -37,7 +37,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                ReactionManager.userLikedSnip(mDataset.get(currentPositionInDataset).mID);
+                ReactionManager.userLikedSnip(view.getContext(), mDataset.get(currentPositionInDataset).mID);
 
                 mDataset.remove(currentPositionInDataset);
                 mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
