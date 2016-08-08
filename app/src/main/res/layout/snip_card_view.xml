@@ -10,15 +10,15 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="@color/dislikeBackground"
-        tools:layout_width="match_parent">
+        >
         <ImageView
+            android:id="@+id/clipSwipeImageLeft"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginRight="12dp"
             android:focusable="false"
             android:src="@drawable/ic_action_dontlike"
             tools:ignore="ContentDescription"/>

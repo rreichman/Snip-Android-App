@@ -88,9 +88,7 @@ public class SnipCollectionInformation
     public HashMap<String, String> getTokenForWebsiteAccessAsHashMap()
     {
         HashMap<String,String> tokenAsHashmap = new HashMap<String, String>();
-        // TODO:: make this great again
         tokenAsHashmap.put("Authorization", "Token " + getTokenForWebsiteAccess(CustomVolleyRequestQueue.getInstance().getContext()));
-        tokenAsHashmap.put("Authorization", "Token " + "ce53a666b61b6ea2a1950ead117bba3fa27b0f62");
         return tokenAsHashmap;
     }
 

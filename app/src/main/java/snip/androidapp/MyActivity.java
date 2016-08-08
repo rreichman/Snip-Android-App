@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.os.Bundle;
 import android.content.res.Configuration;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -215,11 +216,14 @@ public class MyActivity extends AppCompatActivity
                     // Swiping Left
                     else
                     {
-                        final View backgroundView = ((ViewHolder) viewHolder).mSwipeBackgroundLeft;
                         // screenSize.x is the width of the screen
                         Log.d("left is", Integer.toString((int)(screenSize.x + dX)));
-                        backgroundView.setRight(screenSize.x);
-                        backgroundView.setLeft((int)(screenSize.x + dX));
+                        backgroundViewLeft.setRight(screenSize.x);
+                        backgroundViewLeft.setLeft((int)(screenSize.x + dX));
+//                        ImageView clipSwipeImageLeft = (ImageView) backgroundViewLeft.findViewById(R.id.clipSwipeImageLeft);
+//                        int left = clipSwipeImageLeft.getLeft();
+//                        int top = clipSwipeImageLeft.getTop();
+//                        Log.d("Image pos", Integer.toString(left) + " " + Integer.toString(top));
 
                         backgroundViewRight.setRight(0);
                         backgroundViewRight.setLeft(0);

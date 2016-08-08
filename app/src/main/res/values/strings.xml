@@ -10,6 +10,9 @@
     <string name="signInURL">rest-auth/login/</string>
     <string name="reactionBaseURL">reaction/</string>
     <string name="snipsBaseURL">snip/</string>
+    <string name="searchBaseURL">search/</string>
+    <string name="categeoriesBaseURL">tag/</string>
+    <string name="categeoriesFixedURL">fixed/</string>
     <string name="userTokenFile">userTokenFile</string>
     <string name="emailField">email</string>
     <string name="passField">password</string>
