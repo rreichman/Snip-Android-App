@@ -15,18 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.AuthFailureError;
+
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.HashMap;
-import java.util.Map;
+
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -34,16 +29,17 @@ import butterknife.BindView;
 public class LoginActivity extends AppCompatActivity
 {
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
+    private static final int REQUEST_SIGNIN = 0;
     private ProgressDialog mProgressDialog;
 
-    @BindView(R.id.input_email) EditText _emailText;
-    @BindView(R.id.input_password) EditText _passwordText;
+    @BindView(R.id.input_email_signin) EditText _emailText;
+    @BindView(R.id.input_password_signin) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
     @BindString(R.string.baseAccessURL) String baseAccessURL;
     @BindString(R.string.signInURL) String signInURL;
     @BindString(R.string.emailField) String emailField;
+    @BindString(R.string.signInProgressBar) String signInProgressBarText;
     @BindString(R.string.passField) String passField;
     @BindString(R.string.tokenField) String tokenField;
     @BindString(R.string.userTokenFile) String userTokenFile;
@@ -64,7 +60,7 @@ public class LoginActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, REQUEST_SIGNIN);
             }
         });
     }
@@ -80,25 +76,13 @@ public class LoginActivity extends AppCompatActivity
         return tokenParams;
     }
 
-    private ProgressDialog showProgressDialog() {
-        mProgressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.TempAppTheme_Dark_Dialog);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setMessage("Authenticating...");
-        mProgressDialog.show();
-        return mProgressDialog;
-    }
-
     private void onLoginSuccess(Context context, JSONObject response, JSONObject loginParams)
     {
-        Intent returnIntent = new Intent();
-
         try
         {
             JSONObject tokenJson = getTokenJson(response, loginParams);
             _loginButton.setEnabled(true);
             mProgressDialog.hide();
-
             SnipCollectionInformation.getInstance().setTokenForWebsiteAccess(response.getString(tokenField));
             DataCacheManagement.saveObjectToFile(context, tokenJson.toString(), userTokenFile);
         }
@@ -106,7 +90,7 @@ public class LoginActivity extends AppCompatActivity
         {
             Log.d("Login", e.toString());
         }
-        setResult(Activity.RESULT_OK, returnIntent);
+        setResult(Activity.RESULT_OK, null);
         finish();
     }
 
@@ -117,7 +101,7 @@ public class LoginActivity extends AppCompatActivity
         mProgressDialog.hide();
     }
 
-    public void onValidateFaild()
+    public void onValidateFailed()
     {
         Toast.makeText(getBaseContext(), "Validation failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
@@ -125,7 +109,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void sendLoginRequest(final JSONObject loginJsonParams)
     {
-        showProgressDialog();
+        mProgressDialog = RegistrationUtils.showProgressDialog(this, R.style.TempAppTheme_Dark_Dialog, signInProgressBarText);
         int requestMethod = Request.Method.POST;
         VolleyInternetOperator.responseFunctionInterface loginSuccessFun =
                 new VolleyInternetOperator.responseFunctionInterface() {
@@ -150,7 +134,7 @@ public class LoginActivity extends AppCompatActivity
     public void login() {
         Log.d(TAG, "Login");
         if (!validate()) {
-            onValidateFaild();
+            onValidateFailed();
             return;
         }
         _loginButton.setEnabled(false);
@@ -158,8 +142,8 @@ public class LoginActivity extends AppCompatActivity
         String password = _passwordText.getText().toString().trim();
         JSONObject loginJsonParams = new JSONObject();
         try {
-            loginJsonParams.put("email", email);
-            loginJsonParams.put("password", password);
+            loginJsonParams.put(emailField, email);
+            loginJsonParams.put(passField, password);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -168,11 +152,12 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
+        if (requestCode == REQUEST_SIGNIN) {
             if (resultCode == RESULT_OK) {
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
+                String email = data.getStringExtra(emailField);
+                String pass = data.getStringExtra(passField);
+                _emailText.setText(email);
+                _passwordText.setText(pass);
             }
         }
     }
@@ -185,20 +170,9 @@ public class LoginActivity extends AppCompatActivity
 
     public boolean validate() {
         boolean valid = true;
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
-            valid = false;
-        } else {
-            _emailText.setError(null);
-        }
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
-            valid = false;
-        } else {
-            _passwordText.setError(null);
-        }
+        if (!RegistrationUtils.validateEmail(_emailText)) {valid = false;}
+        if (!RegistrationUtils.validatePassword(_passwordText)) {valid = false;}
         return valid;
     }
+
 }
