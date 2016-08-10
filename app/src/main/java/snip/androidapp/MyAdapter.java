@@ -2,6 +2,7 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -45,10 +49,38 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                     final int currentPositionInDataset = viewHolder.getAdapterPosition();
                     ReactionManager.userLikedSnip(view.getContext(), mDataset.get(currentPositionInDataset).mID);
 
+                    final ViewHolder cardHolder = (ViewHolder)mRecyclerView.findViewHolderForAdapterPosition(currentPositionInDataset);
+                    //final ImageView heartAnim = (ImageView) view.findViewById(R.id.heart_anim);
+                    Animation pulse_fade = AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
+                    pulse_fade.setDuration(1000);
+                    pulse_fade.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            cardHolder.mHeartImage.bringToFront();
+                            cardHolder.mHeartImage.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            cardHolder.mHeartImage.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            cardHolder.mHeartImage.setVisibility(View.GONE);
+                        }
+                    }, pulse_fade.getDuration());
+                    cardHolder.mHeartImage.startAnimation(pulse_fade);
+
                     mDataset.remove(currentPositionInDataset);
                     mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLinearLayoutManager);
-
                 }
                 catch (IndexOutOfBoundsException e1)
                 {

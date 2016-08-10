@@ -2,6 +2,7 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.graphics.Picture;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -24,6 +25,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     public SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
     public SnipTextView mSnipPublisher;
+    public ImageView mHeartImage;
 
     private DisplayMetrics getScreenDimensions(Context context)
     {
@@ -42,6 +44,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.mSnipHeadline = (SnipTextView) view.findViewById(R.id.headline);
         this.mSnipPublisher = (SnipTextView) view.findViewById(R.id.publisher);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
+        this.mHeartImage = (ImageView)view.findViewById(R.id.heart_anim);
 
         view.setClickable(true);
     }
