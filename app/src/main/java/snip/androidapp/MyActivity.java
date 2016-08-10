@@ -91,7 +91,8 @@ public class MyActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         ButterKnife.bind(this);

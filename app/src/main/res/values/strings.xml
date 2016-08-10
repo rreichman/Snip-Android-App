@@ -21,6 +21,7 @@
     <string name="passField">password</string>
     <string name="tokenField">key</string>
     <string name="requestContentType">application/json; charset=utf-8</string>
+    <string name="feedbackHint">Insert feedback here</string>
 
     <!--http://192.168.1.215:8000/api-->
 </resources>
