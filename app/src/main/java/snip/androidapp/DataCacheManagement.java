@@ -2,6 +2,7 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,24 +17,27 @@ import java.util.LinkedList;
  */
 public class DataCacheManagement
 {
-    public static String getFileNameForSnipData() { return "savedSnipData.dat"; }
+    public String mSnipDataCacheFilename;
+    public String mSnipQueryCacheFilename;
 
-    public static String getFileNameForSnipQuery()
+    public DataCacheManagement(String snipDataCacheFilename, String snipQueryCacheFilename)
     {
-        return "savedSnipQuery.dat";
+        mSnipDataCacheFilename = mSnipDataCacheFilename;
+        mSnipQueryCacheFilename = mSnipQueryCacheFilename;
     }
 
-    public static String getFullPathForSnipData(Context context)
+    public String getFullPathForSnipData(Context context)
     {
-        return getFullPathOfFile(context ,getFileNameForSnipData());
+        return getFullPathOfFile(context ,mSnipDataCacheFilename);
     }
 
-    public static String getFullPathForSnipQuery(Context context)
+    public String getFullPathForSnipQuery(Context context)
     {
-        return getFullPathOfFile(context, getFileNameForSnipQuery());
+        return getFullPathOfFile(context, mSnipQueryCacheFilename);
     }
 
-    public static String getFullPathOfFile(Context context, String filename) {
+    public static String getFullPathOfFile(Context context, String filename)
+    {
         return context.getFilesDir() + "/" + filename;
     }
 
@@ -78,13 +82,13 @@ public class DataCacheManagement
         }
     }
 
-    public static void deleteAppInformationFiles(Context context)
+    public void deleteActivityInformationFiles(Context context)
     {
         deleteFileOnDisk(getFullPathForSnipData(context));
         deleteFileOnDisk(getFullPathForSnipQuery(context));
     }
 
-    public static void saveSnipDataToBundle(Bundle outBundle, LinkedList<SnipData> collectedSnips)
+    public void saveSnipDataToBundle(Bundle outBundle, LinkedList<SnipData> collectedSnips)
     {
         if (null != collectedSnips)
         {
@@ -95,7 +99,7 @@ public class DataCacheManagement
         }
     }
 
-    public static LinkedList<SnipData> retrieveSnipDataFromBundle(Bundle savedInstanceState)
+    public LinkedList<SnipData> retrieveSnipDataFromBundle(Bundle savedInstanceState)
     {
         if (null != savedInstanceState) {
             if (!savedInstanceState.isEmpty()) {
@@ -117,19 +121,19 @@ public class DataCacheManagement
         return null;
     }
 
-    public static void saveSnipDataToFile(Context context, LinkedList<SnipData> collectedSnips)
+    public void saveSnipDataToFile(Context context, LinkedList<SnipData> collectedSnips)
     {
-        saveObjectToFile(context, collectedSnips, DataCacheManagement.getFileNameForSnipData());
+        saveObjectToFile(context, collectedSnips, mSnipDataCacheFilename);
     }
 
-    public static void saveSnipQueryToFile(Context context)
+    public void saveSnipQueryToFile(Context context)
     {
         saveObjectToFile(context,
                 SnipCollectionInformation.getInstance().getLastSnipQuery(),
-                DataCacheManagement.getFileNameForSnipQuery());
+                mSnipQueryCacheFilename);
     }
 
-    public static void saveAppInformationToFile(Context context, LinkedList<SnipData> collectedSnips)
+    public void saveAppInformationToFile(Context context, LinkedList<SnipData> collectedSnips)
     {
         saveSnipDataToFile(context, collectedSnips);
         saveSnipQueryToFile(context);
@@ -163,17 +167,17 @@ public class DataCacheManagement
         return retrievedObject;
     }
 
-    public static LinkedList<SnipData> retrieveSnipDataFromFile(Context context)
+    public LinkedList<SnipData> retrieveSnipDataFromFile(Context context)
     {
-        return (LinkedList<SnipData>)retrieveObjectFromFile(context, getFileNameForSnipData());
+        return (LinkedList<SnipData>)retrieveObjectFromFile(context, mSnipDataCacheFilename);
     }
 
-    public static String retrieveSnipQueryFromFile(Context context)
+    public String retrieveSnipQueryFromFile(Context context)
     {
-        return (String)retrieveObjectFromFile(context, getFileNameForSnipQuery());
+        return (String)retrieveObjectFromFile(context, mSnipQueryCacheFilename);
     }
 
-    public static LinkedList<SnipData> retrieveSavedDataFromBundleOrFile(
+    public LinkedList<SnipData> retrieveSavedDataFromBundleOrFile(
             Context context, Bundle savedInstanceState)
     {
         LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(savedInstanceState);

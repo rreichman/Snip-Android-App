@@ -30,15 +30,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     private RecyclerView mRecyclerView;
     public LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
+    private String mDefaultQuery;
 
     private int READ_SNIP_ACTIVITY_ID = 1;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(RecyclerView recyclerView, LinkedList<SnipData> myDataset, LinearLayoutManager linearLayoutManager)
+    public MyAdapter(
+            RecyclerView recyclerView, LinkedList<SnipData> myDataset,
+            LinearLayoutManager linearLayoutManager, String defaultQuery)
     {
         mRecyclerView = recyclerView;
         mDataset = myDataset;
         mLinearLayoutManager = linearLayoutManager;
+        mDefaultQuery = defaultQuery;
     }
 
     private GestureDetector getGestureDetector(final ViewGroup parent, final View view, final MyViewHolder viewHolder)
@@ -83,7 +87,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 
                     mDataset.remove(currentPositionInDataset);
                     mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
-                    EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLinearLayoutManager);
+                    EndlessRecyclerOnScrollListener.onScrolledLogic(
+                            mRecyclerView, mLinearLayoutManager, mDefaultQuery);
                 }
                 catch (IndexOutOfBoundsException e1)
                 {

@@ -1,28 +1,7 @@
 package snip.androidapp;
 
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
-import android.support.v7.widget.helper.ItemTouchHelper;
-
-import android.util.Log;
-import android.view.Display;
-import android.view.Menu;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.crashlytics.android.Crashlytics;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import butterknife.ButterKnife;
-import io.fabric.sdk.android.Fabric;
 
 
 // TODO:: In the CardView layout - To create a card with a shadow, use the card_view:cardElevation attribute
@@ -46,19 +25,53 @@ public class MyActivity extends SnipHoldingActivity
         }
     }
 
-    public void populateWithSnoozeSnips()
+    public void operateAfterLogin(Bundle savedInstanceState)
     {
-        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
-        CollectSnipsFromInternet snipCollector =
-                new CollectSnipsFromInternet(this);
-        snipCollector.retrieveSnipsFromInternet(this, CollectSnipsFromInternet.getSnipsQuerySnoozed(this));
+        try
+        {
+            mCollectedSnips =
+                    mDataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
+            startActivityOperation();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    public void populateWithLikedSnips()
+    public String getSnipsQueryForActivity()
     {
-        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
-        CollectSnipsFromInternet snipCollector =
-                new CollectSnipsFromInternet(getApplicationContext());
-        snipCollector.retrieveSnipsFromInternet(this, CollectSnipsFromInternet.getSnipsQueryLiked(this));
+        final String baseQuery = "?im_width=600&im_height=600";
+        String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
+        String baseAccessUrl = getResources().getString(R.string.baseAccessURL);
+        String snipsBaseUrl = getResources().getString(R.string.snipsBaseURL);
+        String fullRequestURL = baseAccessUrl + snipsBaseUrl;
+        if (lastRequestURL.isEmpty()) {
+            fullRequestURL += baseQuery;
+        }
+        else {
+            fullRequestURL += lastRequestURL;
+        }
+        return fullRequestURL;
     }
+
+//    public void populateWithSnoozeSnips()
+//    {
+//        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
+//        CollectSnipsFromInternet collectSnipsFromInternet =
+//                new CollectSnipsFromInternet(this);
+//        collectSnipsFromInternet.retrieveSnipsFromInternet(
+//                this,
+//                CollectSnipsFromInternet.getSnipsQuerySnoozed(this));
+//    }
+//
+//    public void populateWithLikedSnips()
+//    {
+//        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
+//        CollectSnipsFromInternet collectSnipsFromInternet =
+//                new CollectSnipsFromInternet(getApplicationContext());
+//        collectSnipsFromInternet.retrieveSnipsFromInternet(
+//                this,
+//                CollectSnipsFromInternet.getSnipsQueryLiked(this));
+//    }
 }
