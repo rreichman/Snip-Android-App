@@ -49,20 +49,16 @@ public class MyActivity extends SnipHoldingActivity
     public void populateWithSnoozeSnips()
     {
         SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
-        CollectSnipsFromInternet collectSnipsFromInternet =
+        CollectSnipsFromInternet snipCollector =
                 new CollectSnipsFromInternet(this);
-        collectSnipsFromInternet.retrieveSnipsFromInternet(
-                this,
-                CollectSnipsFromInternet.getSnipsQuerySnoozed(this));
+        snipCollector.retrieveSnipsFromInternet(this, CollectSnipsFromInternet.getSnipsQuerySnoozed(this));
     }
 
     public void populateWithLikedSnips()
     {
         SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
-        CollectSnipsFromInternet collectSnipsFromInternet =
+        CollectSnipsFromInternet snipCollector =
                 new CollectSnipsFromInternet(getApplicationContext());
-        collectSnipsFromInternet.retrieveSnipsFromInternet(
-                this,
-                CollectSnipsFromInternet.getSnipsQueryLiked(this));
+        snipCollector.retrieveSnipsFromInternet(this, CollectSnipsFromInternet.getSnipsQueryLiked(this));
     }
 }

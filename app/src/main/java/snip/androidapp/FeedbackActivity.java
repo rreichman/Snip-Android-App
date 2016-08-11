@@ -57,7 +57,7 @@ public class FeedbackActivity extends AppCompatActivity
             VolleyInternetOperator.errorFunctionInterface errorFunction =
                     new VolleyInternetOperator.errorFunctionInterface() {
                         @Override
-                        public void apply(VolleyError error, JSONObject params) {
+                        public void apply(Context context, VolleyError error, JSONObject params) {
                             postFailed(error);
                         }
                     };

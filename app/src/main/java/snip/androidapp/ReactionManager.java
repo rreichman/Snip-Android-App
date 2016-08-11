@@ -84,7 +84,7 @@ public class ReactionManager
         VolleyInternetOperator.errorFunctionInterface errorFunction =
                 new VolleyInternetOperator.errorFunctionInterface() {
                     @Override
-                    public void apply(VolleyError error, JSONObject params)
+                    public void apply(Context context, VolleyError error, JSONObject params)
                     {
                         reactionFailed(error);
                     }

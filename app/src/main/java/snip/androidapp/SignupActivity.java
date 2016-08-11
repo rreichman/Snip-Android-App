@@ -104,7 +104,7 @@ public class SignupActivity extends AppCompatActivity {
         VolleyInternetOperator.errorFunctionInterface failedFun =
                 new VolleyInternetOperator.errorFunctionInterface() {
                     @Override
-                    public void apply(VolleyError error, JSONObject params)
+                    public void apply(Context context, VolleyError error, JSONObject params)
                     {
                         onSignupFailed(error);
                     }

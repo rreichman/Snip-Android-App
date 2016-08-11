@@ -246,9 +246,6 @@ public class ReadSnipActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        Intent returnIntent = new Intent();
-//        returnIntent.putExtra(emailField,_emailText.getText().toString());
-//        setResult(RESULT_OK,returnIntent);
         finish();
     }
 }

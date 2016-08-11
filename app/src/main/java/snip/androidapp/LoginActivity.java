@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity
         VolleyInternetOperator.errorFunctionInterface loginFailedFun =
                 new VolleyInternetOperator.errorFunctionInterface() {
                     @Override
-                    public void apply(VolleyError error, JSONObject params)
+                    public void apply(Context context, VolleyError error, JSONObject params)
                     {
                         onLoginFailed(error, params);
                     }

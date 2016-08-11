@@ -27,7 +27,7 @@ public class VolleyInternetOperator
 
     public interface errorFunctionInterface
     {
-        void apply(VolleyError error, JSONObject params);
+        void apply(Context context, VolleyError error, JSONObject params);
     }
 
     public static void initQueue(Context context) {
@@ -71,7 +71,7 @@ public class VolleyInternetOperator
                                     {
                                         e.printStackTrace();
                                     }
-                                    errorFunction.apply(error, params);
+                                    errorFunction.apply(context, error, params);
                                 }
                                 catch (Exception e)
                                 {

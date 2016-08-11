@@ -1,6 +1,7 @@
 package snip.androidapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -20,7 +21,7 @@ public class CollectSnipsFromInternet
 {
     private int mSnipsToCollect;
     private int mAmountOfSnipsCollectedInCurrentSession;
-
+    private final static int mNoError = -1;
     LinkedList<SnipData> mSnipsFromBackend = new LinkedList<SnipData>();
 
     public CollectSnipsFromInternet(Context context)
@@ -87,9 +88,9 @@ public class CollectSnipsFromInternet
         VolleyInternetOperator.errorFunctionInterface errorFunction =
                 new VolleyInternetOperator.errorFunctionInterface() {
                     @Override
-                    public void apply(VolleyError error, JSONObject params)
+                    public void apply(Context context, VolleyError error, JSONObject params)
                     {
-                        errorFunctionImplementation(error, params);
+                        errorFunctionImplementation(context, error, params);
                     }
                 };
 
@@ -147,11 +148,20 @@ public class CollectSnipsFromInternet
         }
     }
 
-    public void errorFunctionImplementation(VolleyError error, JSONObject params)
+    public void errorFunctionImplementation(Context context, VolleyError error, JSONObject params)
     {
-        // TODO:: implement
-        int statusCode = error.networkResponse.statusCode;
         String errorString = VolleyInternetOperator.parseNetworkErrorResponse(error);
-        Log.d("error", "function");
+        checkUserPermissionStartLoginActivity(context, error.networkResponse.statusCode);
+        Log.d("error", "Error collecting Snips");
     }
+
+    private void checkUserPermissionStartLoginActivity(Context context, int errorCode) {
+        if (errorCode == 403) {
+            Intent intent = new Intent(context, LoginActivity.class);
+            // TODO check if it's ok with reichman
+            ((MyActivity) context).startActivityForResult(intent, context.getResources().getInteger(R.integer.loginActivityCode));
+        }
+    }
+
+
 }
