@@ -150,6 +150,8 @@ public class CollectSnipsFromInternet
     public void errorFunctionImplementation(VolleyError error, JSONObject params)
     {
         // TODO:: implement
+        int statusCode = error.networkResponse.statusCode;
+        String errorString = VolleyInternetOperator.parseNetworkErrorResponse(error);
         Log.d("error", "function");
     }
 }
