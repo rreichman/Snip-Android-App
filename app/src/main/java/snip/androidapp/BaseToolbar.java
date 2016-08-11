@@ -38,7 +38,6 @@ public class BaseToolbar
         if (myToolbar != null)
         {
             currentActivity.setSupportActionBar(myToolbar);
-            currentActivity.getSupportActionBar().setLogo(R.drawable.sniplogosmall);
             currentActivity.getSupportActionBar().setDisplayUseLogoEnabled(true);
             currentActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
             //getSupportActionBar().setHomeButtonEnabled(true);

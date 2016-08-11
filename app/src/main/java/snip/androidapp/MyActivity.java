@@ -196,7 +196,7 @@ public class MyActivity extends AppCompatActivity
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
-                    ReactionManager.userSnoozedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
+                    ReactionManager.userLikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);

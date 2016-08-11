@@ -41,7 +41,7 @@
         <ImageView
             android:id="@+id/ReactionButtonDislikeImage"
             style="@style/ReactionButton.Image"
-            android:src="@drawable/thumbs_down"
+            android:src="@drawable/thumb_down_hollow"
             />
         <TextView
             android:id="@+id/ReactionButtonDislikeText"

@@ -48,12 +48,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 try
                 {
                     final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                    ReactionManager.userLikedSnip(mDataset.get(currentPositionInDataset).mID);
+                    ReactionManager.userSnoozedSnip(mDataset.get(currentPositionInDataset).mID);
 
                     final MyViewHolder cardHolder = (MyViewHolder)mRecyclerView.findViewHolderForAdapterPosition(currentPositionInDataset);
                     //final ImageView heartAnim = (ImageView) view.findViewById(R.id.heart_anim);
                     Animation pulse_fade = AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
-                    pulse_fade.setDuration(1000);
+                    pulse_fade.setDuration(2000);
                     pulse_fade.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationStart(Animation animation) {

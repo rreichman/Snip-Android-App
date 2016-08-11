@@ -20,7 +20,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:focusable="false"
-            android:src="@drawable/thumbs_down"
+            android:src="@drawable/thumb_down_hollow"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
     <RelativeLayout
@@ -38,7 +38,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:focusable="false"
-            android:src="@drawable/ic_snooze"
+            android:src="@drawable/heart_icon_hollow_black"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -63,11 +63,11 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:id="@+id/heart_anim"
-                android:scaleType="center"
-                android:visibility="visible"
-                android:src="@drawable/heart_icon_small"
+                android:scaleType="fitCenter"
+                android:visibility="invisible"
+                android:src="@drawable/snooze_blue"
                 android:layout_gravity="center"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true" />

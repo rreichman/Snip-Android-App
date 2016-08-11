@@ -28,20 +28,20 @@ public class ReactionBarCreator {
             @Override public void onClick(View view) {
                 if (SingleSnipState.getInstance().mIsDisliked) { // user already disliked it  and now undoing
                     ReactionManager.userUnDislikedSnip(snipId);
-                    setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumbs_down);
+                    setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_hollow);
                     SingleSnipState.getInstance().setReaction("null");
 
                 }
                 else {
                     ReactionManager.userDislikedSnip(snipId);
-                    setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumbs_down_full);
+                    setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_full);
                     setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonLikeImage, R.drawable.heart_icon_hollow);
                     SingleSnipState.getInstance().setDisliked();
                 }
             }
         };
         dislikeLayout.setOnClickListener(dislikeListener);
-        setImageReaction(reactionLayout, SingleSnipState.getInstance().mIsDisliked, R.id.ReactionButtonDislikeImage, R.drawable.thumbs_down_full, R.drawable.thumbs_down);
+        setImageReaction(reactionLayout, SingleSnipState.getInstance().mIsDisliked, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_full, R.drawable.thumb_down_hollow);
 
         RelativeLayout likeLayout = (RelativeLayout) reactionLayout.findViewById(R.id.ReactionButtonLike);
         View.OnClickListener likeListener = new View.OnClickListener() {
@@ -54,7 +54,7 @@ public class ReactionBarCreator {
                 else {
                     ReactionManager.userLikedSnip(snipId);
                     setImageResource(view, R.id.ReactionButtonLikeImage, R.drawable.heart_icon_full);
-                    setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonDislikeImage, R.drawable.thumbs_down);
+                    setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_hollow);
                     SingleSnipState.getInstance().setLiked();
                 }
             }

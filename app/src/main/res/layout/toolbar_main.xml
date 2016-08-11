@@ -15,21 +15,33 @@
     android:theme="@style/ToolbarTheme">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/snipLogoOnToolbar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/sniplogo_black"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="3dp"
+            />
+
         <ImageView
             android:id="@+id/likeButtonOnToolbar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/heart_icon_small"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/heart_icon_hollow_black"
             android:clickable="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="10dp"
             />
         <ImageView
             android:id="@+id/snoozeButtonOnToolbar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_snooze"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/snooze_black"
             android:clickable="true"
             android:layout_toLeftOf="@id/likeButtonOnToolbar"
             android:layout_marginRight="15dp"/>
