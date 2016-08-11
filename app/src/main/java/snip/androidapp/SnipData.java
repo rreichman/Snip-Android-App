@@ -29,6 +29,7 @@ public class SnipData implements Parcelable, Serializable {
     public String mThumbnailUrl;
     public transient Bitmap mThumbnail;
     public String mBody;
+    public String mReaction;
     public ExternalLinksData mExternalLinks;
     //public SnipComments mComments;
 
@@ -46,6 +47,7 @@ public class SnipData implements Parcelable, Serializable {
         dest.writeSerializable(mDate);
         dest.writeString(mThumbnailUrl);
         dest.writeString(mBody);
+        dest.writeString(mReaction);
         dest.writeParcelable(mExternalLinks, flags);
         //dest.writeParcelable(mComments, flags);
     }
@@ -58,6 +60,7 @@ public class SnipData implements Parcelable, Serializable {
         mDate = (Date) parcel.readSerializable();
         mThumbnailUrl = parcel.readString();
         mBody = parcel.readString();
+        mReaction = parcel.readString();
         mExternalLinks = parcel.readParcelable(ExternalLinksData.class.getClassLoader());
         //mComments = parcel.readParcelable(SnipComments.class.getClassLoader());
     }
@@ -71,7 +74,7 @@ public class SnipData implements Parcelable, Serializable {
 
     public SnipData(
             String headline, String publisher, String author, Long id, Date date, String thumbnailUrl,
-            String body, ExternalLinksData externalLinks, SnipComments comments) {
+            String body, ExternalLinksData externalLinks, SnipComments comments, String reaction) {
         mHeadline = headline;
         mPublisher = publisher;
         mAuthor = author;
@@ -81,6 +84,8 @@ public class SnipData implements Parcelable, Serializable {
         mThumbnail = getBitmapFromUrl(thumbnailUrl);
         mBody = body;
         mExternalLinks = externalLinks;
+        mReaction = reaction;
+
         //mComments = comments;
     }
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ReactionBarLayout"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:orientation="horizontal"
+    android:layout_marginBottom="30dp"
+    android:layout_marginTop="30dp"
+    android:gravity="center">
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/ReactionButtonLike"
+        >
+        <ImageView
+            android:id="@+id/ReactionButtonLikeImage"
+            style="@style/ReactionButton.Image"
+            android:src="@drawable/heart_icon_hollow"
+            />
+        <TextView
+            android:id="@+id/ReactionButtonLikeText"
+            style="@style/ReactionButton.Text"
+            android:text="@string/likeText"
+            android:layout_toRightOf="@id/ReactionButtonLikeImage"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/ReactionButtonDislike"
+        >
+        <ImageView
+            android:id="@+id/ReactionButtonDislikeImage"
+            style="@style/ReactionButton.Image"
+            android:src="@drawable/thumbs_down"
+            />
+        <TextView
+            android:id="@+id/ReactionButtonDislikeText"
+            style="@style/ReactionButton.Text"
+            android:text="@string/dislikeText"
+            android:layout_toRightOf="@id/ReactionButtonDislikeImage"
+            />
+
+    </RelativeLayout>
+</LinearLayout>
+    <!--android:background="@drawable/dislike_button"-->

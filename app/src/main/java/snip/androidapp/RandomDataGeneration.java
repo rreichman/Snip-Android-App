@@ -29,7 +29,7 @@ public class RandomDataGeneration
 
             SnipData currentSnipInformation =
                     new SnipData(snipHeadline, snipPublisher, snipAuthor, snipID, fakeDate,
-                            bitmapURL, snipBody, null, new SnipComments());
+                            bitmapURL, snipBody, null, new SnipComments(), "");
 
             myDataset.addLast(currentSnipInformation);
         }

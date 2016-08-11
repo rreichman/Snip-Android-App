@@ -33,23 +33,25 @@ public class ReactionManager
 
     static String REACTION_LOG_TAG = "Reaction Post";
 
-    private static void postReactionToServer(String reaction)
+    // TODO replace to strings, context needed
+    public static void userLikedSnip(long snipID)
     {
-        // TODO:: implement
+        postReactionToServer(snipID, "like");
     }
 
-    public static void userLikedSnip(Context context, long snipID)
+    public static void userUnLikedSnip(long snipID)
     {
-        // TODO:: implement
-//        ImageView myImageView =(ImageView)((Activity)context).findViewById(R.id.heart);
-//        Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
-//        myImageView.startAnimation(myFadeInAnimation);
-        postReactionToServer(snipID, "like");
+        postReactionToServer(snipID, "un_like");
     }
 
     public static void userDislikedSnip(long snipID)
     {
         postReactionToServer(snipID, "dislike");
+    }
+
+    public static void userUnDislikedSnip(long snipID)
+    {
+        postReactionToServer(snipID, "un_dislike");
     }
 
     public static void userSnoozedSnip(long snipID)

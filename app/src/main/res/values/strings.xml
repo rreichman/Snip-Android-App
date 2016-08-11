@@ -21,6 +21,18 @@
     <string name="passField">password</string>
     <string name="tokenField">key</string>
     <string name="requestContentType">application/json; charset=utf-8</string>
+    <string name="snoozeText">Read Later</string>
+    <string name="dislikeText">Not for me</string>
+    <string name="likeText">Interesting</string>
+
+    <string name="ReactionLike">like</string>
+    <string name="ReactionUnLike">un_like</string>
+    <string name="ReactionDislike">dislike</string>
+    <string name="ReactionUnDislike">un_dislike</string>
+    <string name="ReactionSnooze">snooze</string>
+    <string name="ReactionExpand">expand</string>
+
+    <string name="SnipDatasetPosition">SnipDatasetPosition</string>
 
     <!--http://192.168.1.215:8000/api-->
 </resources>

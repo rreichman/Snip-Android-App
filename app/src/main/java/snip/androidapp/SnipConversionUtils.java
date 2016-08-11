@@ -58,6 +58,7 @@ public class SnipConversionUtils
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String headline = jsonObject.getString("headline");
                 String publisher = jsonObject.getString("publisher");
+                String reaction = jsonObject.getString("user_reaction");
                 String author = jsonObject.getString("author");
                 long id = jsonObject.getLong("id");
 
@@ -74,7 +75,7 @@ public class SnipConversionUtils
                 // TODO:: retrieve the comments when comments are implemented
 
                 SnipData snipData = new SnipData(
-                        headline, publisher, author, id, date, thumbnailWebUrl, body, externalLinksData, new SnipComments());
+                        headline, publisher, author, id, date, thumbnailWebUrl, body, externalLinksData, new SnipComments(), reaction);
 
                 snipDataLinkedList.addLast(snipData);
             }

@@ -1,37 +1,31 @@
 package snip.androidapp;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.support.v7.app.AppCompatActivity;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by ranreichman on 7/25/16.
@@ -44,6 +38,8 @@ public class ReadSnipActivity extends AppCompatActivity
     protected int mDefMarginVert;
     protected int mDefGravity;
     protected int mDefTextStyle;
+    protected boolean mIsLiked;
+    protected boolean mIsDisliked;
 
     private static Spanned fromHtml(String htmlString)
     {
@@ -180,14 +176,9 @@ public class ReadSnipActivity extends AppCompatActivity
 
     }
 
-    private void addReactionBarToLayout() {
-        Button button = new Button(this);
-        button.setText("LIKE");
-        mLayout.addView(button);
-    }
 
     private void addSnipMetaDataToLayout() {
-        String text = getResources().getString(R.string.writtenBy);
+        String text = getResources().getString(R.string.writtenBy) + " ";
         if ((!mSnipData.mPublisher.isEmpty()) && (!mSnipData.mAuthor.isEmpty())) {
             text += mSnipData.mPublisher + ", " + mSnipData.mAuthor;
         }
@@ -219,19 +210,20 @@ public class ReadSnipActivity extends AppCompatActivity
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
             createLinkView(cur_link);
         }
-        addReactionBarToLayout();
+        ReactionBarCreator.addReactionBarToLayout(this, mLayout);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         mSnipData = (SnipData)getIntent().getSerializableExtra(SnipData.getSnipDataString());
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.clean_scrollable_activity);
-
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
+
+        SingleSnipState curState = SingleSnipState.getInstance(this);
+        curState.setReaction(mSnipData.mReaction);
 
         mLayout = (LinearLayout)findViewById(R.id.clean_layout);
         mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);

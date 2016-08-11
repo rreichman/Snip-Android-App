@@ -17,6 +17,10 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by ranreichman on 7/19/16.
  */
@@ -43,7 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                 try
                 {
                     final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                    ReactionManager.userLikedSnip(view.getContext(), mDataset.get(currentPositionInDataset).mID);
+                    ReactionManager.userLikedSnip(mDataset.get(currentPositionInDataset).mID);
 
                     mDataset.remove(currentPositionInDataset);
                     mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
@@ -76,7 +80,6 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                     Context context = view.getContext();
                     Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
                     readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
-
                     context.startActivity(readsnipScreenIntent);
                 }
                 catch (IndexOutOfBoundsException e1)
@@ -146,4 +149,5 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
     {
         mDataset.addAll(SnipDataList);
     }
+
 }
