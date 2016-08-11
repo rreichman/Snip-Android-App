@@ -103,26 +103,15 @@
                         android:id="@+id/headline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="3"
-                        android:text="Hello World Hello World Hello World Hello World Hello World"
-                        android:textSize="16dp"
                         android:textColor="@color/snipCardText"
-                        android:gravity="right"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginBottom="3dp"
-
+                        style="@style/SnipCards.CardText.Main"
                         />
                     <snip.androidapp.SnipTextView
                         android:id="@+id/publisher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="Snip"
-                        android:textSize="14dp"
-                        android:textColor="@color/snipCardTextSecondary"
-                        android:layout_alignParentRight="true"
                         android:layout_below="@id/headline"
+                        style="@style/SnipCards.CardText.Secondary"
                         />
 
                 </RelativeLayout>

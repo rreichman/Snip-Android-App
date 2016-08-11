@@ -65,7 +65,7 @@ public class BaseToolbar
                         Log.d("clicked", "liked");
                         operateCollection(
                                 currentActivity,
-                                currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed));
+                                currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked));
                     }
                 }
         );

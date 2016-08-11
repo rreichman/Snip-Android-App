@@ -31,6 +31,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
 
+    private int READ_SNIP_ACTIVITY_ID = 1;
+
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(RecyclerView recyclerView, LinkedList<SnipData> myDataset, LinearLayoutManager linearLayoutManager)
     {
@@ -109,7 +111,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                     Context context = view.getContext();
                     Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
                     readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
-                    ((Activity)context).startActivityForResult(readsnipScreenIntent,0);
+                    ((Activity)context).startActivityForResult(readsnipScreenIntent, READ_SNIP_ACTIVITY_ID);
                 }
                 catch (IndexOutOfBoundsException e1)
                 {

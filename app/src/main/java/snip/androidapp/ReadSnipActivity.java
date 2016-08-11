@@ -1,28 +1,23 @@
 package snip.androidapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
-import android.text.Layout;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -215,7 +210,7 @@ public class ReadSnipActivity extends AppCompatActivity
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
             createLinkView(cur_link);
         }
-        ReactionBarCreator.addReactionBarToLayout(this, mLayout);
+        ReactionBarCreator.addReactionBarToLayout(this, mLayout, mSnipData.mID);
     }
 
     @Override
@@ -227,8 +222,7 @@ public class ReadSnipActivity extends AppCompatActivity
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
 
-        SingleSnipState curState = SingleSnipState.getInstance(this);
-        curState.setReaction(mSnipData.mReaction);
+        SnipReactionsSingleton.getInstance().setReaction(this, mSnipData.mID, mSnipData.mReaction);
 
         mLayout = (LinearLayout)findViewById(R.id.clean_layout);
         mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
@@ -252,6 +246,9 @@ public class ReadSnipActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
+        Intent returnIntent = new Intent();
+//        returnIntent.putExtra(emailField,_emailText.getText().toString());
+//        setResult(RESULT_OK,returnIntent);
         finish();
     }
 }
