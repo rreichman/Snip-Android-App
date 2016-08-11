@@ -45,8 +45,9 @@ public class MyActivity extends SnipHoldingActivity
         String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
         String baseAccessUrl = getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = getResources().getString(R.string.snipsBaseURL);
-        String fullRequestURL = baseAccessUrl + snipsBaseUrl;
-        if (lastRequestURL.isEmpty()) {
+        String newSnipsBaseUrl = getResources().getString(R.string.newSnipsBaseURL);
+        String fullRequestURL = baseAccessUrl + snipsBaseUrl + newSnipsBaseUrl;
+        if (lastRequestURL.isEmpty() || lastRequestURL.equals("null")) {
             fullRequestURL += baseQuery;
         }
         else {
@@ -55,23 +56,4 @@ public class MyActivity extends SnipHoldingActivity
         return fullRequestURL;
     }
 
-//    public void populateWithSnoozeSnips()
-//    {
-//        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
-//        CollectSnipsFromInternet collectSnipsFromInternet =
-//                new CollectSnipsFromInternet(this);
-//        collectSnipsFromInternet.retrieveSnipsFromInternet(
-//                this,
-//                CollectSnipsFromInternet.getSnipsQuerySnoozed(this));
-//    }
-//
-//    public void populateWithLikedSnips()
-//    {
-//        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
-//        CollectSnipsFromInternet collectSnipsFromInternet =
-//                new CollectSnipsFromInternet(getApplicationContext());
-//        collectSnipsFromInternet.retrieveSnipsFromInternet(
-//                this,
-//                CollectSnipsFromInternet.getSnipsQueryLiked(this));
-//    }
 }

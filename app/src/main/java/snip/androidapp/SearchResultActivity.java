@@ -10,7 +10,7 @@ import android.os.Bundle;
 public class SearchResultActivity extends SnipHoldingActivity
 {
     // Is it liked or snoozed
-    private int mSearchResultType;
+    public int mSearchResultType;
 
     @Override
     public void onCreate(Bundle savedInstanceState)

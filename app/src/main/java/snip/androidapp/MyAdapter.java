@@ -17,6 +17,8 @@ import android.view.animation.AnimationUtils;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Set;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -43,6 +45,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         mDataset = myDataset;
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
+    }
+
+    public void removeIdsFromDataset(Set<Long> ids)
+    {
+        LinkedList<SnipData> newDataset = new LinkedList<SnipData>();
+        ListIterator<SnipData> iter = (ListIterator)mDataset.iterator();
+        while (iter.hasNext())
+        {
+            SnipData currentSnip = iter.next();
+            if (!ids.contains(currentSnip.mID))
+            {
+                newDataset.add(currentSnip);
+            }
+        }
+        mDataset = newDataset;
     }
 
     private GestureDetector getGestureDetector(final ViewGroup parent, final View view, final MyViewHolder viewHolder)

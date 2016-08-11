@@ -13,6 +13,7 @@
     <string name="signupURL">rest-auth/registration/</string>
     <string name="reactionBaseURL">reaction/</string>
     <string name="snipsBaseURL">snip/</string>
+    <string name="newSnipsBaseURL">new_snips/</string>
     <string name="likedBaseURL">liked/</string>
     <string name="snoozedBaseURL">snoozed/</string>
     <string name="searchBaseURL">search/</string>

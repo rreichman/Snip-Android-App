@@ -50,6 +50,13 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     public void onResume()
     {
         super.onResume();
+
+        if (null != mAdapter) {
+            ((MyAdapter) mAdapter).removeIdsFromDataset(
+                    SnipReactionsSingleton.getInstance().getIdsToRemoveFromDataset());
+            mAdapter.notifyDataSetChanged();
+            SnipReactionsSingleton.getInstance().mSnipsReaction.clear();
+        }
     }
 
     @Override
@@ -79,6 +86,8 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
         mDataCacheManagement.saveAppInformationToFile(this, mCollectedSnips);
         super.onStop();
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outBundle)

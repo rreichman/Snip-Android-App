@@ -3,6 +3,10 @@ package snip.androidapp;
 import android.content.Context;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ranihorev on 11/08/2016.
@@ -31,6 +35,21 @@ public class SnipReactionsSingleton {
         }
         mSnipsReaction.put(snipID, curState);
 
+    }
+
+    public HashSet<Long> getIdsToRemoveFromDataset()
+    {
+        HashSet<Long> idsToRemove = new HashSet<Long>();
+
+        for (Map.Entry<Long,Integer> e : mSnipsReaction.entrySet())
+        {
+            if (e.getValue() != NO_REACTION)
+            {
+                idsToRemove.add(e.getKey());
+            }
+        }
+
+        return idsToRemove;
     }
 
     public boolean isLiked(long snipID) {

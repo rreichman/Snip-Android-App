@@ -1,9 +1,11 @@
 package snip.androidapp;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * Created by ranihorev on 03/08/2016.
@@ -12,28 +14,12 @@ public class BaseToolbar
 {
     private void openSearchResultActivity(final AppCompatActivity currentActivity, int param)
     {
-        /*if (MyActivity.class == currentActivity.getClass())
-        {
-            if (param == currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed))
-            {
-                ((MyActivity)currentActivity).populateWithSnoozeSnips();
-                return;
-            }
-            else if (param == currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked))
-            {
-                ((MyActivity)currentActivity).populateWithLikedSnips();
-                return;
-            }
-        }*/
 
         Intent searchScreenIntent = new Intent(currentActivity, SearchResultActivity.class);
         // TODO:: change this later
         searchScreenIntent.putExtra("param", param);
         currentActivity.startActivityForResult(searchScreenIntent, param);
 
-        //((Activity)context).startActivityForResult(readsnipScreenIntent,0);
-        //currentActivity.setResult(param);
-        //currentActivity.finish();
     }
 
     public void setupToolbar(final AppCompatActivity currentActivity)
@@ -51,15 +37,31 @@ public class BaseToolbar
 
         }
 
+        int activityType = -1;
+        if (SearchResultActivity.class == currentActivity.getClass())
+        {
+            activityType = ((SearchResultActivity)currentActivity).mSearchResultType;
+            if (currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed) == activityType) {
+                ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
+                curImage.setImageResource(R.drawable.snooze_blue);
+            }
+            else if (currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked) == activityType) {
+                ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
+                curImage.setImageResource(R.drawable.heart_icon_full);
+            }
+        }
+
+        final int activityTypeFinal = activityType;
         currentActivity.findViewById(R.id.snoozeButtonOnToolbar).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "snooze");
-
-                        openSearchResultActivity(
-                                currentActivity,
-                                currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed));
+                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityResultCollectSnoozed)) {
+                            openSearchResultActivity(
+                                    currentActivity,
+                                    currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed));
+                        }
                     }
                 }
         );
@@ -69,9 +71,11 @@ public class BaseToolbar
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "liked");
-                        openSearchResultActivity(
-                                currentActivity,
-                                currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked));
+                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityResultCollectLiked)) {
+                            openSearchResultActivity(
+                                    currentActivity,
+                                    currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked));
+                        }
                     }
                 }
         );
