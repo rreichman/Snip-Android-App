@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="snip_text_margin_horz">10dp</dimen>
     <dimen name="snip_text_margin_vert">3dp</dimen>
+    <dimen name="snip_text_margin_headline_top">10dp</dimen>
+    <dimen name="snip_text_margin_image_top">6dp</dimen>
     <dimen name="basic_margin_horz">12dp</dimen>
     <dimen name="text_line_spacing">-4dp</dimen>
 </resources>

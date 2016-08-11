@@ -88,11 +88,11 @@
     </style>
 
     <style name="SingleSnip.Text.ImageDesc">
-        <item name="android:textSize">8dp</item>
+        <item name="android:textSize">10dp</item>
     </style>
 
     <style name="SingleSnip.Text.Author">
-        <item name="android:textSize">8dp</item>
+        <item name="android:textSize">10dp</item>
         <item name="android:textColor">@color/snipCardTextSecondary</item>
     </style>
 

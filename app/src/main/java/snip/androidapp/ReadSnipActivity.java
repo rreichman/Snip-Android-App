@@ -38,8 +38,8 @@ public class ReadSnipActivity extends AppCompatActivity
     protected int mDefMarginVert;
     protected int mDefGravity;
     protected int mDefTextStyle;
-    protected boolean mIsLiked;
-    protected boolean mIsDisliked;
+    protected int mDefMarginHeadlineTop;
+    protected int mDefMarginImageTop;
 
     private static Spanned fromHtml(String htmlString)
     {
@@ -63,9 +63,9 @@ public class ReadSnipActivity extends AppCompatActivity
         long minutesInMilli = secondsInMilli * 60;
         long hoursInMilli = minutesInMilli * 60;
         long daysInMilli = hoursInMilli * 24;
-        long WeekInMilli = hoursInMilli * 24;
+        long weeksInMilli = daysInMilli * 7;
 
-        long elapsedWeeks = different / daysInMilli;
+        long elapsedWeeks = different / weeksInMilli;
         if (elapsedWeeks > 0) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, ''yy"); // Set your date format
             return sdf.format(startDate);
@@ -75,23 +75,28 @@ public class ReadSnipActivity extends AppCompatActivity
 
         long elapsedDays = different / daysInMilli;
         if (elapsedDays > 0) {
-            return Long.toString(elapsedDays) + "D";
+            return Long.toString(elapsedDays) + " day" + isTimePlural(elapsedDays);
         }
 
         long elapsedHours = different / hoursInMilli;
         if (elapsedHours > 0) {
-            return (Long.toString(elapsedHours) + "H");
+            String prefix = "hr";
+            return Long.toString(elapsedHours) + " hr" + isTimePlural(elapsedHours);
         }
 
         long elapsedMinutes = different / minutesInMilli;
-        return Long.toString(elapsedMinutes) + "m";
-
-
+        return Long.toString(elapsedMinutes) + " min" + isTimePlural(elapsedMinutes);
     }
 
-
+    private String isTimePlural(long elapsedTime) {
+        if (elapsedTime > 1) {
+            return "s";
+        }
+        return "";
+    }
+    
     private void addTextDynamicallyToLayout(String text, boolean isLink, int styleId,
-                                            int margin_horz, int margin_vert, int align, int textStyle)
+                                            int margin_horz, int margin_top, int margin_bottom, int align, int textStyle)
     {
 
         SnipTextView textView = new SnipTextView(new ContextThemeWrapper(this, styleId), styleId);
@@ -100,7 +105,7 @@ public class ReadSnipActivity extends AppCompatActivity
 
         textView.setGravity(align);
         textView.setTypeface(textView.getTypeface(), textStyle);
-        params.setMargins(margin_horz, margin_vert, margin_horz, margin_vert);
+        params.setMargins(margin_horz, margin_top, margin_horz, margin_bottom);
 
         Spanned spanned = fromHtml(text);
         if (isLink)
@@ -148,14 +153,14 @@ public class ReadSnipActivity extends AppCompatActivity
                     case "image":
                         String imageURL = bodyElem.getString("url");
                         String imageTitle = bodyElem.getString("title");
-                        addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image,0 ,mDefMarginVert, 0);
+                        addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image,0 ,mDefMarginImageTop, 0);
                         addTextDynamicallyToLayout(imageTitle, false, R.style.SingleSnip_Text_ImageDesc,
-                                mDefMarginHorz, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
+                                mDefMarginHorz, mDefMarginVert, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
                         break;
                     case "paragraph":
                         String cur_value = bodyElem.getString("value");
                         addTextDynamicallyToLayout(cur_value, false, R.style.SingleSnip_Text,
-                                mDefMarginHorz, mDefMarginVert, mDefGravity, mDefTextStyle);
+                                mDefMarginHorz, mDefMarginVert, mDefMarginVert, mDefGravity, mDefTextStyle);
                         break;
                 }
             }
@@ -172,7 +177,7 @@ public class ReadSnipActivity extends AppCompatActivity
         }
         String htmlLinkString = "<a href=\"" + link.mLink + "\">" + link.mTitle + author + "</a>";
         addTextDynamicallyToLayout(htmlLinkString, true, R.style.SingleSnip_Text,
-                mDefMarginHorz, mDefMarginVert, mDefGravity, mDefTextStyle);
+                mDefMarginHorz, mDefMarginVert, mDefMarginVert, mDefGravity, mDefTextStyle);
 
     }
 
@@ -193,16 +198,16 @@ public class ReadSnipActivity extends AppCompatActivity
         }
         if (!text.isEmpty()) {
             addTextDynamicallyToLayout(text, false, R.style.SingleSnip_Text_Author,
-                    mDefMarginHorz, 0, mDefGravity, mDefTextStyle);
+                    mDefMarginHorz, 0, 0, mDefGravity, mDefTextStyle);
         }
 
         addTextDynamicallyToLayout(getDateDiff(mSnipData.mDate, new Date()), false,
-                R.style.SingleSnip_Text_Author, mDefMarginHorz, 0, mDefGravity, mDefTextStyle);
+                R.style.SingleSnip_Text_Author, mDefMarginHorz, 0, 0, mDefGravity, mDefTextStyle);
     }
 
     private void buildSnipView() {
         addTextDynamicallyToLayout(mSnipData.mHeadline, false, R.style.SingleSnip_Text_Headline,
-                mDefMarginHorz, mDefMarginVert, mDefGravity, Typeface.BOLD);
+                mDefMarginHorz, mDefMarginHeadlineTop, mDefMarginVert, mDefGravity, Typeface.BOLD);
         addSnipMetaDataToLayout();
 
         parseSnipBodyAndCreateView();
@@ -228,6 +233,8 @@ public class ReadSnipActivity extends AppCompatActivity
         mLayout = (LinearLayout)findViewById(R.id.clean_layout);
         mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
         mDefMarginVert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
+        mDefMarginHeadlineTop = (int) getResources().getDimension(R.dimen.snip_text_margin_headline_top);
+        mDefMarginImageTop = (int) getResources().getDimension(R.dimen.snip_text_margin_image_top);
         mDefGravity = Gravity.RIGHT;
         mDefTextStyle = Typeface.NORMAL;
         buildSnipView();
