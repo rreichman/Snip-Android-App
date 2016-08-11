@@ -53,11 +53,11 @@ public class SearchResultActivity extends SnipHoldingActivity
 
     public String getSnipsQueryForActivity()
     {
-        if (getResources().getInteger(R.integer.activityResultCollectSnoozed) == mSearchResultType)
+        if (getResources().getInteger(R.integer.activityCodeSnoozedActivity) == mSearchResultType)
         {
             return getSnipsQuerySnoozed();
         }
-        else if (getResources().getInteger(R.integer.activityResultCollectLiked) == mSearchResultType)
+        else if (getResources().getInteger(R.integer.activityCodeLikedActivity) == mSearchResultType)
         {
             return getSnipsQueryLiked();
         }
@@ -65,5 +65,10 @@ public class SearchResultActivity extends SnipHoldingActivity
         {
             return null;
         }
+    }
+
+    public int getActivityCode()
+    {
+        return mSearchResultType;
     }
 }

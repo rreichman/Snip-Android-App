@@ -3,6 +3,7 @@
     <item type="integer" name="div_margin_prct" format="integer">20</item>
     <item type="integer" name="numSnipsPerLoading" format="integer">10</item>
     <item type="integer" name="loginActivityCode" format="integer">10</item>
-    <item type="integer" name="activityResultCollectSnoozed" format="integer">11</item>
-    <item type="integer" name="activityResultCollectLiked" format="integer">12</item>
+    <item type="integer" name="activityCodeSnoozedActivity" format="integer">11</item>
+    <item type="integer" name="activityCodeLikedActivity" format="integer">12</item>
+    <item type="integer" name="activityCodeMyActivity" format="integer">13</item>
 </resources>

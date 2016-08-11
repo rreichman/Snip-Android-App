@@ -33,18 +33,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
+    public int mActivityType;
 
     private int READ_SNIP_ACTIVITY_ID = 1;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(
             RecyclerView recyclerView, LinkedList<SnipData> myDataset,
-            LinearLayoutManager linearLayoutManager, String defaultQuery)
+            LinearLayoutManager linearLayoutManager, String defaultQuery, int activityType)
     {
         mRecyclerView = recyclerView;
         mDataset = myDataset;
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
+        mActivityType = activityType;
     }
 
     public void removeIdsFromDataset(Set<Long> ids)
@@ -68,52 +70,57 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
             @Override
             public boolean onDoubleTap(MotionEvent e)
             {
-                try
+                final int SNOOZE_SCREEN_CODE =
+                        parent.getContext().getResources().getInteger(R.integer.activityCodeSnoozedActivity);
+
+                if (SNOOZE_SCREEN_CODE != mActivityType)
                 {
-                    final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                    ReactionManager.userSnoozedSnip(mDataset.get(currentPositionInDataset).mID);
+                    try
+                    {
+                        final int currentPositionInDataset = viewHolder.getAdapterPosition();
+                        ReactionManager.userSnoozedSnip(mDataset.get(currentPositionInDataset).mID);
 
-                    final MyViewHolder cardHolder = (MyViewHolder)mRecyclerView.findViewHolderForAdapterPosition(currentPositionInDataset);
-                    //final ImageView heartAnim = (ImageView) view.findViewById(R.id.heart_anim);
-                    Animation pulse_fade = AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
-                    pulse_fade.setDuration(2000);
-                    pulse_fade.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                            cardHolder.mHeartImage.bringToFront();
-                            cardHolder.mHeartImage.setVisibility(View.VISIBLE);
-                        }
+                        final MyViewHolder cardHolder = (MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(currentPositionInDataset);
+                        Animation snoozeAnimation =
+                                AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
 
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            cardHolder.mHeartImage.setVisibility(View.GONE);
-                        }
+                        final int DURATION_OF_ANIMATION_IN_MS = 400;
+                        snoozeAnimation.setDuration(DURATION_OF_ANIMATION_IN_MS);
+                        snoozeAnimation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                                cardHolder.mHeartImage.bringToFront();
+                                cardHolder.mHeartImage.setVisibility(View.VISIBLE);
+                            }
 
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                cardHolder.mHeartImage.setVisibility(View.GONE);
+                                mDataset.remove(currentPositionInDataset);
+                                mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
+                                EndlessRecyclerOnScrollListener.onScrolledLogic(
+                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery);
+                            }
 
-                        }
-                    });
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            cardHolder.mHeartImage.setVisibility(View.GONE);
-                        }
-                    }, pulse_fade.getDuration());
-                    cardHolder.mHeartImage.startAnimation(pulse_fade);
-
-                    mDataset.remove(currentPositionInDataset);
-                    mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
-                    EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLinearLayoutManager, mDefaultQuery);
-                }
-                catch (IndexOutOfBoundsException e1)
-                {
-                    e1.printStackTrace();
-                }
-                catch (NullPointerException e2)
-                {
-                    e2.printStackTrace();
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {}
+                        });
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                cardHolder.mHeartImage.setVisibility(View.GONE);
+                            }
+                        }, snoozeAnimation.getDuration());
+                        cardHolder.mHeartImage.startAnimation(snoozeAnimation);
+                    }
+                    catch (IndexOutOfBoundsException e1)
+                    {
+                        e1.printStackTrace();
+                    }
+                    catch (NullPointerException e2)
+                    {
+                        e2.printStackTrace();
+                    }
                 }
 
                 Log.d("TEST", "onDoubleTap");

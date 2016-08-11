@@ -56,4 +56,8 @@ public class MyActivity extends SnipHoldingActivity
         return fullRequestURL;
     }
 
+    public int getActivityCode()
+    {
+        return getResources().getInteger(R.integer.activityCodeMyActivity);
+    }
 }
