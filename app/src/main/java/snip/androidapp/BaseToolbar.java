@@ -1,6 +1,7 @@
 package snip.androidapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,17 +18,17 @@ public class BaseToolbar
             if (param == currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed))
             {
                 ((MyActivity)currentActivity).populateWithSnoozeSnips();
+                return;
             }
             else if (param == currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked))
             {
                 ((MyActivity)currentActivity).populateWithLikedSnips();
+                return;
             }
         }
-        else
-        {
-            currentActivity.setResult(param);
-            currentActivity.finish();
-        }
+
+        currentActivity.setResult(param);
+        currentActivity.finish();
     }
 
     public void setupToolbar(final AppCompatActivity currentActivity)
@@ -69,6 +70,17 @@ public class BaseToolbar
                     }
                 }
         );
+
+        // TODO:: add the
+        /*currentActivity.findViewById(R.id.snipLogoOnToolbar).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("clicked", "liked");
+
+                    }
+                }
+        );*/
     }
 
 }
