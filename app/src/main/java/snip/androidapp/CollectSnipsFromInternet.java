@@ -19,17 +19,17 @@ import java.util.LinkedList;
 public class CollectSnipsFromInternet
 {
     private int mSnipsToCollect;
-    private int mSnipsCollectedInCurrentSession;
+    private int mAmountOfSnipsCollectedInCurrentSession;
 
     LinkedList<SnipData> mSnipsFromBackend = new LinkedList<SnipData>();
 
     public CollectSnipsFromInternet(Context context)
     {
         mSnipsToCollect = context.getResources().getInteger(R.integer.numSnipsPerLoading);
-        mSnipsCollectedInCurrentSession = 0;
+        mAmountOfSnipsCollectedInCurrentSession = 0;
     }
 
-    private String getSnipsQuery(Context context)
+    private static String getSnipsQuery(Context context)
     {
         final String baseQuery = "?im_width=600&im_height=600";
         String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
@@ -45,7 +45,31 @@ public class CollectSnipsFromInternet
         return fullRequestURL;
     }
 
+    public static String getSnipsQueryLiked(Context context)
+    {
+        final String baseQuery = "?im_width=600&im_height=600";
+        String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
+        String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
+        String likedBaseUrl = context.getResources().getString(R.string.likedBaseURL);
+        return baseAccessUrl + snipsBaseUrl + likedBaseUrl + baseQuery;
+    }
+
+    public static String getSnipsQuerySnoozed(Context context)
+    {
+        final String baseQuery = "?im_width=600&im_height=600";
+        String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
+        String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
+        String snoozedBaseUrl = context.getResources().getString(R.string.snoozedBaseURL);
+        return baseAccessUrl + snipsBaseUrl + snoozedBaseUrl + baseQuery;
+    }
+
     public void retrieveSnipsFromInternet(final Context context)
+    {
+        retrieveSnipsFromInternet(context, null);
+    }
+
+    // If the queryFromServer is null then we use the default query
+    public void retrieveSnipsFromInternet(final Context context, String queryFromServer)
     {
         JSONObject loginJsonParams = new JSONObject();
 
@@ -69,9 +93,17 @@ public class CollectSnipsFromInternet
                     }
                 };
 
-        VolleyInternetOperator.accessWebsiteWithVolley(
-                context, getSnipsQuery(context), Request.Method.GET, loginJsonParams, headers,
-                responseFunction, errorFunction);
+        if (null == queryFromServer) {
+            VolleyInternetOperator.accessWebsiteWithVolley(
+                    context, getSnipsQuery(context), Request.Method.GET, loginJsonParams, headers,
+                    responseFunction, errorFunction);
+        }
+        else
+        {
+            VolleyInternetOperator.accessWebsiteWithVolley(
+                    context, queryFromServer, Request.Method.GET, loginJsonParams, headers,
+                    responseFunction, errorFunction);
+        }
     }
 
     public void responseFunctionImplementation(
@@ -81,7 +113,7 @@ public class CollectSnipsFromInternet
             JSONArray jsonArray = response.getJSONArray("results");
             mSnipsFromBackend.addAll(SnipConversionUtils.convertJsonArrayToSnipList(jsonArray));
             int mLastSnipsCollection = jsonArray.length();
-            mSnipsCollectedInCurrentSession += mLastSnipsCollection;
+            mAmountOfSnipsCollectedInCurrentSession += mLastSnipsCollection;
             String fullNextRequest = response.getString("next");
             if (fullNextRequest.equals("null"))
             {
@@ -94,7 +126,7 @@ public class CollectSnipsFromInternet
                 SnipCollectionInformation.getInstance().setLastSnipQuery(nextQueryString);
             }
 
-            if ((!fullNextRequest.equals("null")) && (mSnipsCollectedInCurrentSession < mSnipsToCollect))
+            if ((!fullNextRequest.equals("null")) && (mAmountOfSnipsCollectedInCurrentSession < mSnipsToCollect))
             {
                 retrieveSnipsFromInternet(context);
             }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,13 +64,12 @@ public class FeedbackActivity extends AppCompatActivity
 
             Context context = CustomVolleyRequestQueue.getInstance().getContext();
             String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
-            String reactionBaseUrl = context.getResources().getString(R.string.reactionBaseURL);
-            String url = baseAccessURL + reactionBaseUrl;
+            String feedbackBaseUrl = context.getResources().getString(R.string.feedbackBaseUrl);
+            String url = baseAccessURL + feedbackBaseUrl;
 
             JSONObject params = new JSONObject();
             try {
-                params.put("content_type", "snip");
-                params.put("feedback_text", feedbackText);
+                params.put("feedback", feedbackText);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -82,6 +82,14 @@ public class FeedbackActivity extends AppCompatActivity
             Log.d("exception", "in post");
             Toast.makeText(getApplicationContext(), "Failed to send feedback :( Please try again", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     @Override

@@ -187,6 +187,7 @@ public class ReadSnipActivity extends AppCompatActivity
     }
 
     private void addSnipMetaDataToLayout() {
+        // TODO:: move this string to strings
         String text = getResources().getString(R.string.writtenBy);
         if ((!mSnipData.mPublisher.isEmpty()) && (!mSnipData.mAuthor.isEmpty())) {
             text += mSnipData.mPublisher + ", " + mSnipData.mAuthor;

@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" android:theme="@style/LoginAppTheme.Dark" />
+        <activity android:name=".FeedbackActivity" android:theme="@style/LoginAppTheme.Dark" />
         <activity android:name=".SignupActivity" android:theme="@style/LoginAppTheme.Dark" />
         <meta-data
             android:name="io.fabric.ApiKey"

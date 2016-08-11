@@ -17,7 +17,7 @@ import android.widget.TextView;
 // Provide a reference to the views for each data item
 // Complex data items may need more than one view per item, and
 // you provide access to all the views for a data item in a view holder
-public class ViewHolder extends RecyclerView.ViewHolder
+public class MyViewHolder extends RecyclerView.ViewHolder
 {
     public RelativeLayout mForeground;
     public RelativeLayout mSwipeBackgroundRight;
@@ -35,7 +35,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         return dimension;
     }
 
-    public ViewHolder(View view)
+    public MyViewHolder(View view)
     {
         super(view);
         this.mForeground = (RelativeLayout)view.findViewById(R.id.recLayout);

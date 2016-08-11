@@ -13,6 +13,8 @@
     <string name="signupURL">rest-auth/registration/</string>
     <string name="reactionBaseURL">reaction/</string>
     <string name="snipsBaseURL">snip/</string>
+    <string name="likedBaseURL">liked/</string>
+    <string name="snoozedBaseURL">snoozed/</string>
     <string name="searchBaseURL">search/</string>
     <string name="categeoriesBaseURL">tag/</string>
     <string name="categeoriesFixedURL">fixed/</string>
@@ -22,6 +24,8 @@
     <string name="tokenField">key</string>
     <string name="requestContentType">application/json; charset=utf-8</string>
     <string name="feedbackHint">Insert feedback here</string>
+    <string name="feedbackMenuTitle">Feedback</string>
+    <string name="feedbackBaseUrl">feedback/</string>
 
     <!--http://192.168.1.215:8000/api-->
 </resources>
