@@ -13,6 +13,8 @@
     <string name="signupURL">rest-auth/registration/</string>
     <string name="reactionBaseURL">reaction/</string>
     <string name="snipsBaseURL">snip/</string>
+    <string name="likedBaseURL">liked/</string>
+    <string name="snoozedBaseURL">snoozed/</string>
     <string name="searchBaseURL">search/</string>
     <string name="categeoriesBaseURL">tag/</string>
     <string name="categeoriesFixedURL">fixed/</string>
@@ -24,6 +26,9 @@
     <string name="snoozeText">Read Later</string>
     <string name="dislikeText">Not for me</string>
     <string name="likeText">Interesting</string>
+    <string name="feedbackHint">Insert feedback here</string>
+    <string name="feedbackMenuTitle">Feedback</string>
+    <string name="feedbackBaseUrl">feedback/</string>
 
     <string name="ReactionLike">like</string>
     <string name="ReactionUnLike">un_like</string>

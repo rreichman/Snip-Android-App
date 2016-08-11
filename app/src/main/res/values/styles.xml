@@ -138,6 +138,12 @@
         <item name="android:textSize">16dp</item>
     </style>
 
+    <style name="PopupMenuStyle" parent="Theme.AppCompat.Light">
+        <item name="android:background">@color/brightGray</item>
+        <item name="android:textSize">20dp</item>
+        <item name="overlapAnchor">false</item>
+        <item name="android:textColorSecondary">@android:color/black</item>
+    </style>
 </resources>
 
 

@@ -27,6 +27,8 @@ public class SnipCollectionInformation
     public ReentrantLock mLock;
     private String mTokenForWebsiteAccess;
     private boolean mShouldRestartViewAfterCollection;
+    // TODO:: this is a hack, needs to be changed
+    private boolean mShouldUseNewSnips;
 
     protected SnipCollectionInformation()
     {
@@ -35,6 +37,18 @@ public class SnipCollectionInformation
         mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
         mTokenForWebsiteAccess = null;
         mShouldRestartViewAfterCollection = false;
+    }
+
+    public boolean getShouldUseNewSnipsAndReset()
+    {
+        boolean returnValue = mShouldUseNewSnips;
+        mShouldUseNewSnips = false;
+        return returnValue;
+    }
+
+    public void setShouldUseNewSnips(boolean value)
+    {
+        mShouldUseNewSnips = value;
     }
 
     public boolean getShouldRestartViewAfterCollectionAndReset()

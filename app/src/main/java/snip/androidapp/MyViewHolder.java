@@ -2,6 +2,7 @@ package snip.androidapp;
 
 import android.content.Context;
 import android.graphics.Picture;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 // Provide a reference to the views for each data item
 // Complex data items may need more than one view per item, and
 // you provide access to all the views for a data item in a view holder
-public class ViewHolder extends RecyclerView.ViewHolder
+public class MyViewHolder extends RecyclerView.ViewHolder
 {
     public RelativeLayout mForeground;
     public RelativeLayout mSwipeBackgroundRight;
@@ -24,6 +25,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
     public SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
     public SnipTextView mSnipPublisher;
+    public ImageView mHeartImage;
 
     private DisplayMetrics getScreenDimensions(Context context)
     {
@@ -33,7 +35,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         return dimension;
     }
 
-    public ViewHolder(View view)
+    public MyViewHolder(View view)
     {
         super(view);
         this.mForeground = (RelativeLayout)view.findViewById(R.id.recLayout);
@@ -42,6 +44,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         this.mSnipHeadline = (SnipTextView) view.findViewById(R.id.headline);
         this.mSnipPublisher = (SnipTextView) view.findViewById(R.id.publisher);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
+        this.mHeartImage = (ImageView)view.findViewById(R.id.heart_anim);
 
         view.setClickable(true);
     }

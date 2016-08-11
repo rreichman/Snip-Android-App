@@ -3,7 +3,6 @@ package snip.androidapp;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.support.v4.app.ShareCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
@@ -13,29 +12,17 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.os.Bundle;
-import android.content.res.Configuration;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
-import butterknife.BindString;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
@@ -50,15 +37,12 @@ import io.fabric.sdk.android.Fabric;
 public class MyActivity extends AppCompatActivity
 {
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter<ViewHolder> mAdapter;
+    private RecyclerView.Adapter<MyViewHolder> mAdapter;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeContainer;
     // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
     // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
     private LinkedList<SnipData> mCollectedSnips;
-
-    // Arbitrarily chose 10 for no reason
-    final int LOGIN_ACTIVITY_CODE = 10;
 
     @Override
     public void onStop()
@@ -91,7 +75,8 @@ public class MyActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         ButterKnife.bind(this);
@@ -100,7 +85,7 @@ public class MyActivity extends AppCompatActivity
         if (null == SnipCollectionInformation.getInstance().getTokenForWebsiteAccess(this))
         {
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, LOGIN_ACTIVITY_CODE);
+            startActivityForResult(intent, getResources().getInteger(R.integer.loginActivityCode));
         }
         else
         {
@@ -108,7 +93,9 @@ public class MyActivity extends AppCompatActivity
             {
                 mCollectedSnips = DataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
                 startActivityOperation();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
@@ -117,12 +104,20 @@ public class MyActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == LOGIN_ACTIVITY_CODE)
+        if (requestCode == getResources().getInteger(R.integer.loginActivityCode))
         {
             if (resultCode == MyActivity.RESULT_OK)
             {
                 startActivityOperation();
             }
+        }
+        else if (resultCode == getResources().getInteger(R.integer.activityResultCollectSnoozed))
+        {
+            populateWithSnoozeSnips();
+        }
+        else if (resultCode == getResources().getInteger(R.integer.activityResultCollectLiked))
+        {
+            populateWithLikedSnips();
         }
     }
 
@@ -131,7 +126,26 @@ public class MyActivity extends AppCompatActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
         return true;
+    }
+
+    private void openFeedbackMenu()
+    {
+        Intent feedbackIntent = new Intent(this, FeedbackActivity.class);
+        startActivityForResult(feedbackIntent,0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.feedbackMenu:
+                openFeedbackMenu();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void startUI() {
@@ -141,6 +155,28 @@ public class MyActivity extends AppCompatActivity
     }
 
 
+
+
+
+    public void populateWithSnoozeSnips()
+    {
+        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
+        CollectSnipsFromInternet collectSnipsFromInternet =
+                new CollectSnipsFromInternet(this);
+        collectSnipsFromInternet.retrieveSnipsFromInternet(
+                this,
+                CollectSnipsFromInternet.getSnipsQuerySnoozed(this));
+    }
+
+    public void populateWithLikedSnips()
+    {
+        SnipCollectionInformation.getInstance().setShouldUseNewSnips(true);
+        CollectSnipsFromInternet collectSnipsFromInternet =
+                new CollectSnipsFromInternet(getApplicationContext());
+        collectSnipsFromInternet.retrieveSnipsFromInternet(
+                this,
+                CollectSnipsFromInternet.getSnipsQueryLiked(this));
+    }
 
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback()
     {
@@ -179,7 +215,7 @@ public class MyActivity extends AppCompatActivity
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
             {
-                getDefaultUIUtil().clearView(((ViewHolder) viewHolder).mForeground);
+                getDefaultUIUtil().clearView(((MyViewHolder) viewHolder).mForeground);
             }
 
             @Override
@@ -187,7 +223,7 @@ public class MyActivity extends AppCompatActivity
                     Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                     float dX, float dY, int actionState, boolean isCurrentlyActive)
             {
-                final View foregroundView = ((ViewHolder)viewHolder).mForeground;
+                final View foregroundView = ((MyViewHolder)viewHolder).mForeground;
                 drawBackground(viewHolder, dX, actionState);
                 getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
             }
@@ -200,8 +236,8 @@ public class MyActivity extends AppCompatActivity
                     Point screenSize = new Point();
                     display.getSize(screenSize);
 
-                    final View backgroundViewRight = ((ViewHolder) viewHolder).mSwipeBackgroundRight;
-                    final View backgroundViewLeft = ((ViewHolder) viewHolder).mSwipeBackgroundLeft;
+                    final View backgroundViewRight = ((MyViewHolder) viewHolder).mSwipeBackgroundRight;
+                    final View backgroundViewLeft = ((MyViewHolder) viewHolder).mSwipeBackgroundLeft;
 
                     // Swiping Right
                     if (dX > 0)
@@ -247,7 +283,8 @@ public class MyActivity extends AppCompatActivity
 
     public void populateActivity()
     {
-        if (null == mCollectedSnips)
+        if ((null == mCollectedSnips) ||
+                SnipCollectionInformation.getInstance().getShouldUseNewSnipsAndReset())
         {
             mCollectedSnips = SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
         }
@@ -267,6 +304,7 @@ public class MyActivity extends AppCompatActivity
         }
         else
         {
+            ((MyAdapter)mAdapter).mDataset = mCollectedSnips;
             mAdapter.notifyDataSetChanged();
         }
     }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/brightOrange">
+    <include
+        layout="@layout/toolbar_main"/>
+    <EditText
+        android:id="@+id/feedbackText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:hint="@string/feedbackHint"
+        android:textColorHint="@android:color/black"
+        android:textColor="@android:color/black"
+        android:inputType="textMultiLine"
+        android:lines="12"
+        android:background="@android:color/white"
+        android:gravity="top"
+        android:layout_below="@+id/toolbar"/>
+    <Button
+        android:id="@+id/sendFeedbackButton"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:text="Send"
+        android:textSize="25dp"
+        android:layout_below="@id/feedbackText"/>
+
+</RelativeLayout>

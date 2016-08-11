@@ -8,9 +8,11 @@
     <color name="snipCardText">#000000</color>
     <color name="snipText">#000000</color>
     <color name="snipCardTextSecondary">#767676</color>
+    <color name="brightGray">#E0E0E0</color>
     <color name="app_background">#ffffff</color>
     <color name="indigo">#3F51B5</color>
     <color name="toolbarTitle">#000000</color>
+    <color name="brightOrange">#FFF3E0</color>
     <color name="toolbarBack">#fcb954</color>
     <color name="divider">#ffc95f</color>
     <color name="trans">#00000000 </color>

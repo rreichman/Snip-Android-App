@@ -1,8 +1,9 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,11 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.io.Serializable;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -24,10 +25,10 @@ import butterknife.ButterKnife;
 /**
  * Created by ranreichman on 7/19/16.
  */
-public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
+public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 {
     private RecyclerView mRecyclerView;
-    private LinkedList<SnipData> mDataset;
+    public LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -38,7 +39,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
         mLinearLayoutManager = linearLayoutManager;
     }
 
-    private GestureDetector getGestureDetector(final ViewGroup parent, final View view, final ViewHolder viewHolder)
+    private GestureDetector getGestureDetector(final ViewGroup parent, final View view, final MyViewHolder viewHolder)
     {
         return new GestureDetector(parent.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -49,10 +50,38 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                     final int currentPositionInDataset = viewHolder.getAdapterPosition();
                     ReactionManager.userLikedSnip(mDataset.get(currentPositionInDataset).mID);
 
+                    final MyViewHolder cardHolder = (MyViewHolder)mRecyclerView.findViewHolderForAdapterPosition(currentPositionInDataset);
+                    //final ImageView heartAnim = (ImageView) view.findViewById(R.id.heart_anim);
+                    Animation pulse_fade = AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
+                    pulse_fade.setDuration(1000);
+                    pulse_fade.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            cardHolder.mHeartImage.bringToFront();
+                            cardHolder.mHeartImage.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            cardHolder.mHeartImage.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            cardHolder.mHeartImage.setVisibility(View.GONE);
+                        }
+                    }, pulse_fade.getDuration());
+                    cardHolder.mHeartImage.startAnimation(pulse_fade);
+
                     mDataset.remove(currentPositionInDataset);
                     mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLinearLayoutManager);
-
                 }
                 catch (IndexOutOfBoundsException e1)
                 {
@@ -80,7 +109,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
                     Context context = view.getContext();
                     Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
                     readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
-                    context.startActivity(readsnipScreenIntent);
+                    ((Activity)context).startActivityForResult(readsnipScreenIntent,0);
                 }
                 catch (IndexOutOfBoundsException e1)
                 {
@@ -98,11 +127,11 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
+    public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {
         // create a new view
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.snip_card_view, parent, false);
-        final ViewHolder viewHolder = new ViewHolder(view);
+        final MyViewHolder viewHolder = new MyViewHolder(view);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             private GestureDetector gestureDetector = getGestureDetector(parent, view, viewHolder);
@@ -118,7 +147,7 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder>
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
+    public void onBindViewHolder(MyViewHolder holder, int position)
     {
         SnipData currentSnip = mDataset.get(position);
         holder.mSnipHeadline.setText(currentSnip.mHeadline);
