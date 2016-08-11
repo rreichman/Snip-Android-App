@@ -20,47 +20,15 @@ public class CollectSnipsFromInternet
 {
     private int mSnipsToCollect;
     private int mAmountOfSnipsCollectedInCurrentSession;
+    public String mBasicQuery;
 
     LinkedList<SnipData> mSnipsFromBackend = new LinkedList<SnipData>();
 
-    public CollectSnipsFromInternet(Context context)
+    public CollectSnipsFromInternet(Context context, String basicQuery)
     {
         mSnipsToCollect = context.getResources().getInteger(R.integer.numSnipsPerLoading);
         mAmountOfSnipsCollectedInCurrentSession = 0;
-    }
-
-    private static String getSnipsQuery(Context context)
-    {
-        final String baseQuery = "?im_width=600&im_height=600";
-        String lastRequestURL = SnipCollectionInformation.getInstance().getLastSnipQuery();
-        String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
-        String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
-        String fullRequestURL = baseAccessUrl + snipsBaseUrl;
-        if (lastRequestURL.isEmpty()) {
-            fullRequestURL += baseQuery;
-        }
-        else {
-            fullRequestURL += lastRequestURL;
-        }
-        return fullRequestURL;
-    }
-
-    public static String getSnipsQueryLiked(Context context)
-    {
-        final String baseQuery = "?im_width=600&im_height=600";
-        String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
-        String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
-        String likedBaseUrl = context.getResources().getString(R.string.likedBaseURL);
-        return baseAccessUrl + snipsBaseUrl + likedBaseUrl + baseQuery;
-    }
-
-    public static String getSnipsQuerySnoozed(Context context)
-    {
-        final String baseQuery = "?im_width=600&im_height=600";
-        String baseAccessUrl = context.getResources().getString(R.string.baseAccessURL);
-        String snipsBaseUrl = context.getResources().getString(R.string.snipsBaseURL);
-        String snoozedBaseUrl = context.getResources().getString(R.string.snoozedBaseURL);
-        return baseAccessUrl + snipsBaseUrl + snoozedBaseUrl + baseQuery;
+        mBasicQuery = basicQuery;
     }
 
     public void retrieveSnipsFromInternet(final Context context)
@@ -93,9 +61,10 @@ public class CollectSnipsFromInternet
                     }
                 };
 
-        if (null == queryFromServer) {
+        if (null == queryFromServer)
+        {
             VolleyInternetOperator.accessWebsiteWithVolley(
-                    context, getSnipsQuery(context), Request.Method.GET, loginJsonParams, headers,
+                    context, mBasicQuery, Request.Method.GET, loginJsonParams, headers,
                     responseFunction, errorFunction);
         }
         else
@@ -128,12 +97,12 @@ public class CollectSnipsFromInternet
 
             if ((!fullNextRequest.equals("null")) && (mAmountOfSnipsCollectedInCurrentSession < mSnipsToCollect))
             {
-                retrieveSnipsFromInternet(context);
+                retrieveSnipsFromInternet(context, mBasicQuery);
             }
             else
             {
                 SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
-                ((MyActivity)context).populateActivity();
+                ((SnipHoldingActivity)context).populateActivity();
             }
         }
         catch (JSONException e)

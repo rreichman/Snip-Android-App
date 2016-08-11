@@ -16,12 +16,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
     private LinearLayoutManager mLinearLayoutManager;
+    private String mBaseQuery;
 
-    public EndlessRecyclerOnScrollListener(LinearLayoutManager linearLayoutManager) {
-        this.mLinearLayoutManager = linearLayoutManager;
+    public EndlessRecyclerOnScrollListener(LinearLayoutManager linearLayoutManager, String baseQuery) {
+        mLinearLayoutManager = linearLayoutManager;
+        mBaseQuery = baseQuery;
     }
 
-    private static void loadMore(RecyclerView view)
+    private static void loadMore(RecyclerView view, String baseQuery)
     {
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
@@ -38,13 +40,14 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             if (!SnipCollectionInformation.getInstance().getLastSnipQuery().equals("null"))
             {
                 CollectSnipsFromInternet collectSnipsFromInternet =
-                        new CollectSnipsFromInternet(view.getContext());
+                        new CollectSnipsFromInternet(view.getContext(), baseQuery);
                 collectSnipsFromInternet.retrieveSnipsFromInternet(view.getContext());
             }
         }
     }
 
-    public static void onScrolledLogic(RecyclerView recyclerView, LinearLayoutManager linearLayoutManager)
+    public static void onScrolledLogic(
+            RecyclerView recyclerView, LinearLayoutManager linearLayoutManager, String baseQuery)
     {
         try
         {
@@ -54,7 +57,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             final int visibleThreshold = 4;
 
             if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
-                loadMore(recyclerView);
+                loadMore(recyclerView, baseQuery);
             }
         }
         catch (Exception e)
@@ -69,7 +72,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
-        onScrolledLogic(recyclerView, mLinearLayoutManager);
+        onScrolledLogic(recyclerView, mLinearLayoutManager, mBaseQuery);
     }
 
     @Override

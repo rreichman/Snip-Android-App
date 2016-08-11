@@ -1,6 +1,5 @@
 package snip.androidapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,9 +10,9 @@ import android.view.View;
  */
 public class BaseToolbar
 {
-    private void operateCollection(final AppCompatActivity currentActivity, int param)
+    private void openSearchResultActivity(final AppCompatActivity currentActivity, int param)
     {
-        if (MyActivity.class == currentActivity.getClass())
+        /*if (MyActivity.class == currentActivity.getClass())
         {
             if (param == currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed))
             {
@@ -25,10 +24,16 @@ public class BaseToolbar
                 ((MyActivity)currentActivity).populateWithLikedSnips();
                 return;
             }
-        }
+        }*/
 
-        currentActivity.setResult(param);
-        currentActivity.finish();
+        Intent searchScreenIntent = new Intent(currentActivity, SearchResultActivity.class);
+        // TODO:: change this later
+        searchScreenIntent.putExtra("param", param);
+        currentActivity.startActivityForResult(searchScreenIntent, param);
+
+        //((Activity)context).startActivityForResult(readsnipScreenIntent,0);
+        //currentActivity.setResult(param);
+        //currentActivity.finish();
     }
 
     public void setupToolbar(final AppCompatActivity currentActivity)
@@ -52,7 +57,7 @@ public class BaseToolbar
                     public void onClick(View view) {
                         Log.d("clicked", "snooze");
 
-                        operateCollection(
+                        openSearchResultActivity(
                                 currentActivity,
                                 currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed));
                     }
@@ -64,9 +69,9 @@ public class BaseToolbar
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "liked");
-                        operateCollection(
+                        openSearchResultActivity(
                                 currentActivity,
-                                currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed));
+                                currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked));
                     }
                 }
         );

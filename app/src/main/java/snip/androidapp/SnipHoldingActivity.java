@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +38,7 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
     // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
     protected LinkedList<SnipData> mCollectedSnips;
+    protected DataCacheManagement mDataCacheManagement;
 
     @Override
     public void onPause()
@@ -74,14 +76,14 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     @Override
     public void onStop()
     {
-        DataCacheManagement.saveAppInformationToFile(this, mCollectedSnips);
+        mDataCacheManagement.saveAppInformationToFile(this, mCollectedSnips);
         super.onStop();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outBundle)
     {
-        DataCacheManagement.saveSnipDataToBundle(outBundle, mCollectedSnips);
+        mDataCacheManagement.saveSnipDataToBundle(outBundle, mCollectedSnips);
         super.onSaveInstanceState(outBundle);
     }
 
@@ -98,18 +100,13 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
         }
         else
         {
-            try
-            {
-                mCollectedSnips = DataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
-                startActivityOperation();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            operateAfterLogin(savedInstanceState);
         }
     }
 
+    protected abstract void operateAfterLogin(Bundle savedInstanceState);
+
+    protected abstract String getSnipsQueryForActivity();
 
     protected void initializeImportantStuff()
     {
@@ -135,6 +132,15 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
 
         ImageLoader.getInstance().init(imageLoaderConfiguration);
         CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
+        mDataCacheManagement = new DataCacheManagement(
+                getSnipDataCacheFilename(), getSnipQueryCacheFilename());
+    }
+
+    private String getSnipDataCacheFilename() { return "savedSnipData.dat"; }
+
+    private String getSnipQueryCacheFilename()
+    {
+        return "savedSnipQuery.dat";
     }
 
     private void logUserIntoCrashlytics()
@@ -189,8 +195,8 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
         if (null == mCollectedSnips)
         {
-            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(getApplicationContext());
-            //mCollectedSnips = snipCollector.retrieveSnipsFromInternet(this);
+            CollectSnipsFromInternet snipCollector =
+                    new CollectSnipsFromInternet(getApplicationContext(), getSnipsQueryForActivity());
             snipCollector.retrieveSnipsFromInternet(this);
         }
         else
@@ -204,7 +210,7 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     {
         mCollectedSnips = null;
         SnipCollectionInformation.getInstance().cleanLastSnipQuery();
-        DataCacheManagement.deleteAppInformationFiles(this);
+        mDataCacheManagement.deleteActivityInformationFiles(this);
         startActivityOperation();
     }
 
@@ -230,14 +236,16 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
 
     private void startNewAdapter()
     {
-        mAdapter = new MyAdapter(mRecyclerView, mCollectedSnips, mLayoutManager);
+        mAdapter = new MyAdapter(
+                mRecyclerView, mCollectedSnips, mLayoutManager, getSnipsQueryForActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback swipeTouchHelperCallback = getSwipeTouchHelperCallback();
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeTouchHelperCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {});
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(
+                mLayoutManager, getSnipsQueryForActivity()) {});
     }
 
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback()
@@ -253,7 +261,8 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
                     ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
-                    EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
+                    EndlessRecyclerOnScrollListener.onScrolledLogic(
+                            mRecyclerView, mLayoutManager, getSnipsQueryForActivity());
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
@@ -261,7 +270,8 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
                     ReactionManager.userLikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
-                    EndlessRecyclerOnScrollListener.onScrolledLogic(mRecyclerView, mLayoutManager);
+                    EndlessRecyclerOnScrollListener.onScrolledLogic(
+                            mRecyclerView, mLayoutManager, getSnipsQueryForActivity());
                 }
 
                 mAdapter.notifyDataSetChanged();
