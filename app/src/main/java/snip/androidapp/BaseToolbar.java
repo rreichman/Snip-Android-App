@@ -41,11 +41,11 @@ public class BaseToolbar
         if (SearchResultActivity.class == currentActivity.getClass())
         {
             activityType = ((SearchResultActivity)currentActivity).mSearchResultType;
-            if (currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed) == activityType) {
+            if (currentActivity.getResources().getInteger(R.integer.activityCodeSnoozedActivity) == activityType) {
                 ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
                 curImage.setImageResource(R.drawable.snooze_blue);
             }
-            else if (currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked) == activityType) {
+            else if (currentActivity.getResources().getInteger(R.integer.activityCodeLikedActivity) == activityType) {
                 ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
                 curImage.setImageResource(R.drawable.heart_icon_full);
             }
@@ -57,10 +57,10 @@ public class BaseToolbar
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "snooze");
-                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityResultCollectSnoozed)) {
+                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeSnoozedActivity)) {
                             openSearchResultActivity(
                                     currentActivity,
-                                    currentActivity.getResources().getInteger(R.integer.activityResultCollectSnoozed));
+                                    currentActivity.getResources().getInteger(R.integer.activityCodeSnoozedActivity));
                         }
                     }
                 }
@@ -71,10 +71,10 @@ public class BaseToolbar
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "liked");
-                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityResultCollectLiked)) {
+                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeLikedActivity)) {
                             openSearchResultActivity(
                                     currentActivity,
-                                    currentActivity.getResources().getInteger(R.integer.activityResultCollectLiked));
+                                    currentActivity.getResources().getInteger(R.integer.activityCodeLikedActivity));
                         }
                     }
                 }

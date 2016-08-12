@@ -117,6 +117,8 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
 
     protected abstract String getSnipsQueryForActivity();
 
+    protected abstract int getActivityCode();
+
     protected void initializeImportantStuff()
     {
         ButterKnife.bind(this);
@@ -246,10 +248,12 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     private void startNewAdapter()
     {
         mAdapter = new MyAdapter(
-                mRecyclerView, mCollectedSnips, mLayoutManager, getSnipsQueryForActivity());
+                mRecyclerView, mCollectedSnips, mLayoutManager,
+                getSnipsQueryForActivity(), getActivityCode());
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback swipeTouchHelperCallback = getSwipeTouchHelperCallback();
+        ItemTouchHelper.SimpleCallback swipeTouchHelperCallback =
+                getSwipeTouchHelperCallback(getActivityCode());
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeTouchHelperCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
@@ -257,9 +261,15 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
                 mLayoutManager, getSnipsQueryForActivity()) {});
     }
 
-    private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback()
+    private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback(int activityCode)
     {
-        return new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        int callbackSwipeParam = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+        if (getResources().getInteger(R.integer.activityCodeLikedActivity) == activityCode)
+        {
+            callbackSwipeParam = ItemTouchHelper.LEFT;
+        }
+
+        return new ItemTouchHelper.SimpleCallback(0, callbackSwipeParam)
         {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDirection)
