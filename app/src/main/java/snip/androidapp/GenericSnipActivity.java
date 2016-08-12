@@ -66,15 +66,9 @@ public abstract class GenericSnipActivity extends AppCompatActivity
         }
         catch (Exception e)
         {
-            emailOfUser = retrieveUserEmailFromServer();
+            emailOfUser = "defaultUser@mail.com";
         }
 
         return emailOfUser;
-    }
-
-    private String retrieveUserEmailFromServer()
-    {
-        // TODO:: implement
-        return "user@mail.com";
     }
 }
