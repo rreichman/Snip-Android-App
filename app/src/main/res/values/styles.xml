@@ -6,24 +6,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:windowBackground">@color/app_background</item>
         <item name="android:windowAnimationStyle">@null</item>
-        <!--<item name="colorAccent">#FFAB40</item>-->
     </style>
     <style name="ToolbarTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/toolbarBack</item>
-        <!-- android:textColorPrimary is the color of the title text in the Toolbar  -->
         <item name="android:textColorPrimary">@color/toolbarTitle</item>
         <item name="android:textColorSecondary">@color/toolbarTitle</item>
-        <!-- actionMenuTextColor is the color of the text of action (menu) items  -->
-        <!--<item name="actionMenuTextColor">@android:color/holo_green_light</item>-->
-        <!-- Tints the input fields like checkboxes and text fields -->
-        <!--<item name="colorAccent">@color/cursorAccent</item>-->
-        <!--&lt;!&ndash; Applies to views in their normal state. &ndash;&gt;-->
-        <!--<item name="colorControlNormal">@color/controlNormal</item>-->
-        <!--&lt;!&ndash; Applies to views in their activated state (i.e checked or switches) &ndash;&gt;-->
-        <!--<item name="colorControlActivated">@color/controlActivated</item>-->
-        <!--&lt;!&ndash; Applied to framework control highlights (i.e ripples or list selectors) &ndash;&gt;-->
-        <!--<item name="colorControlHighlight">@color/controlActivated</item>-->
-
     </style>
     <style name="SnipCards" parent="AppTheme">
     </style>

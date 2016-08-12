@@ -1,11 +1,13 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,9 +40,20 @@ public class CollectSnipsFromInternet
         retrieveSnipsFromInternet(context, null);
     }
 
+    private void showHideLoadingAnimation(Context context, boolean toShow) {
+        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi);
+        if (null != avi) {
+            if (toShow) {
+                avi.show();
+            } else {
+                avi.hide();
+            }
+        }
+    }
     // If the queryFromServer is null then we use the default query
     public void retrieveSnipsFromInternet(final Context context, String queryFromServer)
     {
+        showHideLoadingAnimation(context, true);
         JSONObject loginJsonParams = new JSONObject();
 
         HashMap<String,String> headers =
@@ -51,6 +64,7 @@ public class CollectSnipsFromInternet
                     @Override
                     public void apply(Context context, JSONObject response, JSONObject params)
                     {
+                        showHideLoadingAnimation(context, false);
                         responseFunctionImplementation(context, response, params);
                     }
                 };
@@ -59,6 +73,7 @@ public class CollectSnipsFromInternet
                     @Override
                     public void apply(Context context, VolleyError error, JSONObject params)
                     {
+                        showHideLoadingAnimation(context, false);
                         errorFunctionImplementation(context, error, params);
                     }
                 };

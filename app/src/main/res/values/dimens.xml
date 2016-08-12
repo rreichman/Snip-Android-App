@@ -8,4 +8,5 @@
     <dimen name="basic_margin_horz">12dp</dimen>
     <dimen name="single_snip_text_line_spacing">-4dp</dimen>
     <dimen name="card_text_line_spacing">-2dp</dimen>
+    <dimen name="loading_animation_size">40dp</dimen>
 </resources>
