@@ -29,6 +29,8 @@
     <string name="likeText">Interesting</string>
     <string name="feedbackHint">Insert feedback here</string>
     <string name="feedbackMenuTitle">Feedback</string>
+    <string name="logoutMenuTitle">Log Out</string>
+    <string name="logoutBaseUrl">rest-auth/logout/</string>
     <string name="feedbackBaseUrl">feedback/</string>
 
     <string name="ReactionLike">like</string>

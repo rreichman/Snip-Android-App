@@ -11,4 +11,7 @@
         android:title="@string/feedbackMenuTitle"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/logoutMenu"
+        android:title="@string/logoutMenuTitle"
+        app:showAsAction="never"/>
 </menu>

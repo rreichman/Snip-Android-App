@@ -1,6 +1,5 @@
 package snip.androidapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -53,11 +52,11 @@ public class SearchResultActivity extends SnipHoldingActivity
 
     public String getSnipsQueryForActivity()
     {
-        if (getResources().getInteger(R.integer.activityCodeSnoozedActivity) == mSearchResultType)
+        if (getResources().getInteger(R.integer.activityCodeSnoozed) == mSearchResultType)
         {
             return getSnipsQuerySnoozed();
         }
-        else if (getResources().getInteger(R.integer.activityCodeLikedActivity) == mSearchResultType)
+        else if (getResources().getInteger(R.integer.activityCodeLiked) == mSearchResultType)
         {
             return getSnipsQueryLiked();
         }

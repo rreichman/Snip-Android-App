@@ -1,7 +1,6 @@
 package snip.androidapp;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -41,11 +40,11 @@ public class BaseToolbar
         if (SearchResultActivity.class == currentActivity.getClass())
         {
             activityType = ((SearchResultActivity)currentActivity).mSearchResultType;
-            if (currentActivity.getResources().getInteger(R.integer.activityCodeSnoozedActivity) == activityType) {
+            if (currentActivity.getResources().getInteger(R.integer.activityCodeSnoozed) == activityType) {
                 ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
                 curImage.setImageResource(R.drawable.snooze_blue);
             }
-            else if (currentActivity.getResources().getInteger(R.integer.activityCodeLikedActivity) == activityType) {
+            else if (currentActivity.getResources().getInteger(R.integer.activityCodeLiked) == activityType) {
                 ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
                 curImage.setImageResource(R.drawable.heart_icon_full);
             }
@@ -57,10 +56,10 @@ public class BaseToolbar
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "snooze");
-                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeSnoozedActivity)) {
+                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeSnoozed)) {
                             openSearchResultActivity(
                                     currentActivity,
-                                    currentActivity.getResources().getInteger(R.integer.activityCodeSnoozedActivity));
+                                    currentActivity.getResources().getInteger(R.integer.activityCodeSnoozed));
                         }
                     }
                 }
@@ -71,10 +70,10 @@ public class BaseToolbar
                     @Override
                     public void onClick(View view) {
                         Log.d("clicked", "liked");
-                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeLikedActivity)) {
+                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeLiked)) {
                             openSearchResultActivity(
                                     currentActivity,
-                                    currentActivity.getResources().getInteger(R.integer.activityCodeLikedActivity));
+                                    currentActivity.getResources().getInteger(R.integer.activityCodeLiked));
                         }
                     }
                 }

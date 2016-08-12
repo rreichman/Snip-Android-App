@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -105,7 +104,7 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
         if (null == SnipCollectionInformation.getInstance().getTokenForWebsiteAccess(this))
         {
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, getResources().getInteger(R.integer.loginActivityCode));
+            startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeLogin));
         }
         else
         {
@@ -264,7 +263,7 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback(int activityCode)
     {
         int callbackSwipeParam = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-        if (getResources().getInteger(R.integer.activityCodeLikedActivity) == activityCode)
+        if (getResources().getInteger(R.integer.activityCodeLiked) == activityCode)
         {
             callbackSwipeParam = ItemTouchHelper.LEFT;
         }

@@ -89,6 +89,13 @@ public class SnipCollectionInformation
         mTokenForWebsiteAccess = token;
     }
 
+    public void deleteTokenForWebsiteAccess(Context context)
+    {
+        mTokenForWebsiteAccess = null;
+        String userTokenFile = context.getResources().getString(R.string.userTokenFile);
+        DataCacheManagement.deleteFileOnDisk(userTokenFile);
+    }
+
     public String getTokenForWebsiteAccess(Context context)
     {
         if (null == mTokenForWebsiteAccess)

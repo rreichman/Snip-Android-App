@@ -29,7 +29,6 @@ import butterknife.BindView;
 public class LoginActivity extends AppCompatActivity
 {
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNIN = 0;
     private ProgressDialog mProgressDialog;
 
     @BindView(R.id.input_email_signin) EditText _emailText;
@@ -60,7 +59,7 @@ public class LoginActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNIN);
+                startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeSignup));
             }
         });
     }
@@ -152,7 +151,7 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNIN) {
+        if (requestCode == getResources().getInteger(R.integer.activityCodeSignup)) {
             if (resultCode == RESULT_OK) {
                 String email = data.getStringExtra(emailField);
                 String pass = data.getStringExtra(passField);

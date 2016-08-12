@@ -16,7 +16,7 @@ public class MyActivity extends SnipHoldingActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == getResources().getInteger(R.integer.loginActivityCode))
+        if (requestCode == getResources().getInteger(R.integer.activityCodeLogin))
         {
             if (resultCode == MyActivity.RESULT_OK)
             {

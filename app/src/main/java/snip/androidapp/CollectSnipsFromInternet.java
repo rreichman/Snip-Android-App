@@ -144,7 +144,7 @@ public class CollectSnipsFromInternet
         if (errorCode == 403) {
             Intent intent = new Intent(context, LoginActivity.class);
             // TODO check if it's ok with reichman
-            ((MyActivity) context).startActivityForResult(intent, context.getResources().getInteger(R.integer.loginActivityCode));
+            ((MyActivity) context).startActivityForResult(intent, context.getResources().getInteger(R.integer.activityCodeLogin));
         }
     }
 

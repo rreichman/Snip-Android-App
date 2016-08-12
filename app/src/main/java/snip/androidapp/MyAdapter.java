@@ -20,10 +20,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Set;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by ranreichman on 7/19/16.
  */
@@ -34,8 +30,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     private LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
     public int mActivityType;
-
-    private int READ_SNIP_ACTIVITY_ID = 1;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(
@@ -71,7 +65,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
             public boolean onDoubleTap(MotionEvent e)
             {
                 final int SNOOZE_SCREEN_CODE =
-                        parent.getContext().getResources().getInteger(R.integer.activityCodeSnoozedActivity);
+                        parent.getContext().getResources().getInteger(R.integer.activityCodeSnoozed);
 
                 if (SNOOZE_SCREEN_CODE != mActivityType)
                 {
@@ -140,7 +134,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                     Context context = view.getContext();
                     Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
                     readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
-                    ((Activity)context).startActivityForResult(readsnipScreenIntent, READ_SNIP_ACTIVITY_ID);
+                    ((Activity)context).startActivityForResult(readsnipScreenIntent, context.getResources().getInteger(R.integer.activityCodeReadSnip));
                 }
                 catch (IndexOutOfBoundsException e1)
                 {

@@ -73,7 +73,8 @@ public class DataCacheManagement
         }
     }
 
-    private static void deleteFileOnDisk(String fullPathOfFile)
+    // TODO check with Reichman about changing to public
+    public static void deleteFileOnDisk(String fullPathOfFile)
     {
         File file = new File(fullPathOfFile);
         if (file.exists())
