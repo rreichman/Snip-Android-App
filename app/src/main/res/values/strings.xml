@@ -20,6 +20,7 @@
     <string name="categeoriesBaseURL">tag/</string>
     <string name="categeoriesFixedURL">fixed/</string>
     <string name="userTokenFile">userTokenFile</string>
+    <string name="userEmailFile">userEmailFile</string>
     <string name="emailField">email</string>
     <string name="passField">password</string>
     <string name="tokenField">key</string>

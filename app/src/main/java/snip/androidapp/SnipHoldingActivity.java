@@ -28,7 +28,7 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Created by ranreichman on 8/11/16.
  */
-public abstract class SnipHoldingActivity extends AppCompatActivity
+public abstract class SnipHoldingActivity extends GenericSnipActivity
 {
     protected RecyclerView mRecyclerView;
     protected RecyclerView.Adapter<MyViewHolder> mAdapter;
@@ -96,9 +96,10 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        LogUserActions.logStartingActivity(getActivityCode());
         initializeImportantStuff();
 
         if (null == SnipCollectionInformation.getInstance().getTokenForWebsiteAccess(this))
@@ -116,15 +117,9 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
 
     protected abstract String getSnipsQueryForActivity();
 
-    protected abstract int getActivityCode();
-
     protected void initializeImportantStuff()
     {
         ButterKnife.bind(this);
-        Fabric.with(this, new Crashlytics());
-        // TODO:: make these do something real
-        logUserIntoCrashlytics();
-        LogUserActions.logContentView("Tweet", "Video", "1234");
 
         DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -151,15 +146,6 @@ public abstract class SnipHoldingActivity extends AppCompatActivity
     private String getSnipQueryCacheFilename()
     {
         return "savedSnipQuery.dat";
-    }
-
-    private void logUserIntoCrashlytics()
-    {
-        // TODO: Use the current user's information
-        // You can call any combination of these three methods
-        Crashlytics.setUserIdentifier("12345");
-        Crashlytics.setUserEmail("testuser@snip.today");
-        Crashlytics.setUserName("Test user");
     }
 
     protected void startUI()

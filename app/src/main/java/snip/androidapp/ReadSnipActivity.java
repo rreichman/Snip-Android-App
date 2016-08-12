@@ -25,7 +25,7 @@ import java.util.Date;
 /**
  * Created by ranreichman on 7/25/16.
  */
-public class ReadSnipActivity extends AppCompatActivity
+public class ReadSnipActivity extends GenericSnipActivity
 {
     protected SnipData mSnipData;
     protected LinearLayout mLayout;
@@ -213,6 +213,11 @@ public class ReadSnipActivity extends AppCompatActivity
         ReactionBarCreator.addReactionBarToLayout(this, mLayout, mSnipData.mID);
     }
 
+    public int getActivityCode()
+    {
+        return getResources().getInteger(R.integer.activityCodeReadSnip);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -222,6 +227,7 @@ public class ReadSnipActivity extends AppCompatActivity
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
 
+        LogUserActions.logContentView(this, "ReadSnip", "Text", Long.toString(mSnipData.mID));
         SnipReactionsSingleton.getInstance().setReaction(this, mSnipData.mID, mSnipData.mReaction);
 
         mLayout = (LinearLayout)findViewById(R.id.clean_layout);

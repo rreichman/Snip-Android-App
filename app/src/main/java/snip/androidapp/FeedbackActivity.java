@@ -23,7 +23,7 @@ import java.util.HashMap;
 /**
  * Created by ranreichman on 8/10/16.
  */
-public class FeedbackActivity extends AppCompatActivity
+public class FeedbackActivity extends GenericSnipActivity
 {
     EditText mFeedbackBox;
 
@@ -42,7 +42,8 @@ public class FeedbackActivity extends AppCompatActivity
 
     private void sendFeedbackTextToServer(String feedbackText)
     {
-        try {
+        try
+        {
             // Do i really need this?
             CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
             HashMap<String, String> headers =
@@ -100,13 +101,19 @@ public class FeedbackActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public int getActivityCode()
+    {
+        return getResources().getInteger(R.integer.activityCodeFeedback);
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feedback_activity);
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
+        LogUserActions.logStartingActivity(getResources().getInteger(R.integer.activityCodeFeedback));
 
         final Button sendFeedbackButton = (Button)findViewById(R.id.sendFeedbackButton);
         mFeedbackBox = (EditText)findViewById(R.id.feedbackText);

@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +28,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.BindView;
 
-public class LoginActivity extends AppCompatActivity
+public class LoginActivity extends GenericSnipActivity
 {
     private static final String TAG = "LoginActivity";
     private ProgressDialog mProgressDialog;
@@ -42,6 +44,12 @@ public class LoginActivity extends AppCompatActivity
     @BindString(R.string.passField) String passField;
     @BindString(R.string.tokenField) String tokenField;
     @BindString(R.string.userTokenFile) String userTokenFile;
+    @BindString(R.string.userEmailFile) String userEmailFile;
+
+    public int getActivityCode()
+    {
+        return getResources().getInteger(R.integer.activityCodeLogin);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,11 +87,13 @@ public class LoginActivity extends AppCompatActivity
     {
         try
         {
+            Answers.getInstance().logLogin(new LoginEvent());
             JSONObject tokenJson = getTokenJson(response, loginParams);
             _loginButton.setEnabled(true);
             mProgressDialog.hide();
             SnipCollectionInformation.getInstance().setTokenForWebsiteAccess(response.getString(tokenField));
             DataCacheManagement.saveObjectToFile(context, tokenJson.toString(), userTokenFile);
+            DataCacheManagement.saveObjectToFile(context, loginParams.getString(emailField), userEmailFile);
         }
         catch (JSONException e)
         {
