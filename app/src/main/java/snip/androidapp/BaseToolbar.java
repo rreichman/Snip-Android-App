@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -57,9 +58,11 @@ public class BaseToolbar
                     public void onClick(View view) {
                         Log.d("clicked", "snooze");
                         if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeSnoozed)) {
-                            openSearchResultActivity(
-                                    currentActivity,
+                            openSearchResultActivity(currentActivity,
                                     currentActivity.getResources().getInteger(R.integer.activityCodeSnoozed));
+                        }
+                        else {
+                            currentActivity.finish();
                         }
                     }
                 }
@@ -71,9 +74,11 @@ public class BaseToolbar
                     public void onClick(View view) {
                         Log.d("clicked", "liked");
                         if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeLiked)) {
-                            openSearchResultActivity(
-                                    currentActivity,
+                            openSearchResultActivity(currentActivity,
                                     currentActivity.getResources().getInteger(R.integer.activityCodeLiked));
+                        }
+                        else {
+                            currentActivity.finish();
                         }
                     }
                 }
