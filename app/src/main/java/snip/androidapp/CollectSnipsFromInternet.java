@@ -23,16 +23,17 @@ public class CollectSnipsFromInternet
 {
     private int mSnipsToCollect;
     private int mAmountOfSnipsCollectedInCurrentSession;
-    private final static int mNoError = -1;
+    private int mActivityCode;
     public String mBasicQuery;
 
     LinkedList<SnipData> mSnipsFromBackend = new LinkedList<SnipData>();
 
-    public CollectSnipsFromInternet(Context context, String basicQuery)
+    public CollectSnipsFromInternet(Context context, String basicQuery, int activityCode)
     {
         mSnipsToCollect = context.getResources().getInteger(R.integer.numSnipsPerLoading);
         mAmountOfSnipsCollectedInCurrentSession = 0;
         mBasicQuery = basicQuery;
+        mActivityCode = activityCode;
     }
 
     public void retrieveSnipsFromInternet(final Context context)
@@ -80,8 +81,14 @@ public class CollectSnipsFromInternet
 
         if (null == queryFromServer)
         {
+            Log.d("gettings snips", "here");
+            Log.d("query is", mBasicQuery);
             VolleyInternetOperator.accessWebsiteWithVolley(
-                    context, mBasicQuery, Request.Method.GET, loginJsonParams, headers,
+                    context,
+                    mBasicQuery + SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(mActivityCode),
+                    Request.Method.GET,
+                    loginJsonParams,
+                    headers,
                     responseFunction, errorFunction);
         }
         else
@@ -103,13 +110,13 @@ public class CollectSnipsFromInternet
             String fullNextRequest = response.getString("next");
             if (fullNextRequest.equals("null"))
             {
-                SnipCollectionInformation.getInstance().setLastSnipQuery(fullNextRequest);
+                SnipCollectionInformation.getInstance().setLastSnipQuery(mActivityCode, fullNextRequest);
             }
             else
             {
                 String[] splittedFullNextRequest = fullNextRequest.split("/");
                 String nextQueryString = splittedFullNextRequest[splittedFullNextRequest.length - 1];
-                SnipCollectionInformation.getInstance().setLastSnipQuery(nextQueryString);
+                SnipCollectionInformation.getInstance().setLastSnipQuery(mActivityCode, nextQueryString);
             }
 
             if ((!fullNextRequest.equals("null")) && (mAmountOfSnipsCollectedInCurrentSession < mSnipsToCollect))
@@ -135,9 +142,16 @@ public class CollectSnipsFromInternet
 
     public void errorFunctionImplementation(Context context, VolleyError error, JSONObject params)
     {
-        String errorString = VolleyInternetOperator.parseNetworkErrorResponse(error);
-        checkUserPermissionStartLoginActivity(context, error.networkResponse.statusCode);
-        Log.d("error", "Error collecting Snips");
+        try
+        {
+            String errorString = VolleyInternetOperator.parseNetworkErrorResponse(error);
+            checkUserPermissionStartLoginActivity(context, error.networkResponse.statusCode);
+            Log.d("error", "Error collecting Snips");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void checkUserPermissionStartLoginActivity(Context context, int errorCode) {

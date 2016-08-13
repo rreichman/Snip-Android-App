@@ -3,6 +3,7 @@ package snip.androidapp;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.locks.ReentrantLock;
 
 import butterknife.BindInt;
+import butterknife.BindString;
 
 /**
  * Created by ranreichman on 7/31/16.
@@ -22,7 +24,7 @@ public class SnipCollectionInformation
 {
     private static SnipCollectionInformation mInstance = null;
 
-    private String mLastSnipQuery;
+    private HashMap<Integer,String> mLastSnipQueryPerActivity;
     public LinkedList<SnipData> mSnipsCollectedByNonUIThread;
     public ReentrantLock mLock;
     private String mTokenForWebsiteAccess;
@@ -30,9 +32,23 @@ public class SnipCollectionInformation
     // TODO:: this is a hack, needs to be changed
     private boolean mShouldUseNewSnips;
 
+    private void initializeLastQueries()
+    {
+        // TODO:: fix this
+        final int activityCodeMyActivity = 13;
+        final int activityCodeLiked = 12;
+        final int activityCodeSnoozed = 11;
+
+        mLastSnipQueryPerActivity = new HashMap<Integer, String>();
+        mLastSnipQueryPerActivity.put(activityCodeMyActivity,"");
+        mLastSnipQueryPerActivity.put(activityCodeLiked,"");
+        mLastSnipQueryPerActivity.put(activityCodeSnoozed,"");
+
+    }
+
     protected SnipCollectionInformation()
     {
-        mLastSnipQuery = "";
+        initializeLastQueries();
         mLock = new ReentrantLock();
         mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
         mTokenForWebsiteAccess = null;
@@ -46,9 +62,11 @@ public class SnipCollectionInformation
         return returnValue;
     }
 
-    public void setShouldUseNewSnips(boolean value)
+    public String getLastSnipQueryForActivity(int activityCode)
     {
-        mShouldUseNewSnips = value;
+        Log.d("snipQueryForActivity" + Integer.toString(activityCode),
+                mLastSnipQueryPerActivity.get(activityCode));
+        return mLastSnipQueryPerActivity.get(activityCode);
     }
 
     public boolean getShouldRestartViewAfterCollectionAndReset()
@@ -113,21 +131,17 @@ public class SnipCollectionInformation
         return tokenAsHashmap;
     }
 
-    public String getLastSnipQuery() {
-        return mLastSnipQuery;
-    }
+    public void cleanLastSnipQuery(int activityCode) { mLastSnipQueryPerActivity.put(activityCode,""); }
 
-    public void cleanLastSnipQuery() { mLastSnipQuery = ""; }
-
-    public void setLastSnipQuery(String lastSnipQuery)
+    public void setLastSnipQuery(int activityCode, String lastSnipQuery)
     {
         if (null != lastSnipQuery)
         {
-            mLastSnipQuery = lastSnipQuery;
+            mLastSnipQueryPerActivity.put(activityCode, lastSnipQuery);
         }
         else
         {
-            mLastSnipQuery = "";
+            mLastSnipQueryPerActivity.put(activityCode, "");
         }
     }
 

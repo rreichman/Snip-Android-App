@@ -19,11 +19,13 @@ public class DataCacheManagement
 {
     public String mSnipDataCacheFilename;
     public String mSnipQueryCacheFilename;
+    public int mActivityCode;
 
-    public DataCacheManagement(String snipDataCacheFilename, String snipQueryCacheFilename)
+    public DataCacheManagement(String snipDataCacheFilename, String snipQueryCacheFilename, int activityCode)
     {
         mSnipDataCacheFilename = mSnipDataCacheFilename;
         mSnipQueryCacheFilename = mSnipQueryCacheFilename;
+        mActivityCode = activityCode;
     }
 
     public String getFullPathForSnipData(Context context)
@@ -113,7 +115,7 @@ public class DataCacheManagement
                 }
 
                 SnipCollectionInformation.getInstance().setLastSnipQuery(
-                        savedInstanceState.getString(DataCacheManagement.getQueryString()));
+                        mActivityCode, savedInstanceState.getString(DataCacheManagement.getQueryString()));
 
                 return collectedSnips;
             }
@@ -130,7 +132,7 @@ public class DataCacheManagement
     public void saveSnipQueryToFile(Context context)
     {
         saveObjectToFile(context,
-                SnipCollectionInformation.getInstance().getLastSnipQuery(),
+                SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(mActivityCode),
                 mSnipQueryCacheFilename);
     }
 
@@ -190,7 +192,8 @@ public class DataCacheManagement
             if ((null != collectedSnips) && (null != collectedSnipQuery))
             {
                 outputSnips = collectedSnips;
-                SnipCollectionInformation.getInstance().setLastSnipQuery(retrieveSnipQueryFromFile(context));
+                SnipCollectionInformation.getInstance().setLastSnipQuery(
+                        mActivityCode, retrieveSnipQueryFromFile(context));
             }
         }
         return outputSnips;

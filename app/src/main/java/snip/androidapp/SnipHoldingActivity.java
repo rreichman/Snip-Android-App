@@ -115,7 +115,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
 
     protected abstract void operateAfterLogin(Bundle savedInstanceState);
 
-    protected abstract String getSnipsQueryForActivity();
+    protected abstract String getBaseSnipsQueryForActivity();
 
     protected void initializeImportantStuff()
     {
@@ -138,7 +138,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         ImageLoader.getInstance().init(imageLoaderConfiguration);
         CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
         mDataCacheManagement = new DataCacheManagement(
-                getSnipDataCacheFilename(), getSnipQueryCacheFilename());
+                getSnipDataCacheFilename(), getSnipQueryCacheFilename(), getActivityCode());
     }
 
     private String getSnipDataCacheFilename() { return "savedSnipData.dat"; }
@@ -191,8 +191,10 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
         if (null == mCollectedSnips)
         {
-            CollectSnipsFromInternet snipCollector =
-                    new CollectSnipsFromInternet(getApplicationContext(), getSnipsQueryForActivity());
+            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
+                            getApplicationContext(),
+                            getBaseSnipsQueryForActivity(),
+                            getActivityCode());
             snipCollector.retrieveSnipsFromInternet(this);
         }
         else
@@ -205,7 +207,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     private void deleteActivityCacheAndStartOver()
     {
         mCollectedSnips = null;
-        SnipCollectionInformation.getInstance().cleanLastSnipQuery();
+        SnipCollectionInformation.getInstance().cleanLastSnipQuery(getActivityCode());
         mDataCacheManagement.deleteActivityInformationFiles(this);
         startActivityOperation();
     }
@@ -234,7 +236,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     {
         mAdapter = new MyAdapter(
                 mRecyclerView, mCollectedSnips, mLayoutManager,
-                getSnipsQueryForActivity(), getActivityCode());
+                getBaseSnipsQueryForActivity(), getActivityCode());
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback swipeTouchHelperCallback =
@@ -243,7 +245,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(
-                mLayoutManager, getSnipsQueryForActivity()) {});
+                mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode()) {});
     }
 
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback(int activityCode)
@@ -266,7 +268,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getSnipsQueryForActivity());
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode());
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
@@ -275,7 +277,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                     mCollectedSnips.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getSnipsQueryForActivity());
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode());
                 }
 
                 mAdapter.notifyDataSetChanged();

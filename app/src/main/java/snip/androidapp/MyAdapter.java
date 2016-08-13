@@ -29,18 +29,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
-    public int mActivityType;
+    public int mActivityCode;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(
             RecyclerView recyclerView, LinkedList<SnipData> myDataset,
-            LinearLayoutManager linearLayoutManager, String defaultQuery, int activityType)
+            LinearLayoutManager linearLayoutManager, String defaultQuery, int activityCode)
     {
         mRecyclerView = recyclerView;
         mDataset = myDataset;
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
-        mActivityType = activityType;
+        mActivityCode = activityCode;
     }
 
     public void removeIdsFromDataset(Set<Long> ids)
@@ -67,7 +67,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 final int SNOOZE_SCREEN_CODE =
                         parent.getContext().getResources().getInteger(R.integer.activityCodeSnoozed);
 
-                if (SNOOZE_SCREEN_CODE != mActivityType)
+                if (SNOOZE_SCREEN_CODE != mActivityCode)
                 {
                     try
                     {
@@ -93,7 +93,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                                 mDataset.remove(currentPositionInDataset);
                                 mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
                                 EndlessRecyclerOnScrollListener.onScrolledLogic(
-                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery);
+                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mActivityCode);
                             }
 
                             @Override

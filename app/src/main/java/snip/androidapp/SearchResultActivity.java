@@ -50,7 +50,7 @@ public class SearchResultActivity extends SnipHoldingActivity
         return baseAccessUrl + snipsBaseUrl + snoozedBaseUrl + baseQuery;
     }
 
-    public String getSnipsQueryForActivity()
+    public String getBaseSnipsQueryForActivity()
     {
         if (getResources().getInteger(R.integer.activityCodeSnoozed) == mSearchResultType)
         {
