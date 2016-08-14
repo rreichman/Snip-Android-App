@@ -22,7 +22,7 @@
 
     <style name="SnipCards.CardText.Main">
         <item name="android:textSize">14dp</item>
-        <item name="android:maxLines">4</item>
+        <item name="android:maxLines">5</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_marginBottom">3dp</item>
     </style>

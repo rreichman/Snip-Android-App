@@ -148,7 +148,9 @@ public class ReadSnipActivity extends GenericSnipActivity
                     case "image":
                         String imageURL = bodyElem.getString("url");
                         String imageTitle = bodyElem.getString("caption");
-                        addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image,0 ,mDefMarginImageTop, 0);
+                        if (!imageTitle.isEmpty()) {
+                            addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image, 0, mDefMarginImageTop, 0);
+                        }
                         addTextDynamicallyToLayout(imageTitle, false, R.style.SingleSnip_Text_ImageDesc,
                                 mDefMarginHorz, mDefMarginVert, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
                         break;
@@ -178,7 +180,7 @@ public class ReadSnipActivity extends GenericSnipActivity
 
 
     private void addSnipMetaDataToLayout() {
-        String text = getResources().getString(R.string.writtenBy) + " ";
+        String text = "";
         if ((!mSnipData.mPublisher.isEmpty()) && (!mSnipData.mAuthor.isEmpty())) {
             text += mSnipData.mPublisher + ", " + mSnipData.mAuthor;
         }
@@ -187,9 +189,6 @@ public class ReadSnipActivity extends GenericSnipActivity
         }
         else if (!mSnipData.mPublisher.isEmpty()) {
             text += mSnipData.mPublisher;
-        }
-        else {
-            text = "";
         }
         if (!text.isEmpty()) {
             addTextDynamicallyToLayout(text, false, R.style.SingleSnip_Text_Author,
