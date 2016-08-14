@@ -31,7 +31,7 @@ import io.fabric.sdk.android.Fabric;
 public abstract class SnipHoldingActivity extends GenericSnipActivity
 {
     protected RecyclerView mRecyclerView;
-    protected RecyclerView.Adapter<MyViewHolder> mAdapter;
+    protected MyAdapter mAdapter;
     protected LinearLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeContainer;
     // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
@@ -117,6 +117,11 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
 
     protected abstract String getBaseSnipsQueryForActivity();
 
+    public SnipHoldingActivity getActivity()
+    {
+        return this;
+    }
+
     protected void initializeImportantStuff()
     {
         ButterKnife.bind(this);
@@ -198,7 +203,8 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                             getApplicationContext(),
                             getBaseSnipsQueryForActivity() +
                                     SnipCollectionInformation.getInstance().getDimensionsQuery(),
-                            getActivityCode());
+                            getActivityCode(),
+                            true);
             snipCollector.retrieveSnipsFromInternet(this);
         }
         else
@@ -240,7 +246,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     {
         mAdapter = new MyAdapter(
                 mRecyclerView, mCollectedSnips, mLayoutManager,
-                getBaseSnipsQueryForActivity(), getActivityCode());
+                getBaseSnipsQueryForActivity(), this);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback swipeTouchHelperCallback =
@@ -249,7 +255,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(
-                mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode()) {});
+                mLayoutManager, getBaseSnipsQueryForActivity(), this) {});
     }
 
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback(int activityCode)
@@ -269,19 +275,19 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                 if (ItemTouchHelper.LEFT == swipeDirection)
                 {
                     ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
-                    mCollectedSnips.remove(currentPositionInDataset);
+                    mAdapter.mDataset.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode());
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivity(), false);
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
                     ReactionManager.userLikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
-                    mCollectedSnips.remove(currentPositionInDataset);
+                    mAdapter.mDataset.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode());
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivity(), false);
                 }
 
                 mAdapter.notifyDataSetChanged();

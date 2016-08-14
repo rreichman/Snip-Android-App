@@ -29,7 +29,7 @@
         android:layout_width="@dimen/loading_animation_size"
         android:layout_height="@dimen/loading_animation_size"
         style="@style/AVLoadingIndicatorView.Small"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:indicatorName="BallSpinFadeLoaderIndicator"
         app:indicatorColor="@color/colorPrimaryDark"
         android:layout_centerVertical="true"

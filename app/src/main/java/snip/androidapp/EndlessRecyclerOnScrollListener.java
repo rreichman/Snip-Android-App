@@ -17,16 +17,17 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
     private LinearLayoutManager mLinearLayoutManager;
     private String mBaseQuery;
-    private int mActivityCode;
+    private SnipHoldingActivity mActivity;
 
     public EndlessRecyclerOnScrollListener(
-            LinearLayoutManager linearLayoutManager, String baseQuery, int activityCode) {
+            LinearLayoutManager linearLayoutManager, String baseQuery, SnipHoldingActivity activity) {
         mLinearLayoutManager = linearLayoutManager;
         mBaseQuery = baseQuery;
-        mActivityCode = activityCode;
+        mActivity = activity;
     }
 
-    private static void loadMore(RecyclerView view, String baseQuery, int activityCode)
+    private static void loadMore(
+            RecyclerView view, String baseQuery, SnipHoldingActivity activity, boolean showAnimation)
     {
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
@@ -36,17 +37,19 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
                 MyAdapter adapter = (MyAdapter) view.getAdapter();
                 LinkedList<SnipData> collectedSnips =
                         SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
+                activity.mCollectedSnips.addAll(collectedSnips);
                 adapter.add(collectedSnips);
                 adapter.notifyDataSetChanged();
             }
 
-            if (!SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activityCode).equals("null"))
+            if (!SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activity.getActivityCode()).equals("null"))
             {
                 CollectSnipsFromInternet collectSnipsFromInternet =
                         new CollectSnipsFromInternet(
                                 view.getContext(),
                                 baseQuery,
-                                activityCode);
+                                activity.getActivityCode(),
+                                showAnimation);
                 collectSnipsFromInternet.retrieveSnipsFromInternet(view.getContext());
             }
         }
@@ -54,7 +57,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
     public static void onScrolledLogic(
             RecyclerView recyclerView, LinearLayoutManager linearLayoutManager,
-            String baseQuery, int activityCode)
+            String baseQuery, SnipHoldingActivity activity, boolean showAnimation)
     {
         try
         {
@@ -64,7 +67,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             final int visibleThreshold = 4;
 
             if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
-                loadMore(recyclerView, baseQuery, activityCode);
+                loadMore(recyclerView, baseQuery, activity, showAnimation);
             }
         }
         catch (Exception e)
@@ -79,7 +82,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
-        onScrolledLogic(recyclerView, mLinearLayoutManager, mBaseQuery, mActivityCode);
+        onScrolledLogic(recyclerView, mLinearLayoutManager, mBaseQuery, mActivity, true);
     }
 
     @Override

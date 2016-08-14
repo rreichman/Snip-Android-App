@@ -25,20 +25,22 @@ public class CollectSnipsFromInternet
     private int mAmountOfSnipsCollectedInCurrentSession;
     private int mActivityCode;
     public String mBasicQuery;
+    public boolean mShowAnimation;
 
     LinkedList<SnipData> mSnipsFromBackend = new LinkedList<SnipData>();
 
-    public CollectSnipsFromInternet(Context context, String basicQuery, int activityCode)
+    public CollectSnipsFromInternet(Context context, String basicQuery, int activityCode, boolean showAnimation)
     {
         mSnipsToCollect = context.getResources().getInteger(R.integer.numSnipsPerLoading);
         mAmountOfSnipsCollectedInCurrentSession = 0;
         mBasicQuery = basicQuery;
         mActivityCode = activityCode;
+        mShowAnimation = showAnimation;
     }
 
     public void retrieveSnipsFromInternet(final Context context)
     {
-        retrieveSnipsFromInternet(context, null);
+        retrieveSnipsFromInternet(context, null, mShowAnimation);
     }
 
     private void showHideLoadingAnimation(Context context, boolean toShow) {
@@ -52,9 +54,10 @@ public class CollectSnipsFromInternet
         }
     }
     // If the queryFromServer is null then we use the default query
-    public void retrieveSnipsFromInternet(final Context context, String queryFromServer)
+    public void retrieveSnipsFromInternet(
+            final Context context, String queryFromServer, boolean showAnimation)
     {
-        showHideLoadingAnimation(context, true);
+        showHideLoadingAnimation(context, showAnimation);
         JSONObject loginJsonParams = new JSONObject();
 
         HashMap<String,String> headers =
@@ -121,7 +124,7 @@ public class CollectSnipsFromInternet
 
             if ((!fullNextRequest.equals("null")) && (mAmountOfSnipsCollectedInCurrentSession < mSnipsToCollect))
             {
-                retrieveSnipsFromInternet(context, mBasicQuery);
+                retrieveSnipsFromInternet(context, mBasicQuery, mShowAnimation);
             }
             else
             {
