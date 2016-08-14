@@ -33,7 +33,7 @@
     <string name="logoutMenuTitle">Log Out</string>
     <string name="logoutBaseUrl">rest-auth/logout/</string>
     <string name="feedbackBaseUrl">feedback/</string>
-
+    <string name="ExternalLinksTitle">מקורות</string>
     <string name="ReactionLike">like</string>
     <string name="ReactionUnLike">un_like</string>
     <string name="ReactionDislike">dislike</string>

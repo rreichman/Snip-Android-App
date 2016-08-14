@@ -167,7 +167,7 @@ public class ReadSnipActivity extends GenericSnipActivity
 
     private void createLinkView(ExternalLinkData link) {
         String author = "";
-        if ("" != link.mAuthor) {
+        if (!link.mAuthor.isEmpty()) {
             author = " (" + link.mAuthor + ")";
         }
         String htmlLinkString = "<a href=\"" + link.mLink + "\">" + link.mTitle + author + "</a>";
@@ -206,6 +206,11 @@ public class ReadSnipActivity extends GenericSnipActivity
         addSnipMetaDataToLayout();
 
         parseSnipBodyAndCreateView();
+
+        String externalLinksTitle = getResources().getString(R.string.ExternalLinksTitle);
+        addTextDynamicallyToLayout(externalLinksTitle, false, R.style.SingleSnip_Text,
+                mDefMarginHorz, mDefMarginVert, mDefMarginVert, mDefGravity, Typeface.BOLD);
+
         for (int i = 0; i < mSnipData.mExternalLinks.mExternalLinks.size(); ++i) {
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
             createLinkView(cur_link);
