@@ -141,11 +141,14 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                 getSnipDataCacheFilename(), getSnipQueryCacheFilename(), getActivityCode());
     }
 
-    private String getSnipDataCacheFilename() { return "savedSnipData.dat"; }
-
-    private String getSnipQueryCacheFilename()
+    protected String getSnipDataCacheFilename()
     {
-        return "savedSnipQuery.dat";
+        return "savedSnipData" + Integer.toString(getActivityCode()) + ".dat";
+    }
+
+    protected String getSnipQueryCacheFilename()
+    {
+        return "savedQueryData" + Integer.toString(getActivityCode()) + ".dat";
     }
 
     protected void startUI()

@@ -23,8 +23,8 @@ public class DataCacheManagement
 
     public DataCacheManagement(String snipDataCacheFilename, String snipQueryCacheFilename, int activityCode)
     {
-        mSnipDataCacheFilename = mSnipDataCacheFilename;
-        mSnipQueryCacheFilename = mSnipQueryCacheFilename;
+        mSnipDataCacheFilename = snipDataCacheFilename;
+        mSnipQueryCacheFilename = snipQueryCacheFilename;
         mActivityCode = activityCode;
     }
 
