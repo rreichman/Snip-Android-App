@@ -9,18 +9,6 @@
     <include
         layout="@layout/toolbar_main"/>
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/avi"
-        android:layout_width="@dimen/loading_animation_size"
-        android:layout_height="@dimen/loading_animation_size"
-        style="@style/AVLoadingIndicatorView.Small"
-        android:visibility="visible"
-        app:indicatorName="BallSpinFadeLoaderIndicator"
-        app:indicatorColor="@color/colorPrimaryDark"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-    />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
@@ -35,5 +23,18 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"/>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/avi"
+        android:layout_width="@dimen/loading_animation_size"
+        android:layout_height="@dimen/loading_animation_size"
+        style="@style/AVLoadingIndicatorView.Small"
+        android:visibility="visible"
+        app:indicatorName="BallSpinFadeLoaderIndicator"
+        app:indicatorColor="@color/colorPrimaryDark"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        />
+
 
 </RelativeLayout>
