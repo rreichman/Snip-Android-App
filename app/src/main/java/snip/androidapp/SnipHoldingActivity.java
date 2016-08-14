@@ -197,20 +197,20 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     protected void collectData()
     {
         // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
-        if (null == mCollectedSnips)
-        {
-            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
-                            getApplicationContext(),
-                            getBaseSnipsQueryForActivity() +
-                                    SnipCollectionInformation.getInstance().getDimensionsQuery(),
-                            getActivityCode(),
-                            true);
-            snipCollector.retrieveSnipsFromInternet(this);
-        }
-        else
+        if (null != mCollectedSnips)
         {
             addPicturesToSnips();
             populateActivity();
+        }
+        else
+        {
+            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
+                    getApplicationContext(),
+                    getBaseSnipsQueryForActivity() +
+                            SnipCollectionInformation.getInstance().getDimensionsQuery(),
+                    getActivityCode(),
+                    true);
+            snipCollector.retrieveSnipsFromInternet(this);
         }
     }
 
