@@ -25,14 +25,14 @@ android {
         }
     }
     compileSdkVersion 24
-    buildToolsVersion '24.0.0'
+    buildToolsVersion '24.0.1'
     defaultConfig {
         applicationId "snip.androidapp"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 104
+        versionCode 106
 
-        versionName "1.04"
+        versionName "1.06"
 
         jackOptions
                 {
