@@ -148,11 +148,12 @@ public class ReadSnipActivity extends GenericSnipActivity
                     case "image":
                         String imageURL = bodyElem.getString("url");
                         String imageTitle = bodyElem.getString("caption");
+                        
+                        addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image, 0, mDefMarginImageTop, 0);
                         if (!imageTitle.isEmpty()) {
-                            addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image, 0, mDefMarginImageTop, 0);
+                            addTextDynamicallyToLayout(imageTitle, false, R.style.SingleSnip_Text_ImageDesc,
+                                    mDefMarginHorz, mDefMarginVert, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
                         }
-                        addTextDynamicallyToLayout(imageTitle, false, R.style.SingleSnip_Text_ImageDesc,
-                                mDefMarginHorz, mDefMarginVert, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
                         break;
                     case "paragraph":
                         String cur_value = bodyElem.getString("value");
