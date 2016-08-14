@@ -68,7 +68,6 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed(null);
             return;
         }
 
@@ -106,7 +105,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void apply(Context context, VolleyError error, JSONObject params)
                     {
-                        onSignupFailed(error);
+                        onSignupFailed(error, "");
                     }
                 };
         VolleyInternetOperator.accessWebsiteWithVolley(this, baseAccessURL + signUpURL,
@@ -124,11 +123,15 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onSignupFailed(VolleyError error) {
+    public void onSignupFailed(VolleyError error, String err_msg) {
         if (null != error) {
             Log.d("signUp error", VolleyInternetOperator.parseNetworkErrorResponse(error));
         }
-        Toast.makeText(getBaseContext(), "Signup failed", Toast.LENGTH_LONG).show();
+        String full_msg_error = "Signup failed";
+        if (!err_msg.isEmpty()) {
+            full_msg_error += " - " + err_msg;
+        }
+        Toast.makeText(getBaseContext(), full_msg_error, Toast.LENGTH_LONG).show();
         if (null != mProgressDialog) {
             mProgressDialog.hide();
         }
@@ -137,9 +140,28 @@ public class SignupActivity extends AppCompatActivity {
 
     public boolean validate() {
         boolean valid = true;
-        if (!RegistrationUtils.validateEmail(_emailText)) {valid = false;}
-        if (!RegistrationUtils.validatePassword(_passwordText1)) {valid = false;}
-        if (!RegistrationUtils.validatePassword(_passwordText2)) {valid = false;}
+        String msg_err = "";
+        if (!RegistrationUtils.validateEmail(_emailText)) {
+            valid = false;
+            msg_err = "Invalid email address";
+        }
+        else if (!_passwordText1.equals(_passwordText2)) {
+            valid = false;
+            msg_err = "Passwords mismatch";
+        }
+        else if (!RegistrationUtils.validatePassword(_passwordText1)) {
+            valid = false;
+            msg_err = "1st password is illegal";
+        }
+        else if (!RegistrationUtils.validatePassword(_passwordText2)) {
+            valid = false;
+            msg_err = "2nd password is illegal";
+        }
+
+        if (!valid) {
+            onSignupFailed(null, msg_err);
+        }
+
         return valid;
     }
 
