@@ -87,14 +87,14 @@
                     android:contentDescription="@string/thumbnailImageDescription"
                     android:scaleType="centerCrop"
                     android:src="@drawable/sniplogo"
-                    android:layout_gravity="left"
-                    android:layout_weight="0.3"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_weight="0.33"
                     />
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.67"
                     android:layout_toRightOf="@+id/thumbnail"
                     android:paddingLeft="@dimen/basic_margin_horz"
                     >
