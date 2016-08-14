@@ -147,7 +147,7 @@ public class ReadSnipActivity extends GenericSnipActivity
                 switch (cur_type) {
                     case "image":
                         String imageURL = bodyElem.getString("url");
-                        String imageTitle = bodyElem.getString("title");
+                        String imageTitle = bodyElem.getString("caption");
                         addPictureDynamicallyToLayout(imageURL, R.style.SingleSnip_Image,0 ,mDefMarginImageTop, 0);
                         addTextDynamicallyToLayout(imageTitle, false, R.style.SingleSnip_Text_ImageDesc,
                                 mDefMarginHorz, mDefMarginVert, mDefMarginVert, Gravity.CENTER, mDefTextStyle);
