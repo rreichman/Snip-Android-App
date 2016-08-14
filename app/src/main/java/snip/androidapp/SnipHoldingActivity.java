@@ -193,7 +193,8 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         {
             CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
                             getApplicationContext(),
-                            getBaseSnipsQueryForActivity(),
+                            getBaseSnipsQueryForActivity() +
+                                    SnipCollectionInformation.getInstance().getDimensionsQuery(),
                             getActivityCode());
             snipCollector.retrieveSnipsFromInternet(this);
         }

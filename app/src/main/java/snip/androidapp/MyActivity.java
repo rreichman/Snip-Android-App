@@ -39,27 +39,20 @@ public class MyActivity extends SnipHoldingActivity
         }
     }
 
-    public String getSnipsQueryForActivity()
-    {
-        return getBaseSnipsQueryForActivity() +
-                SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(getActivityCode());
-    }
-
     public String getBaseSnipsQueryForActivity()
     {
-        final String baseQuery = "?im_width=600&im_height=600";
         String lastRequestURL =
                 SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(getActivityCode());
         String baseAccessUrl = getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = getResources().getString(R.string.snipsBaseURL);
         String newSnipsBaseUrl = getResources().getString(R.string.newSnipsBaseURL);
         String fullRequestURL = baseAccessUrl + snipsBaseUrl + newSnipsBaseUrl;
-        if (lastRequestURL.isEmpty() || lastRequestURL.equals("null")) {
-            fullRequestURL += baseQuery;
+        /*if (lastRequestURL.isEmpty() || lastRequestURL.equals("null")) {
+            fullRequestURL += SnipCollectionInformation.getInstance().getDimensionsQuery();
         }
         else {
             fullRequestURL += lastRequestURL;
-        }
+        }*/
         return fullRequestURL;
     }
 

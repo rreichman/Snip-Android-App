@@ -46,6 +46,11 @@ public class SnipCollectionInformation
 
     }
 
+    public String getDimensionsQuery()
+    {
+        return "?im_width=600&im_height=600";
+    }
+
     protected SnipCollectionInformation()
     {
         initializeLastQueries();

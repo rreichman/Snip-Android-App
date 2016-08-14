@@ -82,7 +82,7 @@ public class CollectSnipsFromInternet
         if (null == queryFromServer)
         {
             Log.d("gettings snips", "here");
-            Log.d("query is", mBasicQuery);
+            Log.d("basic query is", mBasicQuery);
             VolleyInternetOperator.accessWebsiteWithVolley(
                     context,
                     mBasicQuery + SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(mActivityCode),

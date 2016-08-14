@@ -34,20 +34,18 @@ public class SearchResultActivity extends SnipHoldingActivity
 
     public String getSnipsQueryLiked()
     {
-        final String baseQuery = "?im_width=600&im_height=600";
         String baseAccessUrl = getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = getResources().getString(R.string.snipsBaseURL);
         String likedBaseUrl = getResources().getString(R.string.likedBaseURL);
-        return baseAccessUrl + snipsBaseUrl + likedBaseUrl + baseQuery;
+        return baseAccessUrl + snipsBaseUrl + likedBaseUrl;
     }
 
     public String getSnipsQuerySnoozed()
     {
-        final String baseQuery = "?im_width=600&im_height=600";
         String baseAccessUrl = getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = getResources().getString(R.string.snipsBaseURL);
         String snoozedBaseUrl = getResources().getString(R.string.snoozedBaseURL);
-        return baseAccessUrl + snipsBaseUrl + snoozedBaseUrl + baseQuery;
+        return baseAccessUrl + snipsBaseUrl + snoozedBaseUrl;
     }
 
     public String getBaseSnipsQueryForActivity()
