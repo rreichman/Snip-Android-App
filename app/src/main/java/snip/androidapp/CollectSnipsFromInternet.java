@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -47,12 +49,21 @@ public class CollectSnipsFromInternet
         AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi);
         if (null != avi) {
             if (toShow) {
+                avi.setVisibility(avi.VISIBLE);
                 avi.show();
             } else {
                 avi.hide();
             }
         }
     }
+
+    private void moveLoadingAnimationToBottom(Context context) {
+        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) avi.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        avi.setLayoutParams(params);
+    }
+
     // If the queryFromServer is null then we use the default query
     public void retrieveSnipsFromInternet(
             final Context context, String queryFromServer, boolean showAnimation)
@@ -131,6 +142,9 @@ public class CollectSnipsFromInternet
                 SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
                 ((SnipHoldingActivity)context).populateActivity();
             }
+
+            moveLoadingAnimationToBottom(context);
+
         }
         catch (JSONException e)
         {
