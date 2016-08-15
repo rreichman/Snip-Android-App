@@ -3,6 +3,7 @@ package snip.androidapp;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +51,8 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         if (null != mAdapter) {
             ((MyAdapter) mAdapter).removeIdsFromDataset(
                     SnipReactionsSingleton.getInstance().getIdsToRemoveFromDataset());
+            // Here not using asyncNotifyDatasetChanged on purpose because i want the user to wait
+            // TODO:: think if this is true
             mAdapter.notifyDataSetChanged();
             SnipReactionsSingleton.getInstance().mSnipsReaction.clear();
         }
@@ -212,6 +215,16 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         startActivityOperation(null);
     }
 
+    public void asyncNotifyDatasetChanged()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     protected void populateActivity(LinkedList<SnipData> addedSnips)
     {
         if (null != addedSnips)
@@ -224,7 +237,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             else
             {
                 ((MyAdapter)mAdapter).addAll(addedSnips);
-                mAdapter.notifyDataSetChanged();
+                asyncNotifyDatasetChanged();
             }
             addPicturesToSnips();
         }
@@ -278,7 +291,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                             mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode(), false);
                 }
 
-                mAdapter.notifyDataSetChanged();
+                asyncNotifyDatasetChanged();
             }
 
             @Override
