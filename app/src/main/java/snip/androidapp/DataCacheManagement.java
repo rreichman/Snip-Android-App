@@ -17,30 +17,37 @@ import java.util.LinkedList;
  */
 public class DataCacheManagement
 {
-    public String mSnipDataCacheFilename;
-    public String mSnipQueryCacheFilename;
-    public int mActivityCode;
-
-    public DataCacheManagement(String snipDataCacheFilename, String snipQueryCacheFilename, int activityCode)
+    public static void deleteAllInformationFiles(Context context)
     {
-        mSnipDataCacheFilename = snipDataCacheFilename;
-        mSnipQueryCacheFilename = snipQueryCacheFilename;
-        mActivityCode = activityCode;
+        deleteActivityInformationFiles(context, context.getResources().getInteger(R.integer.activityCodeMyActivity));
+        deleteActivityInformationFiles(context, context.getResources().getInteger(R.integer.activityCodeLiked));
+        deleteActivityInformationFiles(context, context.getResources().getInteger(R.integer.activityCodeSnoozed));
     }
 
-    public String getFullPathForSnipData(Context context)
+    public static String getFullPathForSnipData(Context context, int activityCode)
     {
-        return getFullPathOfFile(context ,mSnipDataCacheFilename);
+        return getFullPathOfFile(context ,getSnipDataCacheFilename(activityCode));
     }
 
-    public String getFullPathForSnipQuery(Context context)
+    public static String getFullPathForSnipQuery(Context context, int activityCode)
     {
-        return getFullPathOfFile(context, mSnipQueryCacheFilename);
+        return getFullPathOfFile(context, getSnipQueryCacheFilename(activityCode));
     }
 
     public static String getFullPathOfFile(Context context, String filename)
     {
-        return context.getFilesDir() + "/" + filename;
+        String filesDir = context.getFilesDir().toString();
+        return filesDir + "/" + filename;
+    }
+
+    public static String getSnipDataCacheFilename(int activityCode)
+    {
+        return "savedSnipData" + Integer.toString(activityCode) + ".dat";
+    }
+
+    public static String getSnipQueryCacheFilename(int activityCode)
+    {
+        return "savedQueryData" + Integer.toString(activityCode) + ".dat";
     }
 
     // TODO:: this is a bad name for a function
@@ -85,13 +92,13 @@ public class DataCacheManagement
         }
     }
 
-    public void deleteActivityInformationFiles(Context context)
+    public static void deleteActivityInformationFiles(Context context, int activityCode)
     {
-        deleteFileOnDisk(getFullPathForSnipData(context));
-        deleteFileOnDisk(getFullPathForSnipQuery(context));
+        deleteFileOnDisk(getFullPathForSnipData(context, activityCode));
+        deleteFileOnDisk(getFullPathForSnipQuery(context, activityCode));
     }
 
-    public void saveSnipDataToBundle(Bundle outBundle, LinkedList<SnipData> collectedSnips)
+    public static void saveSnipDataToBundle(Bundle outBundle, LinkedList<SnipData> collectedSnips)
     {
         if (null != collectedSnips)
         {
@@ -102,7 +109,8 @@ public class DataCacheManagement
         }
     }
 
-    public LinkedList<SnipData> retrieveSnipDataFromBundle(Bundle savedInstanceState)
+    public static LinkedList<SnipData> retrieveSnipDataFromBundle(
+            Bundle savedInstanceState, int activityCode)
     {
         if (null != savedInstanceState) {
             if (!savedInstanceState.isEmpty()) {
@@ -115,7 +123,7 @@ public class DataCacheManagement
                 }
 
                 SnipCollectionInformation.getInstance().setLastSnipQuery(
-                        mActivityCode, savedInstanceState.getString(DataCacheManagement.getQueryString()));
+                        activityCode, savedInstanceState.getString(DataCacheManagement.getQueryString()));
 
                 return collectedSnips;
             }
@@ -124,25 +132,26 @@ public class DataCacheManagement
         return null;
     }
 
-    public void saveSnipDataToFile(Context context, LinkedList<SnipData> collectedSnips)
+    public static void saveSnipDataToFile(
+            Context context, LinkedList<SnipData> collectedSnips, int activityCode)
     {
         if (null != collectedSnips)
         {
-            saveObjectToFile(context, collectedSnips, mSnipDataCacheFilename);
+            saveObjectToFile(context, collectedSnips, getSnipDataCacheFilename(activityCode));
         }
     }
 
-    public void saveSnipQueryToFile(Context context)
+    public static void saveSnipQueryToFile(Context context, int activityCode)
     {
         saveObjectToFile(context,
-                SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(mActivityCode),
-                mSnipQueryCacheFilename);
+                SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activityCode),
+                getSnipQueryCacheFilename(activityCode));
     }
 
-    public void saveAppInformationToFile(Context context, LinkedList<SnipData> collectedSnips)
+    public static void saveAppInformationToFile(Context context, LinkedList<SnipData> collectedSnips, int activityCode)
     {
-        saveSnipDataToFile(context, collectedSnips);
-        saveSnipQueryToFile(context);
+        saveSnipDataToFile(context, collectedSnips, activityCode);
+        saveSnipQueryToFile(context, activityCode);
     }
 
     public static Object retrieveObjectFromFile(Context context, String filename)
@@ -173,30 +182,33 @@ public class DataCacheManagement
         return retrievedObject;
     }
 
-    public LinkedList<SnipData> retrieveSnipDataFromFile(Context context)
+    public static LinkedList<SnipData> retrieveSnipDataFromFile(Context context, int activityCode)
     {
-        return (LinkedList<SnipData>)retrieveObjectFromFile(context, mSnipDataCacheFilename);
+        return (LinkedList<SnipData>)retrieveObjectFromFile(
+                context, getSnipDataCacheFilename(activityCode));
     }
 
-    public String retrieveSnipQueryFromFile(Context context)
+    public static String retrieveSnipQueryFromFile(Context context, int activityCode)
     {
-        return (String)retrieveObjectFromFile(context, mSnipQueryCacheFilename);
+
+        return (String)retrieveObjectFromFile(
+                context, getSnipQueryCacheFilename(activityCode));
     }
 
-    public LinkedList<SnipData> retrieveSavedDataFromBundleOrFile(
-            Context context, Bundle savedInstanceState)
+    public static LinkedList<SnipData> retrieveSavedDataFromBundleOrFile(
+            Context context, Bundle savedInstanceState, int activityCode)
     {
-        LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(savedInstanceState);
+        LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(savedInstanceState, activityCode);
         if (null == outputSnips)
         {
-            LinkedList<SnipData> collectedSnips = retrieveSnipDataFromFile(context);
-            String collectedSnipQuery = retrieveSnipQueryFromFile(context);
+            LinkedList<SnipData> collectedSnips = retrieveSnipDataFromFile(context, activityCode);
+            String collectedSnipQuery = retrieveSnipQueryFromFile(context, activityCode);
 
             if ((null != collectedSnips) && (null != collectedSnipQuery))
             {
                 outputSnips = collectedSnips;
                 SnipCollectionInformation.getInstance().setLastSnipQuery(
-                        mActivityCode, retrieveSnipQueryFromFile(context));
+                        activityCode, retrieveSnipQueryFromFile(context, activityCode));
             }
         }
         return outputSnips;

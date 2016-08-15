@@ -141,13 +141,14 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
         String msg_err = "";
+
         if (!RegistrationUtils.validateEmail(_emailText)) {
             valid = false;
             msg_err = "Invalid email address";
         }
-        else if (!_passwordText1.equals(_passwordText2)) {
+        else if (!_passwordText1.getText().toString().equals(_passwordText2.getText().toString())) {
             valid = false;
-            msg_err = "Passwords mismatch";
+            msg_err = "Password mismatch";
         }
         else if (!RegistrationUtils.validatePassword(_passwordText1)) {
             valid = false;

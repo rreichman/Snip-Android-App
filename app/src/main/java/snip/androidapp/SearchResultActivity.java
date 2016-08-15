@@ -20,18 +20,6 @@ public class SearchResultActivity extends SnipHoldingActivity
         super.onCreate(savedInstanceState);
     }
 
-    public void operateAfterLogin(Bundle savedInstanceState)
-    {
-        try
-        {
-            startActivityOperation(null);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public String getSnipsQueryLiked()
     {
         String baseAccessUrl = getResources().getString(R.string.baseAccessURL);

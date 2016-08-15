@@ -27,20 +27,6 @@ public class MyActivity extends SnipHoldingActivity
         }
     }
 
-    public void operateAfterLogin(Bundle savedInstanceState)
-    {
-        try
-        {
-            LinkedList<SnipData> cachedSnips =
-                    mDataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
-            startActivityOperation(cachedSnips);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public String getBaseSnipsQueryForActivity()
     {
         String lastRequestURL =

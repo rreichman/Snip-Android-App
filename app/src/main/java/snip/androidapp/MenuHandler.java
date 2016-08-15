@@ -2,6 +2,7 @@ package snip.androidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -39,6 +40,8 @@ public class MenuHandler
 
     private static void logoutUser(Activity activity) {
         SnipCollectionInformation.getInstance().deleteTokenForWebsiteAccess(activity);
+        SnipCollectionInformation.getInstance().setShouldRestartViewAfterCollection(true);
+        DataCacheManagement.deleteAllInformationFiles(activity);
         // TODO decide if should send log out to server
     }
 }

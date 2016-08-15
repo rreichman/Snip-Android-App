@@ -1,10 +1,12 @@
 package snip.androidapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,10 +34,6 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     protected MyAdapter mAdapter;
     protected LinearLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeContainer;
-    // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
-    // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
-    //protected LinkedList<SnipData> mCollectedSnips;
-    protected DataCacheManagement mDataCacheManagement;
 
     @Override
     public void onPause()
@@ -84,7 +82,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     {
         if (null != mAdapter)
         {
-            mDataCacheManagement.saveAppInformationToFile(this, mAdapter.mDataset);
+            DataCacheManagement.saveAppInformationToFile(this, mAdapter.mDataset, getActivityCode());
         }
         super.onStop();
     }
@@ -95,7 +93,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     public void onSaveInstanceState(Bundle outBundle) {
         if (null != mAdapter)
         {
-            mDataCacheManagement.saveSnipDataToBundle(outBundle, mAdapter.mDataset);
+            DataCacheManagement.saveSnipDataToBundle(outBundle, mAdapter.mDataset);
         }
         super.onSaveInstanceState(outBundle);
     }
@@ -118,7 +116,21 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         }
     }
 
-    protected abstract void operateAfterLogin(Bundle savedInstanceState);
+    protected void operateAfterLogin(Bundle savedInstanceState)
+    {
+        try
+        {
+            Log.d("operate after", "login");
+            LinkedList<SnipData> cachedSnips =
+                    DataCacheManagement.retrieveSavedDataFromBundleOrFile(
+                            this, savedInstanceState, getActivityCode());
+            startActivityOperation(cachedSnips);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     protected abstract String getBaseSnipsQueryForActivity();
 
@@ -142,18 +154,6 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
 
         ImageLoader.getInstance().init(imageLoaderConfiguration);
         CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
-        mDataCacheManagement = new DataCacheManagement(
-                getSnipDataCacheFilename(), getSnipQueryCacheFilename(), getActivityCode());
-    }
-
-    protected String getSnipDataCacheFilename()
-    {
-        return "savedSnipData" + Integer.toString(getActivityCode()) + ".dat";
-    }
-
-    protected String getSnipQueryCacheFilename()
-    {
-        return "savedQueryData" + Integer.toString(getActivityCode()) + ".dat";
     }
 
     protected void startUI()
@@ -211,7 +211,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     private void deleteActivityCacheAndStartOver()
     {
         SnipCollectionInformation.getInstance().cleanLastSnipQuery(getActivityCode());
-        mDataCacheManagement.deleteActivityInformationFiles(this);
+        DataCacheManagement.deleteActivityInformationFiles(this, getActivityCode());
         startActivityOperation(null);
     }
 
