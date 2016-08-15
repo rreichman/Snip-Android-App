@@ -79,16 +79,21 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     @Override
     public void onStop()
     {
-        mDataCacheManagement.saveAppInformationToFile(this, mAdapter.mDataset);
+        if (null != mAdapter)
+        {
+            mDataCacheManagement.saveAppInformationToFile(this, mAdapter.mDataset);
+        }
         super.onStop();
     }
 
 
 
     @Override
-    public void onSaveInstanceState(Bundle outBundle)
-    {
-        mDataCacheManagement.saveSnipDataToBundle(outBundle, mAdapter.mDataset);
+    public void onSaveInstanceState(Bundle outBundle) {
+        if (null != mAdapter)
+        {
+            mDataCacheManagement.saveSnipDataToBundle(outBundle, mAdapter.mDataset);
+        }
         super.onSaveInstanceState(outBundle);
     }
 
