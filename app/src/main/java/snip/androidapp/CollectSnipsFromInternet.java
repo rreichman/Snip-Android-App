@@ -96,6 +96,7 @@ public class CollectSnipsFromInternet
         }
         else
         {
+            Log.d("retrieving snips", queryFromServer);
             VolleyInternetOperator.accessWebsiteWithVolley(
                     context, queryFromServer, Request.Method.GET, loginJsonParams, headers,
                     responseFunction, errorFunction);
@@ -128,8 +129,9 @@ public class CollectSnipsFromInternet
             }
             else
             {
-                SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
-                ((SnipHoldingActivity)context).populateActivity();
+                //SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
+                Log.d("setting collected snips", Integer.toString(mSnipsFromBackend.size()));
+                ((SnipHoldingActivity)context).populateActivity(mSnipsFromBackend);
             }
         }
         catch (JSONException e)

@@ -25,12 +25,9 @@ public class SnipCollectionInformation
     private static SnipCollectionInformation mInstance = null;
 
     private HashMap<Integer,String> mLastSnipQueryPerActivity;
-    public LinkedList<SnipData> mSnipsCollectedByNonUIThread;
     public ReentrantLock mLock;
     private String mTokenForWebsiteAccess;
     private boolean mShouldRestartViewAfterCollection;
-    // TODO:: this is a hack, needs to be changed
-    private boolean mShouldUseNewSnips;
 
     private void initializeLastQueries()
     {
@@ -55,16 +52,8 @@ public class SnipCollectionInformation
     {
         initializeLastQueries();
         mLock = new ReentrantLock();
-        mSnipsCollectedByNonUIThread = new LinkedList<SnipData>();
         mTokenForWebsiteAccess = null;
         mShouldRestartViewAfterCollection = false;
-    }
-
-    public boolean getShouldUseNewSnipsAndReset()
-    {
-        boolean returnValue = mShouldUseNewSnips;
-        mShouldUseNewSnips = false;
-        return returnValue;
     }
 
     public String getLastSnipQueryForActivity(int activityCode)
@@ -148,28 +137,6 @@ public class SnipCollectionInformation
         {
             mLastSnipQueryPerActivity.put(activityCode, "");
         }
-    }
-
-    public LinkedList<SnipData> getCollectedSnipsAndCleanList()
-    {
-        LinkedList<SnipData> clonedList = (LinkedList<SnipData>) mSnipsCollectedByNonUIThread.clone();
-        mSnipsCollectedByNonUIThread.clear();
-        return clonedList;
-    }
-
-    public void setCollectedSnips(LinkedList<SnipData> snipData)
-    {
-        mSnipsCollectedByNonUIThread = snipData;
-    }
-
-    public int getAmountOfCollectedSnips()
-    {
-        if (null != mSnipsCollectedByNonUIThread)
-        {
-            return mSnipsCollectedByNonUIThread.size();
-        }
-
-        return 0;
     }
 
     public static synchronized SnipCollectionInformation getInstance()

@@ -30,10 +30,6 @@ public class VolleyInternetOperator
         void apply(Context context, VolleyError error, JSONObject params);
     }
 
-    public static void initQueue(Context context) {
-
-    }
-
     public static String parseNetworkErrorResponse(VolleyError volleyError){
         if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
             return new String(volleyError.networkResponse.data);
@@ -41,12 +37,12 @@ public class VolleyInternetOperator
         return null;
     }
 
-
     public static void accessWebsiteWithVolley(
             final Context context, String url, int requestMethod,
             final JSONObject params, final HashMap<String, String> additionalHeaders,
             final responseFunctionInterface responseFunction, final errorFunctionInterface errorFunction)
     {
+        Log.d("accessing website", url);
         RequestQueue queue = CustomVolleyRequestQueue.getInstance().getRequestQueue();
 
         final CustomJSONObjectRequest jsonRequest =

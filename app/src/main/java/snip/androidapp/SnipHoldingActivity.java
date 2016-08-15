@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -15,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -23,7 +21,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.LinkedList;
 
 import butterknife.ButterKnife;
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by ranreichman on 8/11/16.
@@ -36,7 +33,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     protected SwipeRefreshLayout mSwipeContainer;
     // TODO:: what do i do with this when i load more snips and they aren't here? populate the list?
     // TODO:: Currently doesn't seem to be a bug. think why not! is it auto-populated?
-    protected LinkedList<SnipData> mCollectedSnips;
+    //protected LinkedList<SnipData> mCollectedSnips;
     protected DataCacheManagement mDataCacheManagement;
 
     @Override
@@ -82,7 +79,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     @Override
     public void onStop()
     {
-        mDataCacheManagement.saveAppInformationToFile(this, mCollectedSnips);
+        mDataCacheManagement.saveAppInformationToFile(this, mAdapter.mDataset);
         super.onStop();
     }
 
@@ -91,7 +88,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     @Override
     public void onSaveInstanceState(Bundle outBundle)
     {
-        mDataCacheManagement.saveSnipDataToBundle(outBundle, mCollectedSnips);
+        mDataCacheManagement.saveSnipDataToBundle(outBundle, mAdapter.mDataset);
         super.onSaveInstanceState(outBundle);
     }
 
@@ -116,11 +113,6 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     protected abstract void operateAfterLogin(Bundle savedInstanceState);
 
     protected abstract String getBaseSnipsQueryForActivity();
-
-    public SnipHoldingActivity getActivity()
-    {
-        return this;
-    }
 
     protected void initializeImportantStuff()
     {
@@ -184,69 +176,60 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
 
     private void addPicturesToSnips()
     {
-        for (int i = 0; i < mCollectedSnips.size(); i++)
+        if (null != mAdapter)
         {
-            if (null == mCollectedSnips.get(i).mThumbnail)
-            {
-                mCollectedSnips.get(i).mThumbnail =
-                        SnipData.getBitmapFromUrl(mCollectedSnips.get(i).mThumbnailUrl);
+            if (null != mAdapter.mDataset) {
+                for (int i = 0; i < mAdapter.mDataset.size(); i++) {
+                    if (null == mAdapter.mDataset.get(i).mThumbnail) {
+                        mAdapter.mDataset.get(i).mThumbnail =
+                                SnipData.getBitmapFromUrl(mAdapter.mDataset.get(i).mThumbnailUrl);
+                    }
+                }
             }
         }
     }
 
     protected void collectData()
     {
-        // TODO:: is there a scenario where it's not null but empty and i still want to retrieve?
-        if (null != mCollectedSnips)
-        {
-            addPicturesToSnips();
-            populateActivity();
-        }
-        else
-        {
-            CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
-                    getApplicationContext(),
-                    getBaseSnipsQueryForActivity() +
-                            SnipCollectionInformation.getInstance().getDimensionsQuery(),
-                    getActivityCode(),
-                    true);
-            snipCollector.retrieveSnipsFromInternet(this);
-        }
+        CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
+                getApplicationContext(),
+                getBaseSnipsQueryForActivity() +
+                        SnipCollectionInformation.getInstance().getDimensionsQuery(),
+                getActivityCode(),
+                true);
+        snipCollector.retrieveSnipsFromInternet(this);
     }
 
     private void deleteActivityCacheAndStartOver()
     {
-        mCollectedSnips = null;
         SnipCollectionInformation.getInstance().cleanLastSnipQuery(getActivityCode());
         mDataCacheManagement.deleteActivityInformationFiles(this);
-        startActivityOperation();
+        startActivityOperation(null);
     }
 
-    protected void populateActivity()
+    protected void populateActivity(LinkedList<SnipData> addedSnips)
     {
-        if ((null == mCollectedSnips) ||
-                SnipCollectionInformation.getInstance().getShouldUseNewSnipsAndReset())
+        if (null != addedSnips)
         {
-            mCollectedSnips = SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
-        }
-
-        if ((null == mAdapter) ||
-                SnipCollectionInformation.getInstance().getShouldRestartViewAfterCollectionAndReset())
-        {
-            startNewAdapter();
-        }
-        else
-        {
-            ((MyAdapter)mAdapter).mDataset = mCollectedSnips;
-            mAdapter.notifyDataSetChanged();
+            if ((null == mAdapter) ||
+                    SnipCollectionInformation.getInstance().getShouldRestartViewAfterCollectionAndReset())
+            {
+                startNewAdapter(addedSnips);
+            }
+            else
+            {
+                ((MyAdapter)mAdapter).addAll(addedSnips);
+                mAdapter.notifyDataSetChanged();
+            }
+            addPicturesToSnips();
         }
     }
 
-    private void startNewAdapter()
+    private void startNewAdapter(LinkedList<SnipData> snipsToStartWith)
     {
         mAdapter = new MyAdapter(
-                mRecyclerView, mCollectedSnips, mLayoutManager,
-                getBaseSnipsQueryForActivity(), this);
+                mRecyclerView, snipsToStartWith, mLayoutManager,
+                getBaseSnipsQueryForActivity(), getActivityCode());
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback swipeTouchHelperCallback =
@@ -255,7 +238,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(
-                mLayoutManager, getBaseSnipsQueryForActivity(), this) {});
+                mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode()) {});
     }
 
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback(int activityCode)
@@ -274,20 +257,20 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                 int currentPositionInDataset = viewHolder.getAdapterPosition();
                 if (ItemTouchHelper.LEFT == swipeDirection)
                 {
-                    ReactionManager.userDislikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
-                    mAdapter.mDataset.remove(currentPositionInDataset);
+                    ReactionManager.userDislikedSnip(mAdapter.mDataset.get(currentPositionInDataset).mID);
+                    mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivity(), false);
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode(), false);
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
-                    ReactionManager.userLikedSnip(mCollectedSnips.get(currentPositionInDataset).mID);
-                    mAdapter.mDataset.remove(currentPositionInDataset);
+                    ReactionManager.userLikedSnip(mAdapter.mDataset.get(currentPositionInDataset).mID);
+                    mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivity(), false);
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode(), false);
                 }
 
                 mAdapter.notifyDataSetChanged();
@@ -353,10 +336,17 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         };
     }
 
-    protected void startActivityOperation()
+    protected void startActivityOperation(LinkedList<SnipData> snipsToStartWith)
     {
         startUI();
         setActivityVariables();
-        collectData();
+        if (null != snipsToStartWith)
+        {
+            populateActivity(snipsToStartWith);
+        }
+        else
+        {
+            collectData();
+        }
     }
 }

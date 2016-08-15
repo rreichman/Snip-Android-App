@@ -29,22 +29,68 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
-    public SnipHoldingActivity mActivity;
+    public int mActivityCode;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(
-            RecyclerView recyclerView, LinkedList<SnipData> myDataset,
-            LinearLayoutManager linearLayoutManager, String defaultQuery, SnipHoldingActivity activity)
+            RecyclerView recyclerView, LinkedList<SnipData> dataset,
+            LinearLayoutManager linearLayoutManager, String defaultQuery, int activityCode)
     {
         mRecyclerView = recyclerView;
-        mDataset = myDataset;
+        if (null != dataset)
+        {
+            mDataset = (LinkedList<SnipData>)dataset.clone();
+        }
+        else
+        {
+            mDataset = new LinkedList<SnipData>();
+        }
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
-        mActivity = activity;
+        mActivityCode = activityCode;
+    }
+
+    public void remove(int id)
+    {
+        Log.d("Adapter size", Integer.toString(mDataset.size()));
+        Log.d("removing snip from list", Integer.toString(id));
+        mDataset.remove(id);
+    }
+
+    private void validateThatAddedDataIsntMultiple(LinkedList<SnipData> snips)
+    {
+        for (int i = 0; i < mDataset.size(); i++)
+        {
+            for (int j = 0; j < snips.size(); j++)
+            {
+                if (mDataset.get(i).mID == snips.get(j).mID)
+                {
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("headline is", snips.get(j).mHeadline);
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                }
+            }
+        }
+    }
+
+    public void addAll(LinkedList<SnipData> snips)
+    {
+        Log.d("Adapter size", Integer.toString(mDataset.size()));
+        Log.d("adding snips to list", Integer.toString(snips.size()));
+        validateThatAddedDataIsntMultiple(snips);
+        mDataset.addAll(snips);
     }
 
     public void removeIdsFromDataset(Set<Long> ids)
     {
+        Log.d("Adapter size", Integer.toString(mDataset.size()));
+        Log.d("removing snips to list", Integer.toString(ids.size()));
         LinkedList<SnipData> newDataset = new LinkedList<SnipData>();
         ListIterator<SnipData> iter = (ListIterator)mDataset.iterator();
         while (iter.hasNext())
@@ -56,6 +102,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
             }
         }
         mDataset = newDataset;
+        Log.d("New adapter size", Integer.toString(mDataset.size()));
     }
 
     private GestureDetector getGestureDetector(final ViewGroup parent, final View view, final MyViewHolder viewHolder)
@@ -67,7 +114,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 final int SNOOZE_SCREEN_CODE =
                         parent.getContext().getResources().getInteger(R.integer.activityCodeSnoozed);
 
-                if (SNOOZE_SCREEN_CODE != mActivity.getActivityCode())
+                if (SNOOZE_SCREEN_CODE != mActivityCode)
                 {
                     try
                     {
@@ -93,7 +140,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                                 mDataset.remove(currentPositionInDataset);
                                 mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
                                 EndlessRecyclerOnScrollListener.onScrolledLogic(
-                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mActivity, false);
+                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mActivityCode, false);
                             }
 
                             @Override
@@ -197,11 +244,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public int getItemCount()
     {
         return mDataset.size();
-    }
-
-    public void add(LinkedList<SnipData> SnipDataList)
-    {
-        mDataset.addAll(SnipDataList);
     }
 
 }

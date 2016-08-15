@@ -22,13 +22,7 @@ import java.util.TimeZone;
  */
 public class SnipConversionUtils
 {
-    public static String convertInputStreamToString(InputStream inputStream)
-    {
-        Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
-
-    private static Date convertStringToDate(String dateString, String dateFormatString)
+    public static Date convertStringToDate(String dateString, String dateFormatString)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatString);
         Date date = new Date();

@@ -24,7 +24,7 @@ public class SearchResultActivity extends SnipHoldingActivity
     {
         try
         {
-            startActivityOperation();
+            startActivityOperation(null);
         }
         catch (Exception e)
         {

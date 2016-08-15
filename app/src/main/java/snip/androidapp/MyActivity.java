@@ -3,6 +3,8 @@ package snip.androidapp;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.util.LinkedList;
+
 
 // TODO:: In the CardView layout - To create a card with a shadow, use the card_view:cardElevation attribute
 // TODO:: add Fabric to app
@@ -20,7 +22,7 @@ public class MyActivity extends SnipHoldingActivity
         {
             if (resultCode == MyActivity.RESULT_OK)
             {
-                startActivityOperation();
+                startActivityOperation(null);
             }
         }
     }
@@ -29,9 +31,9 @@ public class MyActivity extends SnipHoldingActivity
     {
         try
         {
-            mCollectedSnips =
+            LinkedList<SnipData> cachedSnips =
                     mDataCacheManagement.retrieveSavedDataFromBundleOrFile(this, savedInstanceState);
-            startActivityOperation();
+            startActivityOperation(cachedSnips);
         }
         catch (Exception e)
         {

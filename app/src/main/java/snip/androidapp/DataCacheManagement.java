@@ -126,7 +126,10 @@ public class DataCacheManagement
 
     public void saveSnipDataToFile(Context context, LinkedList<SnipData> collectedSnips)
     {
-        saveObjectToFile(context, collectedSnips, mSnipDataCacheFilename);
+        if (null != collectedSnips)
+        {
+            saveObjectToFile(context, collectedSnips, mSnipDataCacheFilename);
+        }
     }
 
     public void saveSnipQueryToFile(Context context)

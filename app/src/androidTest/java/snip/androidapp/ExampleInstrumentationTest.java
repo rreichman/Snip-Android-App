@@ -9,10 +9,6 @@ import static org.junit.Assert.*;
  */
 public class ExampleInstrumentationTest
 {
-    public ExampleInstrumentationTest()
-    {
-    }
-
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);

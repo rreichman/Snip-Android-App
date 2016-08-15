@@ -17,38 +17,37 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
     private LinearLayoutManager mLinearLayoutManager;
     private String mBaseQuery;
-    private SnipHoldingActivity mActivity;
+    private int mActivityCode;
 
     public EndlessRecyclerOnScrollListener(
-            LinearLayoutManager linearLayoutManager, String baseQuery, SnipHoldingActivity activity) {
+            LinearLayoutManager linearLayoutManager, String baseQuery, int activityCode) {
         mLinearLayoutManager = linearLayoutManager;
         mBaseQuery = baseQuery;
-        mActivity = activity;
+        mActivityCode = activityCode;
     }
 
     private static void loadMore(
-            RecyclerView view, String baseQuery, SnipHoldingActivity activity, boolean showAnimation)
+            RecyclerView view, String baseQuery, int activityCode, boolean showAnimation)
     {
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
             SnipCollectionInformation.getInstance().mLock.lock();
-            if (SnipCollectionInformation.getInstance().getAmountOfCollectedSnips() > 0)
+            /*if (SnipCollectionInformation.getInstance().getAmountOfCollectedSnips() > 0)
             {
                 MyAdapter adapter = (MyAdapter) view.getAdapter();
                 LinkedList<SnipData> collectedSnips =
                         SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
-                activity.mCollectedSnips.addAll(collectedSnips);
-                adapter.add(collectedSnips);
+                adapter.addAll(collectedSnips);
                 adapter.notifyDataSetChanged();
-            }
+            }*/
 
-            if (!SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activity.getActivityCode()).equals("null"))
+            if (!SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activityCode).equals("null"))
             {
                 CollectSnipsFromInternet collectSnipsFromInternet =
                         new CollectSnipsFromInternet(
                                 view.getContext(),
                                 baseQuery,
-                                activity.getActivityCode(),
+                                activityCode,
                                 showAnimation);
                 collectSnipsFromInternet.retrieveSnipsFromInternet(view.getContext());
             }
@@ -57,7 +56,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
 
     public static void onScrolledLogic(
             RecyclerView recyclerView, LinearLayoutManager linearLayoutManager,
-            String baseQuery, SnipHoldingActivity activity, boolean showAnimation)
+            String baseQuery, int activityCode, boolean showAnimation)
     {
         try
         {
@@ -67,7 +66,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             final int visibleThreshold = 4;
 
             if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
-                loadMore(recyclerView, baseQuery, activity, showAnimation);
+                loadMore(recyclerView, baseQuery, activityCode, showAnimation);
             }
         }
         catch (Exception e)
@@ -82,7 +81,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
-        onScrolledLogic(recyclerView, mLinearLayoutManager, mBaseQuery, mActivity, true);
+        onScrolledLogic(recyclerView, mLinearLayoutManager, mBaseQuery, mActivityCode, true);
     }
 
     @Override
