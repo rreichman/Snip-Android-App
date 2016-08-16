@@ -194,7 +194,7 @@ public class CollectSnipsFromInternet
                 if (isInternetAvailable())
                 {
                     toastText = "We seem to be having server problems. Sorry about that";
-                    LogUserActions.logServerError();
+                    LogUserActions.logServerError(context);
                 }
                 Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
             }

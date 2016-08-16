@@ -21,28 +21,28 @@ public abstract class GenericSnipActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
         // TODO:: make these do something real
         logUserIntoCrashlytics();
-        LogUserActions.logStartingActivity(getActivityCode());
+        LogUserActions.logStartingActivity(this, getActivityCode());
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onStop()
     {
-        LogUserActions.logStopActivity(getActivityCode());
+        LogUserActions.logStopActivity(this, getActivityCode());
         super.onStop();
     }
 
     @Override
     public void onPause()
     {
-        LogUserActions.logPauseActivity(getActivityCode());
+        LogUserActions.logPauseActivity(this, getActivityCode());
         super.onPause();
     }
 
     @Override
     public void onResume()
     {
-        LogUserActions.logResumeActivity(getActivityCode());
+        LogUserActions.logResumeActivity(this, getActivityCode());
         super.onResume();
     }
 

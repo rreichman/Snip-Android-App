@@ -16,6 +16,7 @@
     <string name="newSnipsBaseURL">new_snips/</string>
     <string name="likedBaseURL">liked/</string>
     <string name="snoozedBaseURL">snoozed/</string>
+    <string name="eventPostUrl">event_log/</string>
     <string name="searchBaseURL">search/</string>
     <string name="categeoriesBaseURL">tag/</string>
     <string name="categeoriesFixedURL">fixed/</string>
