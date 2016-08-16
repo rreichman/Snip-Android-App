@@ -232,7 +232,7 @@ public class ReadSnipActivity extends GenericSnipActivity
         BaseToolbar activityToolbar = new BaseToolbar();
         activityToolbar.setupToolbar(this);
 
-        LogUserActions.logContentView(this, "ReadSnip", "Text", Long.toString(mSnipData.mID));
+        LogUserActions.logContentView(this, "ReadSnip", Long.toString(mSnipData.mID));
         SnipReactionsSingleton.getInstance().setReaction(this, mSnipData.mID, mSnipData.mReaction);
 
         mLayout = (LinearLayout)findViewById(R.id.clean_layout);

@@ -1,19 +1,28 @@
 package snip.androidapp;
 
 import android.content.Context;
+import android.net.SSLCertificateSocketFactory;
+import android.os.Build;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.answers.Answers;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Created by ranreichman on 8/7/16.
@@ -43,6 +52,10 @@ public class VolleyInternetOperator
             final responseFunctionInterface responseFunction, final errorFunctionInterface errorFunction)
     {
         Log.d("accessing website", url);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            HttpsTrustManager.allowAllSSL();
+        }
         RequestQueue queue = CustomVolleyRequestQueue.getInstance().getRequestQueue();
 
         final CustomJSONObjectRequest jsonRequest =
@@ -92,6 +105,8 @@ public class VolleyInternetOperator
                     }
                 };
         ;
+        final int RETRY_ATTEMPTS_IN_VOLLEY = 3;
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0, RETRY_ATTEMPTS_IN_VOLLEY, 0));
 
         final String REQUEST_TAG = "MainVolleyActivity";
         jsonRequest.setTag(REQUEST_TAG);

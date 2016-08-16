@@ -44,13 +44,18 @@ public class LogUserActions
         Answers.getInstance().logCustom(pauseEvent);
     }
 
+    public static void logServerError()
+    {
+        CustomEvent customEvent = new CustomEvent("ServerFailureEvent");
+        Answers.getInstance().logCustom(customEvent);
+    }
+
     public static void logContentView(
-            Context context, String contentName, String contentType, String contentID)
+            Context context, String contentName, String contentID)
     {
         // TODO:: think about custom attributes
         Answers.getInstance().logContentView(new ContentViewEvent()
                 .putContentName(contentName)
-                .putContentType(contentType)
                 .putContentId(contentID)
                 .putCustomAttribute("Screen Orientation", context.getResources().getConfiguration().orientation));
     }

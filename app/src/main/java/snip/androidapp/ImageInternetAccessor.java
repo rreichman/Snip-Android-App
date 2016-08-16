@@ -12,6 +12,20 @@ public class ImageInternetAccessor extends AsyncTask<String,Void,Bitmap>
 {
     protected Bitmap doInBackground(String... params)
     {
-        return ImageLoader.getInstance().loadImageSync(params[0]);
+        Bitmap result = null;
+        final int ATTEMPTS_TO_SUCCEED = 3;
+        for (int i = 0; i < ATTEMPTS_TO_SUCCEED; ++i)
+        {
+            try
+            {
+                result = ImageLoader.getInstance().loadImageSync(params[0]);
+                break;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 }

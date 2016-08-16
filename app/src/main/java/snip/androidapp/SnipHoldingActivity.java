@@ -1,12 +1,9 @@
 package snip.androidapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,7 +49,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             // Here not using asyncNotifyDatasetChanged on purpose because i want the user to wait
             // TODO:: think if this is true
             mAdapter.notifyDataSetChanged();
-            SnipReactionsSingleton.getInstance().mSnipsReaction.clear();
+            SnipReactionsSingleton.getInstance().mSnipsReactions.clear();
         }
     }
 

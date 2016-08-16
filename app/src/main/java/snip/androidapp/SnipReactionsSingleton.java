@@ -4,9 +4,7 @@ import android.content.Context;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by ranihorev on 11/08/2016.
@@ -14,13 +12,13 @@ import java.util.Set;
 public class SnipReactionsSingleton {
 
     private static SnipReactionsSingleton mInstance = null;
-    public HashMap<Long, Integer> mSnipsReaction;
+    public HashMap<Long, Integer> mSnipsReactions;
     private final static int NO_REACTION = 0;
     private final static int LIKE = 1;
     private final static int DISLIKE = 2;
 
     protected SnipReactionsSingleton() {
-        mSnipsReaction = new HashMap<>();
+        mSnipsReactions = new HashMap<Long, Integer>();
     }
 
     public void setReaction(Context context, long snipID, String reaction) {
@@ -33,7 +31,7 @@ public class SnipReactionsSingleton {
         else if (dislikeServerText.equals(reaction)) {
             curState = DISLIKE;
         }
-        mSnipsReaction.put(snipID, curState);
+        mSnipsReactions.put(snipID, curState);
 
     }
 
@@ -41,7 +39,7 @@ public class SnipReactionsSingleton {
     {
         HashSet<Long> idsToRemove = new HashSet<Long>();
 
-        for (Map.Entry<Long,Integer> e : mSnipsReaction.entrySet())
+        for (Map.Entry<Long,Integer> e : mSnipsReactions.entrySet())
         {
             if (e.getValue() != NO_REACTION)
             {
@@ -52,24 +50,40 @@ public class SnipReactionsSingleton {
         return idsToRemove;
     }
 
-    public boolean isLiked(long snipID) {
-        return (mSnipsReaction.get(snipID) == LIKE);
+    public boolean isLiked(long snipID)
+    {
+        if (mSnipsReactions.containsKey(snipID))
+        {
+            return (mSnipsReactions.get(snipID) == LIKE);
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public boolean isDisliked(long snipID) {
-        return (mSnipsReaction.get(snipID) == DISLIKE);
+    public boolean isDisliked(long snipID)
+    {
+        if (mSnipsReactions.containsKey(snipID))
+        {
+            return (mSnipsReactions.get(snipID) == DISLIKE);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void setNoReaction(long snipID) {
-        mSnipsReaction.put(snipID, NO_REACTION);
+        mSnipsReactions.put(snipID, NO_REACTION);
     }
 
     public void setLiked(long snipID) {
-        mSnipsReaction.put(snipID, LIKE);
+        mSnipsReactions.put(snipID, LIKE);
     }
 
     public void setDisliked(long snipID) {
-        mSnipsReaction.put(snipID, DISLIKE);
+        mSnipsReactions.put(snipID, DISLIKE);
     }
 
     public static synchronized SnipReactionsSingleton getInstance()

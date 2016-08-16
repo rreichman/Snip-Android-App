@@ -6,15 +6,22 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -159,11 +166,38 @@ public class CollectSnipsFromInternet
         }
     }
 
+    private boolean isInternetAvailable()
+    {
+        try
+        {
+            InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
+            InetAddress ipAddr2 = InetAddress.getByName("twitter.com");
+            return (!ipAddr.equals("") && !ipAddr2.equals(""));
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
     public void errorFunctionImplementation(Context context, VolleyError error, JSONObject params)
     {
         try
         {
             String errorString = VolleyInternetOperator.parseNetworkErrorResponse(error);
+            if (error instanceof TimeoutError)
+            {
+                Toast.makeText(context, "Unable to load snips. Is your internet connection stable?", Toast.LENGTH_LONG).show();
+            }
+            else if (error instanceof NoConnectionError)
+            {
+                String toastText = "Unable to load snips. Are you connected to the Internet?";
+                if (isInternetAvailable())
+                {
+                    toastText = "We seem to be having server problems. Sorry about that";
+                    LogUserActions.logServerError();
+                }
+                Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
+            }
             checkUserPermissionStartLoginActivity(context, error.networkResponse.statusCode);
             Log.d("error", "Error collecting Snips");
         }
