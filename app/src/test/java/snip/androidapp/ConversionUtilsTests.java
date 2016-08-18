@@ -5,7 +5,7 @@ import android.util.Log;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.junit.Test;
+//import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ConversionUtilsTests extends TestCase
 {
-    @Test
+    /*@Test
     public void testConvertStringToDate()
     {
         Random rand = new Random();
@@ -48,5 +48,5 @@ public class ConversionUtilsTests extends TestCase
             Assert.assertEquals("Minute compare", minute, cal.get(Calendar.MINUTE));
             Assert.assertEquals("Second compare", second, cal.get(Calendar.SECOND));
         }
-    }
+    }*/
 }

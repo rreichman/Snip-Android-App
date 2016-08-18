@@ -18,6 +18,13 @@ import java.io.File;
 public class DataCacheManagementTests
 {
     @Test
+    public void testPassStubDataCacheManagement()
+    {
+        // This is to make sure everything is working
+        Assert.assertTrue(true);
+    }
+
+    @Test
     public void testDeleteAllInformationFiles()
     {
         // Make sure the files exist

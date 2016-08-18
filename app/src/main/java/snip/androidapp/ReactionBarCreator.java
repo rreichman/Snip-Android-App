@@ -10,10 +10,8 @@ import android.widget.RelativeLayout;
 /**
  * Created by ranihorev on 10/08/2016.
  */
-public class ReactionBarCreator {
-
-
-    // TODO should I change the mReaction value?
+public class ReactionBarCreator
+{
     public static void addReactionBarToLayout(Context context, LinearLayout snipLayout, final long snipId) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -61,7 +59,8 @@ public class ReactionBarCreator {
         snipLayout.addView(reactionLayout);
     }
 
-    private static void setImageReaction(View parentView, boolean currentState, int imageHolderId, int full_image_id, int hollow_image_id) {
+    private static void setImageReaction(
+            View parentView, boolean currentState, int imageHolderId, int full_image_id, int hollow_image_id) {
         int imageResId = hollow_image_id;
         if (currentState) {
             imageResId = full_image_id;

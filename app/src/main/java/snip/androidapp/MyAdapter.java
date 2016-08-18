@@ -32,7 +32,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     private String mDefaultQuery;
     public int mActivityCode;
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(
             Context context, RecyclerView recyclerView, LinkedList<SnipData> dataset,
             LinearLayoutManager linearLayoutManager, String defaultQuery, int activityCode)
@@ -90,10 +89,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 
         for (int i = 0; i < snips.size(); i++)
         {
-            //snips.get(i).mID
             SnipReactionsSingleton.getInstance().setReaction(
-                    context, snips.get(i).mID, snips.get(i).mReaction
-            );
+                    context, snips.get(i).mID, snips.get(i).mReaction);
         }
 
         mDataset.addAll(snips);
@@ -209,7 +206,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         });
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {

@@ -38,10 +38,11 @@ public class MenuHandler
         activity.startActivityForResult(intent, activity.getResources().getInteger(R.integer.activityCodeLogin));
     }
 
-    private static void logoutUser(Activity activity) {
+    private static void logoutUser(Activity activity)
+    {
         SnipCollectionInformation.getInstance().deleteTokenForWebsiteAccess(activity);
         SnipCollectionInformation.getInstance().setShouldRestartViewAfterCollection(true);
         DataCacheManagement.deleteAllInformationFiles(activity);
-        // TODO decide if should send log out to server
+        LogUserActions.logUserLogout(activity);
     }
 }

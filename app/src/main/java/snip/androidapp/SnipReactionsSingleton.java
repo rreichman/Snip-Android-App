@@ -61,7 +61,6 @@ public class SnipReactionsSingleton {
         }
         else
         {
-            Log.d("failure", "a");
             return false;
         }
     }
@@ -77,7 +76,6 @@ public class SnipReactionsSingleton {
         }
         else
         {
-            Log.d("failure", "a");
             return false;
         }
     }

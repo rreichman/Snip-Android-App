@@ -63,8 +63,7 @@ public class LogUserActions
         sendLogToServer(context, "ServerError", "", 0);
     }
 
-    public static void logContentView(
-            Context context, String contentName, String contentID)
+    public static void logContentView(Context context, String contentName, String contentID)
     {
         // TODO:: think about custom attributes
         Answers.getInstance().logContentView(new ContentViewEvent()
@@ -74,14 +73,11 @@ public class LogUserActions
         sendLogToServer(context, "ContentView", contentName, new Integer(contentID));
     }
 
-    public static void logUserLike(Context context, int snipID)
+    public static void logUserLogout(Context context)
     {
-        sendLogToServer(context, "PostLike", "", snipID);
-    }
-
-    public static void logUserDislike(Context context, int snipID)
-    {
-        sendLogToServer(context, "PostDislike", "", snipID);
+        CustomEvent logoutEvent = new CustomEvent("LogoutEvent");
+        Answers.getInstance().logCustom(logoutEvent);
+        sendLogToServer(context, "Logout", "", 0);
     }
 
     public static void responseFunctionImplementation(

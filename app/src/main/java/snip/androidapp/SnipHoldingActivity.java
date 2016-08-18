@@ -83,6 +83,16 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         super.onStop();
     }
 
+    @Override
+    public void onDestroy()
+    {
+        if (null != mAdapter)
+        {
+            DataCacheManagement.saveAppInformationToFile(this, mAdapter.getDataset(), getActivityCode());
+        }
+        super.onDestroy();
+    }
+
 
 
     @Override
@@ -159,6 +169,13 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         activityToolbar.setupToolbar(this);
     }
 
+    public void onRefreshOperation()
+    {
+        SnipCollectionInformation.getInstance().setShouldRestartViewAfterCollection(true);
+        deleteActivityCacheAndStartOver();
+        Log.d("Refreshed!", "So refreshing!");
+    }
+
     protected void setActivityVariables()
     {
         mRecyclerView = (RecyclerView) this.findViewById(R.id.snip_recycler_view);
@@ -171,9 +188,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             @Override
             public void onRefresh()
             {
-                SnipCollectionInformation.getInstance().setShouldRestartViewAfterCollection(true);
-                deleteActivityCacheAndStartOver();
-                Log.d("Refreshed!", "So refreshing!");
+                onRefreshOperation();
             }
         });
     }

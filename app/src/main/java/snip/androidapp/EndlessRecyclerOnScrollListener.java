@@ -32,15 +32,6 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         if (!SnipCollectionInformation.getInstance().mLock.isLocked())
         {
             SnipCollectionInformation.getInstance().mLock.lock();
-            /*if (SnipCollectionInformation.getInstance().getAmountOfCollectedSnips() > 0)
-            {
-                MyAdapter adapter = (MyAdapter) view.getAdapter();
-                LinkedList<SnipData> collectedSnips =
-                        SnipCollectionInformation.getInstance().getCollectedSnipsAndCleanList();
-                adapter.addAll(collectedSnips);
-                adapter.notifyDataSetChanged();
-            }*/
-
             if (!SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activityCode).equals("null"))
             {
                 CollectSnipsFromInternet collectSnipsFromInternet =

@@ -23,14 +23,6 @@ import java.util.HashMap;
  */
 public class ReactionManager
 {
-//    private static void showToastReaction(Context context) {
-//        Toast toast = Toast.makeText(context, "Toast text", Toast.LENGTH_SHORT);
-//        View view = toast.getView();
-//        view.setBackgroundColor(Color.TRANSPARENT);
-//        toast.setView(view);
-//        toast.show();
-//    }
-
     static String REACTION_LOG_TAG = "Reaction Post";
 
     // TODO replace to strings, context needed

@@ -123,7 +123,7 @@ public class LoginActivity extends GenericSnipActivity
     {
         mProgressDialog = RegistrationUtils.showProgressDialog(this, R.style.TempAppTheme_Dark_Dialog, signInProgressBarText);
         int requestMethod = Request.Method.POST;
-        VolleyInternetOperator.responseFunctionInterface loginSuccessFun =
+        VolleyInternetOperator.responseFunctionInterface loginSuccessFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
                     @Override
                     public void apply(Context context, JSONObject response, JSONObject params)
@@ -131,7 +131,7 @@ public class LoginActivity extends GenericSnipActivity
                         onLoginSuccess(context, response, params);
                     }
                 };
-        VolleyInternetOperator.errorFunctionInterface loginFailedFun =
+        VolleyInternetOperator.errorFunctionInterface loginFailedFunction =
                 new VolleyInternetOperator.errorFunctionInterface() {
                     @Override
                     public void apply(Context context, VolleyError error, JSONObject params)
@@ -140,7 +140,7 @@ public class LoginActivity extends GenericSnipActivity
                     }
                 };
         VolleyInternetOperator.accessWebsiteWithVolley(this, baseAccessURL + signInURL,
-                requestMethod, loginJsonParams, null, loginSuccessFun, loginFailedFun);
+                requestMethod, loginJsonParams, null, loginSuccessFunction, loginFailedFunction);
     }
 
     public void login() {
