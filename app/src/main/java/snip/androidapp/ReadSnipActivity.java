@@ -233,7 +233,6 @@ public class ReadSnipActivity extends GenericSnipActivity
         activityToolbar.setupToolbar(this);
 
         LogUserActions.logContentView(this, "ReadSnip", Long.toString(mSnipData.mID));
-        SnipReactionsSingleton.getInstance().setReaction(this, mSnipData.mID, mSnipData.mReaction);
 
         mLayout = (LinearLayout)findViewById(R.id.clean_layout);
         mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);

@@ -27,24 +27,21 @@ import java.util.Set;
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 {
     private RecyclerView mRecyclerView;
-    public LinkedList<SnipData> mDataset;
+    private LinkedList<SnipData> mDataset;
     private LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
     public int mActivityCode;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(
-            RecyclerView recyclerView, LinkedList<SnipData> dataset,
+            Context context, RecyclerView recyclerView, LinkedList<SnipData> dataset,
             LinearLayoutManager linearLayoutManager, String defaultQuery, int activityCode)
     {
         mRecyclerView = recyclerView;
+        mDataset = new LinkedList<SnipData>();
         if (null != dataset)
         {
-            mDataset = (LinkedList<SnipData>)dataset.clone();
-        }
-        else
-        {
-            mDataset = new LinkedList<SnipData>();
+            addAll(context, dataset);
         }
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
@@ -56,6 +53,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         Log.d("Adapter size", Integer.toString(mDataset.size()));
         Log.d("removing snip from list", Integer.toString(id));
         mDataset.remove(id);
+    }
+
+    public LinkedList<SnipData> getDataset()
+    {
+        return mDataset;
     }
 
     private void validateThatAddedDataIsntMultiple(LinkedList<SnipData> snips)
@@ -80,11 +82,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         }
     }
 
-    public void addAll(LinkedList<SnipData> snips)
+    public void addAll(Context context, LinkedList<SnipData> snips)
     {
         Log.d("Adapter size", Integer.toString(mDataset.size()));
         Log.d("adding snips to list", Integer.toString(snips.size()));
         validateThatAddedDataIsntMultiple(snips);
+
+        for (int i = 0; i < snips.size(); i++)
+        {
+            //snips.get(i).mID
+            SnipReactionsSingleton.getInstance().setReaction(
+                    context, snips.get(i).mID, snips.get(i).mReaction
+            );
+        }
+
         mDataset.addAll(snips);
     }
 

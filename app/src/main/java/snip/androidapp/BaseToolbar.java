@@ -83,17 +83,6 @@ public class BaseToolbar
                     }
                 }
         );
-
-        // TODO:: add the
-        /*currentActivity.findViewById(R.id.snipLogoOnToolbar).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("clicked", "liked");
-
-                    }
-                }
-        );*/
     }
 
 }

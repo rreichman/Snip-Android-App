@@ -3,6 +3,7 @@ package snip.androidapp;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -105,7 +106,8 @@ public class SnipCollectionInformation
     {
         mTokenForWebsiteAccess = null;
         String userTokenFile = context.getResources().getString(R.string.userTokenFile);
-        DataCacheManagement.deleteFileOnDisk(userTokenFile);
+        DataCacheManagement.deleteFileOnDisk(
+                DataCacheManagement.getFullPathOfFile(context, userTokenFile));
     }
 
     public String getTokenForWebsiteAccess(Context context)

@@ -41,6 +41,8 @@
     <string name="ReactionUnDislike">un_dislike</string>
     <string name="ReactionSnooze">snooze</string>
     <string name="ReactionExpand">expand</string>
+    <string name="SnipDataSizeInCacheString">size</string>
+    <string name="SnipQueryStringInBundle">queryString</string>
 
     <string name="SnipDatasetPosition">SnipDatasetPosition</string>
 

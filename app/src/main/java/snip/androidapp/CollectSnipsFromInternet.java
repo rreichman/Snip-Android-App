@@ -208,9 +208,9 @@ public class CollectSnipsFromInternet
     }
 
     private void checkUserPermissionStartLoginActivity(Context context, int errorCode) {
-        if (errorCode == 403) {
+        if (errorCode == 403)
+        {
             Intent intent = new Intent(context, LoginActivity.class);
-            // TODO check if it's ok with reichman
             ((MyActivity) context).startActivityForResult(intent, context.getResources().getInteger(R.integer.activityCodeLogin));
         }
     }

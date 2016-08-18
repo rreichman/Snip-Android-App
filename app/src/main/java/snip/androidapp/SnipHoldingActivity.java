@@ -49,7 +49,6 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             // Here not using asyncNotifyDatasetChanged on purpose because i want the user to wait
             // TODO:: think if this is true
             mAdapter.notifyDataSetChanged();
-            SnipReactionsSingleton.getInstance().mSnipsReactions.clear();
         }
     }
 
@@ -79,7 +78,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     {
         if (null != mAdapter)
         {
-            DataCacheManagement.saveAppInformationToFile(this, mAdapter.mDataset, getActivityCode());
+            DataCacheManagement.saveAppInformationToFile(this, mAdapter.getDataset(), getActivityCode());
         }
         super.onStop();
     }
@@ -90,7 +89,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     public void onSaveInstanceState(Bundle outBundle) {
         if (null != mAdapter)
         {
-            DataCacheManagement.saveSnipDataToBundle(outBundle, mAdapter.mDataset);
+            DataCacheManagement.saveSnipDataToBundle(this, outBundle, mAdapter.getDataset());
         }
         super.onSaveInstanceState(outBundle);
     }
@@ -183,11 +182,11 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     {
         if (null != mAdapter)
         {
-            if (null != mAdapter.mDataset) {
-                for (int i = 0; i < mAdapter.mDataset.size(); i++) {
-                    if (null == mAdapter.mDataset.get(i).mThumbnail) {
-                        mAdapter.mDataset.get(i).mThumbnail =
-                                SnipData.getBitmapFromUrl(mAdapter.mDataset.get(i).mThumbnailUrl);
+            if (null != mAdapter.getDataset()) {
+                for (int i = 0; i < mAdapter.getDataset().size(); i++) {
+                    if (null == mAdapter.getDataset().get(i).mThumbnail) {
+                        mAdapter.getDataset().get(i).mThumbnail =
+                                SnipData.getBitmapFromUrl(mAdapter.getDataset().get(i).mThumbnailUrl);
                     }
                 }
             }
@@ -233,7 +232,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             }
             else
             {
-                ((MyAdapter)mAdapter).addAll(addedSnips);
+                ((MyAdapter)mAdapter).addAll(this, addedSnips);
                 asyncNotifyDatasetChanged();
             }
             addPicturesToSnips();
@@ -243,7 +242,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     private void startNewAdapter(LinkedList<SnipData> snipsToStartWith)
     {
         mAdapter = new MyAdapter(
-                mRecyclerView, snipsToStartWith, mLayoutManager,
+                this, mRecyclerView, snipsToStartWith, mLayoutManager,
                 getBaseSnipsQueryForActivity(), getActivityCode());
         mRecyclerView.setAdapter(mAdapter);
 
@@ -272,7 +271,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                 int currentPositionInDataset = viewHolder.getAdapterPosition();
                 if (ItemTouchHelper.LEFT == swipeDirection)
                 {
-                    ReactionManager.userDislikedSnip(mAdapter.mDataset.get(currentPositionInDataset).mID);
+                    ReactionManager.userDislikedSnip(mAdapter.getDataset().get(currentPositionInDataset).mID);
                     mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
@@ -281,7 +280,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
-                    ReactionManager.userLikedSnip(mAdapter.mDataset.get(currentPositionInDataset).mID);
+                    ReactionManager.userLikedSnip(mAdapter.getDataset().get(currentPositionInDataset).mID);
                     mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(

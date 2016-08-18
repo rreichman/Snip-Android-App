@@ -1,6 +1,7 @@
 package snip.androidapp;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,12 +13,13 @@ import java.util.Map;
 public class SnipReactionsSingleton {
 
     private static SnipReactionsSingleton mInstance = null;
-    public HashMap<Long, Integer> mSnipsReactions;
+    private HashMap<Long, Integer> mSnipsReactions;
     private final static int NO_REACTION = 0;
     private final static int LIKE = 1;
     private final static int DISLIKE = 2;
 
-    protected SnipReactionsSingleton() {
+    protected SnipReactionsSingleton()
+    {
         mSnipsReactions = new HashMap<Long, Integer>();
     }
 
@@ -32,7 +34,6 @@ public class SnipReactionsSingleton {
             curState = DISLIKE;
         }
         mSnipsReactions.put(snipID, curState);
-
     }
 
     public HashSet<Long> getIdsToRemoveFromDataset()
@@ -52,24 +53,31 @@ public class SnipReactionsSingleton {
 
     public boolean isLiked(long snipID)
     {
+        Log.d("snipID", Long.toString(snipID));
+        Log.d("mSnipsReactions", mSnipsReactions.keySet().toString());
         if (mSnipsReactions.containsKey(snipID))
         {
             return (mSnipsReactions.get(snipID) == LIKE);
         }
         else
         {
+            Log.d("failure", "a");
             return false;
         }
     }
 
     public boolean isDisliked(long snipID)
     {
+        Log.d("snipID", Long.toString(snipID));
+        Log.d("mSnipsReactions", mSnipsReactions.keySet().toString());
         if (mSnipsReactions.containsKey(snipID))
         {
             return (mSnipsReactions.get(snipID) == DISLIKE);
+
         }
         else
         {
+            Log.d("failure", "a");
             return false;
         }
     }

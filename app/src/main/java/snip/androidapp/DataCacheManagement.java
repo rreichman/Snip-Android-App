@@ -50,11 +50,6 @@ public class DataCacheManagement
         return "savedQueryData" + Integer.toString(activityCode) + ".dat";
     }
 
-    // TODO:: this is a bad name for a function
-    public static String getSizeString() { return "size"; }
-
-    public static String getQueryString() { return "queryString"; }
-
     public static void saveObjectToFile(Context context, Object object, String filename)
     {
         try
@@ -82,7 +77,6 @@ public class DataCacheManagement
         }
     }
 
-    // TODO check with Reichman about changing to public
     public static void deleteFileOnDisk(String fullPathOfFile)
     {
         File file = new File(fullPathOfFile);
@@ -98,11 +92,13 @@ public class DataCacheManagement
         deleteFileOnDisk(getFullPathForSnipQuery(context, activityCode));
     }
 
-    public static void saveSnipDataToBundle(Bundle outBundle, LinkedList<SnipData> collectedSnips)
+    public static void saveSnipDataToBundle(Context context, Bundle outBundle, LinkedList<SnipData> collectedSnips)
     {
         if (null != collectedSnips)
         {
-            outBundle.putInt(DataCacheManagement.getSizeString(), collectedSnips.size());
+            outBundle.putInt(
+                    context.getResources().getString(R.string.SnipQueryStringInBundle),
+                    collectedSnips.size());
             for (int i = 0; i < collectedSnips.size(); ++i) {
                 outBundle.putParcelable(Integer.toString(i), collectedSnips.get(i));
             }
@@ -110,11 +106,12 @@ public class DataCacheManagement
     }
 
     public static LinkedList<SnipData> retrieveSnipDataFromBundle(
-            Bundle savedInstanceState, int activityCode)
+            Context context, Bundle savedInstanceState, int activityCode)
     {
         if (null != savedInstanceState) {
             if (!savedInstanceState.isEmpty()) {
-                int size = savedInstanceState.getInt(DataCacheManagement.getSizeString());
+                int size = savedInstanceState.getInt(
+                        context.getResources().getString(R.string.SnipDataSizeInCacheString));
                 LinkedList<SnipData> collectedSnips = new LinkedList<SnipData>();
 
                 for (int i = 0; i < size; ++i) {
@@ -122,8 +119,9 @@ public class DataCacheManagement
                     collectedSnips.addLast(currentSnip);
                 }
 
-                SnipCollectionInformation.getInstance().setLastSnipQuery(
-                        activityCode, savedInstanceState.getString(DataCacheManagement.getQueryString()));
+                SnipCollectionInformation.getInstance().setLastSnipQuery(activityCode,
+                        savedInstanceState.getString(
+                                context.getResources().getString(R.string.SnipQueryStringInBundle)));
 
                 return collectedSnips;
             }
@@ -198,7 +196,7 @@ public class DataCacheManagement
     public static LinkedList<SnipData> retrieveSavedDataFromBundleOrFile(
             Context context, Bundle savedInstanceState, int activityCode)
     {
-        LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(savedInstanceState, activityCode);
+        LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(context, savedInstanceState, activityCode);
         if (null == outputSnips)
         {
             LinkedList<SnipData> collectedSnips = retrieveSnipDataFromFile(context, activityCode);
