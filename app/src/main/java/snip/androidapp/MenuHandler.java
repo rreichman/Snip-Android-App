@@ -40,8 +40,8 @@ public class MenuHandler
 
     private static void logoutUser(Activity activity)
     {
-        SnipCollectionInformation.getInstance().deleteTokenForWebsiteAccess(activity);
-        SnipCollectionInformation.getInstance().setShouldRestartViewAfterCollection(true);
+        SnipCollectionInformation.getInstance(activity).deleteTokenForWebsiteAccess(activity);
+        SnipCollectionInformation.getInstance(activity).setShouldRestartViewAfterCollection(true);
         DataCacheManagement.deleteAllInformationFiles(activity);
         LogUserActions.logUserLogout(activity);
     }

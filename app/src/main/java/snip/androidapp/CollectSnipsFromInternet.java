@@ -4,17 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import android.support.v4.app.FragmentManager;
 
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.CustomEvent;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -53,7 +51,7 @@ public class CollectSnipsFromInternet
     }
 
     private void showHideLoadingAnimation(Context context, boolean toShow) {
-        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi);
+        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi_fragment);
         if (null != avi) {
             if (toShow) {
                 avi.setVisibility(avi.VISIBLE);
@@ -65,10 +63,17 @@ public class CollectSnipsFromInternet
     }
 
     private void moveLoadingAnimationToBottom(Context context) {
-        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) avi.getLayoutParams();
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        avi.setLayoutParams(params);
+        try
+        {
+            AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi_fragment);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) avi.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            avi.setLayoutParams(params);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     // If the queryFromServer is null then we use the default query
@@ -79,7 +84,7 @@ public class CollectSnipsFromInternet
         JSONObject loginJsonParams = new JSONObject();
 
         HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
+                SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
 
         VolleyInternetOperator.responseFunctionInterface responseFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
@@ -106,7 +111,7 @@ public class CollectSnipsFromInternet
             Log.d("basic query is", mBasicQuery);
             VolleyInternetOperator.accessWebsiteWithVolley(
                     context,
-                    mBasicQuery + SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(mActivityCode),
+                    mBasicQuery + SnipCollectionInformation.getInstance(context).getLastSnipQueryForFragment(mActivityCode),
                     Request.Method.GET,
                     loginJsonParams,
                     headers,
@@ -132,13 +137,13 @@ public class CollectSnipsFromInternet
             String fullNextRequest = response.getString("next");
             if (fullNextRequest.equals("null"))
             {
-                SnipCollectionInformation.getInstance().setLastSnipQuery(mActivityCode, fullNextRequest);
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(mActivityCode, fullNextRequest);
             }
             else
             {
                 String[] splittedFullNextRequest = fullNextRequest.split("/");
                 String nextQueryString = splittedFullNextRequest[splittedFullNextRequest.length - 1];
-                SnipCollectionInformation.getInstance().setLastSnipQuery(mActivityCode, nextQueryString);
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(mActivityCode, nextQueryString);
             }
 
             if ((!fullNextRequest.equals("null")) && (mAmountOfSnipsCollectedInCurrentSession < mSnipsToCollect))
@@ -149,7 +154,15 @@ public class CollectSnipsFromInternet
             {
                 //SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
                 Log.d("setting collected snips", Integer.toString(mSnipsFromBackend.size()));
-                ((SnipHoldingActivity)context).populateActivity(mSnipsFromBackend);
+                FragmentManager manager = ((MainActivity)context).getSupportFragmentManager();
+                SnipHoldingFragment fragment = (SnipHoldingFragment)manager.findFragmentById(R.id.fragmentPlaceholder);
+                fragment.populateFragment(mSnipsFromBackend);
+  //              SnipHoldingFragment fragment = (SnipHoldingFragment)
+//                        ((MainActivity)context).getFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
+                //SnipHoldingFragment f;
+                //f.populateFragment(mSnipsFromBackend);
+                //Fragment fragment = ((MainActivity)context).findViewById(R.id.fragmentPlaceholder);
+                //((Fragment)context).populat(mSnipsFromBackend);
             }
 
             moveLoadingAnimationToBottom(context);
@@ -160,9 +173,9 @@ public class CollectSnipsFromInternet
             e.printStackTrace();
         }
 
-        if (SnipCollectionInformation.getInstance().mLock.isLocked())
+        if (SnipCollectionInformation.getInstance(context).mLock.isLocked())
         {
-            SnipCollectionInformation.getInstance().mLock.unlock();
+            SnipCollectionInformation.getInstance(context).mLock.unlock();
         }
     }
 
@@ -204,6 +217,11 @@ public class CollectSnipsFromInternet
         catch(Exception e)
         {
             e.printStackTrace();
+        }
+
+        if (SnipCollectionInformation.getInstance(context).mLock.isLocked())
+        {
+            SnipCollectionInformation.getInstance(context).mLock.unlock();
         }
     }
 

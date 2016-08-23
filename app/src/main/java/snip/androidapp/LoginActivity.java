@@ -94,7 +94,7 @@ public class LoginActivity extends GenericSnipActivity
             JSONObject tokenJson = getTokenJson(response, loginParams);
             _loginButton.setEnabled(true);
             mProgressDialog.hide();
-            SnipCollectionInformation.getInstance().setTokenForWebsiteAccess(response.getString(tokenField));
+            SnipCollectionInformation.getInstance(context).setTokenForWebsiteAccess(response.getString(tokenField));
             DataCacheManagement.saveObjectToFile(context, tokenJson.toString(), userTokenFile);
             DataCacheManagement.saveObjectToFile(context, loginParams.getString(emailField), userEmailFile);
         }

@@ -16,7 +16,7 @@
             android:theme="@style/SingleSnip">
         </activity>
         <activity
-            android:name=".MyActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name">
             <intent-filter>

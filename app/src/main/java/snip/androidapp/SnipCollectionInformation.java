@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -25,23 +26,17 @@ public class SnipCollectionInformation
 {
     private static SnipCollectionInformation mInstance = null;
 
-    private HashMap<Integer,String> mLastSnipQueryPerActivity;
+    private HashMap<Integer,String> mLastSnipQueryPerFragment;
     public ReentrantLock mLock;
     private String mTokenForWebsiteAccess;
     private boolean mShouldRestartViewAfterCollection;
 
-    private void initializeLastQueries()
+    private void initializeLastQueries(Context context)
     {
-        // TODO:: fix this
-        final int activityCodeMyActivity = 13;
-        final int activityCodeLiked = 12;
-        final int activityCodeSnoozed = 11;
-
-        mLastSnipQueryPerActivity = new HashMap<Integer, String>();
-        mLastSnipQueryPerActivity.put(activityCodeMyActivity,"");
-        mLastSnipQueryPerActivity.put(activityCodeLiked,"");
-        mLastSnipQueryPerActivity.put(activityCodeSnoozed,"");
-
+        mLastSnipQueryPerFragment = new HashMap<Integer, String>();
+        mLastSnipQueryPerFragment.put(context.getResources().getInteger(R.integer.fragmentCodeMain),"");
+        mLastSnipQueryPerFragment.put(context.getResources().getInteger(R.integer.fragmentCodeLiked),"");
+        mLastSnipQueryPerFragment.put(context.getResources().getInteger(R.integer.fragmentCodeSnoozed),"");
     }
 
     public String getDimensionsQuery()
@@ -49,19 +44,19 @@ public class SnipCollectionInformation
         return "?im_width=600&im_height=600";
     }
 
-    protected SnipCollectionInformation()
+    protected SnipCollectionInformation(Context context)
     {
-        initializeLastQueries();
+        initializeLastQueries(context);
         mLock = new ReentrantLock();
         mTokenForWebsiteAccess = null;
         mShouldRestartViewAfterCollection = false;
     }
 
-    public String getLastSnipQueryForActivity(int activityCode)
+    public String getLastSnipQueryForFragment(int fragmentCode)
     {
-        Log.d("snipQueryForActivity" + Integer.toString(activityCode),
-                mLastSnipQueryPerActivity.get(activityCode));
-        return mLastSnipQueryPerActivity.get(activityCode);
+        Log.d("snipQueryForActivity" + Integer.toString(fragmentCode),
+                mLastSnipQueryPerFragment.get(fragmentCode));
+        return mLastSnipQueryPerFragment.get(fragmentCode);
     }
 
     public boolean getShouldRestartViewAfterCollectionAndReset()
@@ -127,25 +122,25 @@ public class SnipCollectionInformation
         return tokenAsHashmap;
     }
 
-    public void cleanLastSnipQuery(int activityCode) { mLastSnipQueryPerActivity.put(activityCode,""); }
+    public void cleanLastSnipQuery(int fragmentCode) { mLastSnipQueryPerFragment.put(fragmentCode,""); }
 
-    public void setLastSnipQuery(int activityCode, String lastSnipQuery)
+    public void setLastSnipQuery(int fragmentCode, String lastSnipQuery)
     {
         if (null != lastSnipQuery)
         {
-            mLastSnipQueryPerActivity.put(activityCode, lastSnipQuery);
+            mLastSnipQueryPerFragment.put(fragmentCode, lastSnipQuery);
         }
         else
         {
-            mLastSnipQueryPerActivity.put(activityCode, "");
+            mLastSnipQueryPerFragment.put(fragmentCode, "");
         }
     }
 
-    public static synchronized SnipCollectionInformation getInstance()
+    public static synchronized SnipCollectionInformation getInstance(Context context)
     {
         if (null == mInstance)
         {
-            mInstance = new SnipCollectionInformation();
+            mInstance = new SnipCollectionInformation(context);
         }
         return mInstance;
     }

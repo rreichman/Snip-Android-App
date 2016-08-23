@@ -60,10 +60,11 @@ public class ReactionManager
         Log.d("reaction", "failed");
     }
 
-    public static void postReactionToServer(long snipID, String reaction) {
-
+    public static void postReactionToServer(long snipID, String reaction)
+    {
+        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
+                SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
 
         VolleyInternetOperator.responseFunctionInterface responseFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
@@ -82,7 +83,6 @@ public class ReactionManager
                     }
                 };
 
-        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
         String reactionBaseUrl = context.getResources().getString(R.string.reactionBaseURL);
         String url = baseAccessURL + reactionBaseUrl;

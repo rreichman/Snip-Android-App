@@ -38,6 +38,7 @@ public class SearchResultActivity extends SnipHoldingActivity
 
     public String getBaseSnipsQueryForActivity()
     {
+        /*
         if (getResources().getInteger(R.integer.activityCodeSnoozed) == mSearchResultType)
         {
             return getSnipsQuerySnoozed();
@@ -49,7 +50,8 @@ public class SearchResultActivity extends SnipHoldingActivity
         else
         {
             return null;
-        }
+        }*/
+        return null;
     }
 
     public int getActivityCode()

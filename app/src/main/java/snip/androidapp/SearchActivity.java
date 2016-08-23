@@ -50,10 +50,11 @@ public class SearchActivity extends Activity
     }
 
 
-    public static void ServerCategoriesRequest(boolean getFixedCategories) {
-
+    public static void ServerCategoriesRequest(boolean getFixedCategories)
+    {
+        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
+                SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
 
         VolleyInternetOperator.responseFunctionInterface responseFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
@@ -72,7 +73,6 @@ public class SearchActivity extends Activity
                     }
                 };
 
-        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
         String categoriesBaseUrl = context.getResources().getString(R.string.categeoriesBaseURL);
         if (getFixedCategories) {
@@ -87,9 +87,9 @@ public class SearchActivity extends Activity
 
 
     public static void ServerSearchRequest(String searchString) {
-
+        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
+                SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
 
         VolleyInternetOperator.responseFunctionInterface responseFunction =
                 new VolleyInternetOperator.responseFunctionInterface() {
@@ -108,7 +108,6 @@ public class SearchActivity extends Activity
                     }
                 };
 
-        Context context = CustomVolleyRequestQueue.getInstance().getContext();
         String searchBaseQuery = "?content=";
         String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
         String searchBaseUrl = context.getResources().getString(R.string.searchBaseURL);

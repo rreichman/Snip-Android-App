@@ -30,7 +30,7 @@ public class MyActivity extends SnipHoldingActivity
     public String getBaseSnipsQueryForActivity()
     {
         String lastRequestURL =
-                SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(getActivityCode());
+                SnipCollectionInformation.getInstance(this).getLastSnipQueryForFragment(getActivityCode());
         String baseAccessUrl = getResources().getString(R.string.baseAccessURL);
         String snipsBaseUrl = getResources().getString(R.string.snipsBaseURL);
         String newSnipsBaseUrl = getResources().getString(R.string.newSnipsBaseURL);
@@ -46,6 +46,7 @@ public class MyActivity extends SnipHoldingActivity
 
     public int getActivityCode()
     {
-        return getResources().getInteger(R.integer.activityCodeMyActivity);
+        //return getResources().getInteger(R.integer.activityCodeMyActivity);
+        return 0;
     }
 }

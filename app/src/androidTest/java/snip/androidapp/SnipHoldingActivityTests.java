@@ -29,51 +29,53 @@ public class SnipHoldingActivityTests
     public ActivityTestRule<MyActivity> mActivityRule =
         new ActivityTestRule<>(MyActivity.class);
 
-    /*@Test
+    @Test
     public void testPassStubSnipHoldingActivity()
     {
         // This is to make sure everything is working
         Assert.assertTrue(true);
-    }*/
+    }
 
     @Test
     public void testMainFlow()
     {
+        final int DEFAULT_AMOUNT_OF_SNIPS = TestUtils.getDefaultAmountOfSnips();
+
         TestUtils.waitForAdapterInActivity(mActivityRule);
         int currentSize = mActivityRule.getActivity().mAdapter.getDataset().size();
-        if (currentSize > 10)
+        if (currentSize > DEFAULT_AMOUNT_OF_SNIPS)
         {
-            Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeDown());
+            TestUtils.swipeDownScreen();
             TestUtils.safeSleep(2000);
             TestUtils.waitForAdapterInActivityToChange(currentSize, mActivityRule);
         }
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), 10);
+        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS);
 
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeUp());
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeUp());
+        TestUtils.swipeUpScreen();
+        TestUtils.swipeUpScreen();
 
         TestUtils.safeSleep(3000);
-        TestUtils.waitForAdapterInActivityToChange(10, mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), 20);
+        TestUtils.waitForAdapterInActivityToChange(DEFAULT_AMOUNT_OF_SNIPS, mActivityRule);
+        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS * 2);
 
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeDown());
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeDown());
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeDown());
+        TestUtils.swipeDownScreen();
+        TestUtils.swipeDownScreen();
+        TestUtils.swipeDownScreen();
 
-        TestUtils.waitForAdapterInActivityToChange(20, mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), 10);
+        TestUtils.waitForAdapterInActivityToChange(DEFAULT_AMOUNT_OF_SNIPS * 2, mActivityRule);
+        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS);
 
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeUp());
-        Espresso.onView(ViewMatchers.withId(R.id.swipeContainer)).perform(ViewActions.swipeUp());
+        TestUtils.swipeUpScreen();
+        TestUtils.swipeUpScreen();
 
-        TestUtils.waitForAdapterInActivityToChange(10, mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), 20);
+        TestUtils.waitForAdapterInActivityToChange(DEFAULT_AMOUNT_OF_SNIPS, mActivityRule);
+        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS * 2);
 
         mActivityRule.getActivity().finish();
         TestUtils.safeSleep(3000);
         mActivityRule.launchActivity(null);
 
         TestUtils.waitForAdapterInActivity(mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), 20);
+        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS * 2);
     }
 }

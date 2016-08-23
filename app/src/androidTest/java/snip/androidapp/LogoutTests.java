@@ -1,6 +1,15 @@
 package snip.androidapp;
 
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
+import android.support.test.rule.ActivityTestRule;
+import android.util.Log;
+import android.view.View;
+
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -8,6 +17,10 @@ import org.junit.Test;
  */
 public class LogoutTests
 {
+    @Rule
+    public ActivityTestRule<MyActivity> mActivityRule =
+            new ActivityTestRule<>(MyActivity.class);
+
     @Test
     public void testPassStubLoginActivity()
     {
@@ -15,14 +28,36 @@ public class LogoutTests
         Assert.assertTrue(true);
     }
 
+    private void loginUser()
+    {
+        Espresso.onView(ViewMatchers.withId(R.id.input_email_signin)).perform(
+                ViewActions.typeText("ran.reichman@gmail.com"));
+        Espresso.onView(ViewMatchers.withId(R.id.input_password_signin)).perform(
+                ViewActions.typeText("Qwerty123"));
+        Espresso.onView(ViewMatchers.withId(R.id.btn_login)).perform(ViewActions.click());
+    }
+
     @Test
     public void testLogoutAndThenLogin()
     {
-        // Get snips
-        // Logout user
-        // Try to get snips and fail
-        // Login user
-        // Get snips successfully
-        Assert.fail();
+        // This is in case the current user isn't logged in
+        if (LoginActivity.class == TestUtils.getActivityInstance().getClass())
+        {
+            loginUser();
+        }
+
+        TestUtils.waitForAdapterInActivity(mActivityRule);
+
+        Assert.assertEquals(MyActivity.class, TestUtils.getActivityInstance().getClass());
+
+        TestUtils.clickButtonInMenu(R.string.logoutMenuTitle);
+
+        Assert.assertEquals(LoginActivity.class, TestUtils.getActivityInstance().getClass());
+
+        loginUser();
+
+        TestUtils.waitForAdapterInActivity(mActivityRule);
+
+        Assert.assertEquals(MyActivity.class, TestUtils.getActivityInstance().getClass());
     }
 }

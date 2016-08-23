@@ -29,10 +29,11 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     private static void loadMore(
             RecyclerView view, String baseQuery, int activityCode, boolean showAnimation)
     {
-        if (!SnipCollectionInformation.getInstance().mLock.isLocked())
+        if (!SnipCollectionInformation.getInstance(view.getContext()).mLock.isLocked())
         {
-            SnipCollectionInformation.getInstance().mLock.lock();
-            if (!SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activityCode).equals("null"))
+            SnipCollectionInformation.getInstance(view.getContext()).mLock.lock();
+            if (!SnipCollectionInformation.getInstance(view.getContext()).
+                    getLastSnipQueryForFragment(activityCode).equals("null"))
             {
                 CollectSnipsFromInternet collectSnipsFromInternet =
                         new CollectSnipsFromInternet(
@@ -52,7 +53,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         try
         {
             int visibleItemCount = recyclerView.getChildCount();
-            int totalItemCount = linearLayoutManager.getItemCount();
+            int totalItemCount = recyclerView.getAdapter().getItemCount();
             int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
             final int visibleThreshold = 4;
 

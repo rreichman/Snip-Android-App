@@ -120,7 +120,7 @@ public class LogUserActions
             String url = context.getResources().getString(R.string.baseAccessURL) +
                     context.getResources().getString(R.string.eventPostUrl);
             HashMap<String, String> headers =
-                    SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
+                    SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
 
             VolleyInternetOperator.responseFunctionInterface responseFunction =
                     new VolleyInternetOperator.responseFunctionInterface() {

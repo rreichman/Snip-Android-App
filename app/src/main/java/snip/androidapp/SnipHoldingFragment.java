@@ -4,39 +4,29 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
+
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Display;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import android.view.ViewGroup;
 
 import java.util.LinkedList;
 
-import butterknife.ButterKnife;
-
 /**
- * Created by ranreichman on 8/11/16.
+ * Created by ranreichman on 8/23/16.
  */
-public abstract class SnipHoldingActivity extends GenericSnipActivity
+public abstract class SnipHoldingFragment extends Fragment
 {
     protected RecyclerView mRecyclerView;
     protected MyAdapter mAdapter;
     protected LinearLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeContainer;
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    }
 
     @Override
     public void onResume()
@@ -53,32 +43,11 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        MenuHandler.handleItemSelectedInMenu(this, item);
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     public void onStop()
     {
         if (null != mAdapter)
         {
-            DataCacheManagement.saveAppInformationToFile(this, mAdapter.getDataset(), getActivityCode());
+            DataCacheManagement.saveAppInformationToFile(getActivity(), mAdapter.getDataset(), getFragmentCode());
         }
         super.onStop();
     }
@@ -88,32 +57,23 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     {
         if (null != mAdapter)
         {
-            DataCacheManagement.saveAppInformationToFile(this, mAdapter.getDataset(), getActivityCode());
+            DataCacheManagement.saveAppInformationToFile(getActivity(), mAdapter.getDataset(), getFragmentCode());
         }
         super.onDestroy();
     }
 
-
-
     @Override
-    public void onSaveInstanceState(Bundle outBundle) {
-        if (null != mAdapter)
-        {
-            DataCacheManagement.saveSnipDataToBundle(this, outBundle, mAdapter.getDataset());
-        }
-        super.onSaveInstanceState(outBundle);
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.snip_holding_fragment, parent, false);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        LogUserActions.logStartingActivity(this, getActivityCode());
-        initializeImportantStuff();
-
-        if (null == SnipCollectionInformation.getInstance(this).getTokenForWebsiteAccess(this))
+        if (null == SnipCollectionInformation.getInstance(getActivity()).getTokenForWebsiteAccess(getActivity()))
         {
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeLogin));
         }
         else
@@ -122,6 +82,19 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outBundle)
+    {
+        if (null != mAdapter)
+        {
+            DataCacheManagement.saveSnipDataToBundle(getActivity(), outBundle, mAdapter.getDataset());
+        }
+        super.onSaveInstanceState(outBundle);
+    }
+
+    protected abstract int getFragmentCode();
+    protected abstract String getBaseSnipsQueryForFragment();
+
     protected void operateAfterLogin(Bundle savedInstanceState)
     {
         try
@@ -129,8 +102,8 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             Log.d("operate after", "login");
             LinkedList<SnipData> cachedSnips =
                     DataCacheManagement.retrieveSavedDataFromBundleOrFile(
-                            this, savedInstanceState, getActivityCode());
-            startActivityOperation(cachedSnips);
+                            getActivity(), savedInstanceState, getFragmentCode());
+            startFragmentOperation(cachedSnips);
         }
         catch (Exception e)
         {
@@ -138,50 +111,30 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         }
     }
 
-    protected abstract String getBaseSnipsQueryForActivity();
-
-    protected void initializeImportantStuff()
+    protected void startFragmentOperation(LinkedList<SnipData> snipsToStartWith)
     {
-        ButterKnife.bind(this);
+        setFragmentVariables();
+        if (null != snipsToStartWith)
+        {
+            if (snipsToStartWith.size() > 0)
+            {
+                populateFragment(snipsToStartWith);
+                return;
+            }
+        }
 
-        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-
-        // TODO:: think if you want the caches to depend on the device..
-        ImageLoaderConfiguration imageLoaderConfiguration =
-                new ImageLoaderConfiguration.Builder(this)
-                        .diskCacheSize(104857600)
-                        .memoryCacheSize(41943040)
-                        .threadPoolSize(10)
-                        .defaultDisplayImageOptions(displayImageOptions)
-                        .build();
-
-        ImageLoader.getInstance().init(imageLoaderConfiguration);
-        //CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
+        Log.d("collecting data", "in startFragmentOperation");
+        collectData();
     }
 
-    protected void startUI()
+    protected void setFragmentVariables()
     {
-        setContentView(R.layout.my_activity);
-        BaseToolbar activityToolbar = new BaseToolbar();
-        activityToolbar.setupToolbar(this);
-    }
 
-    public void onRefreshOperation()
-    {
-        SnipCollectionInformation.getInstance(this).setShouldRestartViewAfterCollection(true);
-        deleteActivityCacheAndStartOver();
-    }
-
-    protected void setActivityVariables()
-    {
-        mRecyclerView = (RecyclerView) this.findViewById(R.id.snip_recycler_view);
-        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView = (RecyclerView) getView().findViewById(R.id.snip_recycler_view_fragment);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        mSwipeContainer = (SwipeRefreshLayout)this.findViewById(R.id.swipeContainer);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        mSwipeContainer = (SwipeRefreshLayout)getView().findViewById(R.id.swipe_container_fragment);
 
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -192,61 +145,18 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         });
     }
 
-    private void addPicturesToSnips()
-    {
-        if (null != mAdapter)
-        {
-            if (null != mAdapter.getDataset()) {
-                for (int i = 0; i < mAdapter.getDataset().size(); i++) {
-                    if (null == mAdapter.getDataset().get(i).mThumbnail) {
-                        mAdapter.getDataset().get(i).mThumbnail =
-                                SnipData.getBitmapFromUrl(mAdapter.getDataset().get(i).mThumbnailUrl);
-                    }
-                }
-            }
-        }
-    }
-
-    protected void collectData()
-    {
-        CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
-                getApplicationContext(),
-                getBaseSnipsQueryForActivity() +
-                        SnipCollectionInformation.getInstance(this).getDimensionsQuery(),
-                getActivityCode(),
-                true);
-        snipCollector.retrieveSnipsFromInternet(this);
-    }
-
-    private void deleteActivityCacheAndStartOver()
-    {
-        SnipCollectionInformation.getInstance(this).cleanLastSnipQuery(getActivityCode());
-        //DataCacheManagement.deleteActivityInformationFiles(this, getActivityCode());
-        startActivityOperation(null);
-    }
-
-    public void asyncNotifyDatasetChanged()
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    protected void populateActivity(LinkedList<SnipData> addedSnips)
+    protected void populateFragment(LinkedList<SnipData> addedSnips)
     {
         if (null != addedSnips)
         {
             if ((null == mAdapter) ||
-                    SnipCollectionInformation.getInstance(this).getShouldRestartViewAfterCollectionAndReset())
+                    SnipCollectionInformation.getInstance(getActivity()).getShouldRestartViewAfterCollectionAndReset())
             {
                 startNewAdapter(addedSnips);
             }
             else
             {
-                ((MyAdapter)mAdapter).addAll(this, addedSnips);
+                ((MyAdapter)mAdapter).addAll(getActivity(), addedSnips);
                 asyncNotifyDatasetChanged();
             }
             addPicturesToSnips();
@@ -256,17 +166,22 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     private void startNewAdapter(LinkedList<SnipData> snipsToStartWith)
     {
         mAdapter = new MyAdapter(
-                this, mRecyclerView, snipsToStartWith, mLayoutManager,
-                getBaseSnipsQueryForActivity(), getActivityCode());
+                getActivity(), mRecyclerView, snipsToStartWith, mLayoutManager,
+                getBaseSnipsQueryForFragment(), getFragmentCode());
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback swipeTouchHelperCallback =
-                getSwipeTouchHelperCallback(getActivityCode());
+                getSwipeTouchHelperCallback(getFragmentCode());
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeTouchHelperCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(
-                mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode()) {});
+                mLayoutManager, getBaseSnipsQueryForFragment(), getFragmentCode()) {});
+
+        // This is because the SwipeListener hangs for no reason in Fragments
+        mSwipeContainer.setRefreshing(false);
+        mSwipeContainer.destroyDrawingCache();
+        mSwipeContainer.clearAnimation();
     }
 
     private ItemTouchHelper.SimpleCallback getSwipeTouchHelperCallback(int fragmentCode)
@@ -289,7 +204,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                     mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode(), false);
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForFragment(), getFragmentCode(), false);
                 }
 
                 if (ItemTouchHelper.RIGHT == swipeDirection)
@@ -298,7 +213,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
                     mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
-                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForActivity(), getActivityCode(), false);
+                            mRecyclerView, mLayoutManager, getBaseSnipsQueryForFragment(), getFragmentCode(), false);
                 }
 
                 asyncNotifyDatasetChanged();
@@ -331,7 +246,7 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
             {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
                 {
-                    Display display = getWindowManager().getDefaultDisplay();
+                    Display display = getActivity().getWindowManager().getDefaultDisplay();
                     Point screenSize = new Point();
                     display.getSize(screenSize);
 
@@ -364,17 +279,57 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
         };
     }
 
-    protected void startActivityOperation(LinkedList<SnipData> snipsToStartWith)
+    public void asyncNotifyDatasetChanged()
     {
-        startUI();
-        setActivityVariables();
-        if (null != snipsToStartWith)
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    public void onRefreshOperation()
+    {
+        SnipCollectionInformation.getInstance(getActivity()).setShouldRestartViewAfterCollection(true);
+        if (!SnipCollectionInformation.getInstance(getActivity()).mLock.isLocked())
         {
-            populateActivity(snipsToStartWith);
+            SnipCollectionInformation.getInstance(getActivity()).mLock.lock();
+            deleteFragmentCacheAndStartOver();
         }
-        else
+        Log.d("Refreshed!", "So refreshing!");
+    }
+
+    private void deleteFragmentCacheAndStartOver()
+    {
+        SnipCollectionInformation.getInstance(getActivity()).cleanLastSnipQuery(getFragmentCode());
+        DataCacheManagement.deleteFragmentInformationFiles(getActivity(), getFragmentCode());
+        startFragmentOperation(null);
+    }
+
+    protected void collectData()
+    {
+        CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
+                getActivity(),
+                getBaseSnipsQueryForFragment() +
+                        SnipCollectionInformation.getInstance(getActivity()).getDimensionsQuery(),
+                getFragmentCode(),
+                true);
+        snipCollector.retrieveSnipsFromInternet(getActivity());
+    }
+
+    private void addPicturesToSnips()
+    {
+        if (null != mAdapter)
         {
-            collectData();
+            if (null != mAdapter.getDataset()) {
+                for (int i = 0; i < mAdapter.getDataset().size(); i++) {
+                    if (null == mAdapter.getDataset().get(i).mThumbnail) {
+                        mAdapter.getDataset().get(i).mThumbnail =
+                                SnipData.getBitmapFromUrl(mAdapter.getDataset().get(i).mThumbnailUrl);
+                    }
+                }
+            }
         }
     }
 }

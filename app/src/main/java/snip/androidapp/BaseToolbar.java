@@ -1,9 +1,8 @@
 package snip.androidapp;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -12,14 +11,20 @@ import android.widget.ImageView;
  */
 public class BaseToolbar
 {
-    private void openSearchResultActivity(final AppCompatActivity currentActivity, int param)
+    private void openSearchResultFragment(final AppCompatActivity currentActivity, int param)
     {
+        FragmentTransaction fragmentTransaction = currentActivity.getSupportFragmentManager().beginTransaction();
+        SearchResultFragment searchResultFragment = new SearchResultFragment();
 
-        Intent searchScreenIntent = new Intent(currentActivity, SearchResultActivity.class);
-        // TODO:: change this later
-        searchScreenIntent.putExtra("param", param);
-        currentActivity.startActivityForResult(searchScreenIntent, param);
+        Bundle b = new Bundle();
+        b.putInt("param", param);
+        searchResultFragment.setArguments(b);
 
+        fragmentTransaction.replace(R.id.fragmentPlaceholder, searchResultFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        updateToolbarAccordingToFragment(currentActivity, param);
     }
 
     public void setupToolbar(final AppCompatActivity currentActivity)
@@ -34,35 +39,43 @@ public class BaseToolbar
             currentActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
             //getSupportActionBar().setHomeButtonEnabled(true);
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         }
+    }
 
-        int activityType = -1;
-        if (SearchResultActivity.class == currentActivity.getClass())
+    private void restartImageViews(final AppCompatActivity currentActivity)
+    {
+        ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
+        curImage.setImageResource(R.drawable.heart_icon_hollow);
+        curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
+        curImage.setImageResource(R.drawable.snooze_black);
+    }
+
+    public void updateToolbarAccordingToFragment(
+            final AppCompatActivity currentActivity, final int currentFragmentCode)
+    {
+        restartImageViews(currentActivity);
+
+        if (currentActivity.getResources().getInteger(R.integer.fragmentCodeLiked) == currentFragmentCode)
         {
-            activityType = ((SearchResultActivity)currentActivity).mSearchResultType;
-            if (currentActivity.getResources().getInteger(R.integer.activityCodeSnoozed) == activityType) {
-                ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
-                curImage.setImageResource(R.drawable.snooze_blue);
-            }
-            else if (currentActivity.getResources().getInteger(R.integer.activityCodeLiked) == activityType) {
-                ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
-                curImage.setImageResource(R.drawable.heart_icon_full);
-            }
+            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
+            curImage.setImageResource(R.drawable.heart_icon_full);
+        }
+        else if (currentActivity.getResources().getInteger(R.integer.fragmentCodeSnoozed) == currentFragmentCode)
+        {
+            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
+            curImage.setImageResource(R.drawable.snooze_blue);
         }
 
-        final int activityTypeFinal = activityType;
         currentActivity.findViewById(R.id.snoozeButtonOnToolbar).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        Log.d("clicked", "snooze");
-                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeSnoozed)) {
-                            openSearchResultActivity(currentActivity,
-                                    currentActivity.getResources().getInteger(R.integer.activityCodeSnoozed));
-                        }
-                        else {
-                            currentActivity.finish();
+                    public void onClick(View view)
+                    {
+                        if (view.getResources().getInteger(R.integer.fragmentCodeSnoozed) != currentFragmentCode)
+                        {
+                            openSearchResultFragment(
+                                    currentActivity,
+                                    view.getResources().getInteger(R.integer.fragmentCodeSnoozed));
                         }
                     }
                 }
@@ -72,17 +85,14 @@ public class BaseToolbar
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("clicked", "liked");
-                        if (activityTypeFinal != view.getResources().getInteger(R.integer.activityCodeLiked)) {
-                            openSearchResultActivity(currentActivity,
-                                    currentActivity.getResources().getInteger(R.integer.activityCodeLiked));
-                        }
-                        else {
-                            currentActivity.finish();
+                        if (view.getResources().getInteger(R.integer.fragmentCodeLiked) != currentFragmentCode)
+                        {
+                            openSearchResultFragment(
+                                    currentActivity,
+                                    view.getResources().getInteger(R.integer.fragmentCodeLiked));
                         }
                     }
                 }
         );
     }
-
 }

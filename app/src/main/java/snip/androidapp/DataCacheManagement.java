@@ -19,9 +19,9 @@ public class DataCacheManagement
 {
     public static void deleteAllInformationFiles(Context context)
     {
-        deleteActivityInformationFiles(context, context.getResources().getInteger(R.integer.activityCodeMyActivity));
-        deleteActivityInformationFiles(context, context.getResources().getInteger(R.integer.activityCodeLiked));
-        deleteActivityInformationFiles(context, context.getResources().getInteger(R.integer.activityCodeSnoozed));
+        deleteFragmentInformationFiles(context, context.getResources().getInteger(R.integer.fragmentCodeMain));
+        deleteFragmentInformationFiles(context, context.getResources().getInteger(R.integer.fragmentCodeLiked));
+        deleteFragmentInformationFiles(context, context.getResources().getInteger(R.integer.fragmentCodeSnoozed));
     }
 
     public static String getFullPathForSnipData(Context context, int activityCode)
@@ -86,10 +86,17 @@ public class DataCacheManagement
         }
     }
 
-    public static void deleteActivityInformationFiles(Context context, int activityCode)
+//    // TODO:: delete this
+//    public static void deleteActivityInformationFiles(Context context, int activityCode)
+//    {
+//        deleteFileOnDisk(getFullPathForSnipData(context, activityCode));
+//        deleteFileOnDisk(getFullPathForSnipQuery(context, activityCode));
+//    }
+
+    public static void deleteFragmentInformationFiles(Context context, int fragmentCode)
     {
-        deleteFileOnDisk(getFullPathForSnipData(context, activityCode));
-        deleteFileOnDisk(getFullPathForSnipQuery(context, activityCode));
+        deleteFileOnDisk(getFullPathForSnipData(context, fragmentCode));
+        deleteFileOnDisk(getFullPathForSnipQuery(context, fragmentCode));
     }
 
     public static void saveSnipDataToBundle(Context context, Bundle outBundle, LinkedList<SnipData> collectedSnips)
@@ -119,7 +126,7 @@ public class DataCacheManagement
                     collectedSnips.addLast(currentSnip);
                 }
 
-                SnipCollectionInformation.getInstance().setLastSnipQuery(activityCode,
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(activityCode,
                         savedInstanceState.getString(
                                 context.getResources().getString(R.string.SnipQueryStringInBundle)));
 
@@ -142,7 +149,7 @@ public class DataCacheManagement
     public static void saveSnipQueryToFile(Context context, int activityCode)
     {
         saveObjectToFile(context,
-                SnipCollectionInformation.getInstance().getLastSnipQueryForActivity(activityCode),
+                SnipCollectionInformation.getInstance(context).getLastSnipQueryForFragment(activityCode),
                 getSnipQueryCacheFilename(activityCode));
     }
 
@@ -205,7 +212,7 @@ public class DataCacheManagement
             if ((null != collectedSnips) && (null != collectedSnipQuery))
             {
                 outputSnips = collectedSnips;
-                SnipCollectionInformation.getInstance().setLastSnipQuery(
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(
                         activityCode, retrieveSnipQueryFromFile(context, activityCode));
             }
         }

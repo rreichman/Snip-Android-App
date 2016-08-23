@@ -19,10 +19,12 @@ public abstract class GenericSnipActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
+
         Fabric.with(this, new Crashlytics());
-        // TODO:: make these do something real
         logUserIntoCrashlytics();
         LogUserActions.logStartingActivity(this, getActivityCode());
+
         super.onCreate(savedInstanceState);
     }
 

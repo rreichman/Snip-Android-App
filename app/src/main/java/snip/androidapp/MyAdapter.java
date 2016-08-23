@@ -121,7 +121,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
             public boolean onDoubleTap(MotionEvent e)
             {
                 final int SNOOZE_SCREEN_CODE =
-                        parent.getContext().getResources().getInteger(R.integer.activityCodeSnoozed);
+                        parent.getContext().getResources().getInteger(R.integer.fragmentCodeSnoozed);
 
                 if (SNOOZE_SCREEN_CODE != mActivityCode)
                 {
@@ -188,9 +188,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 {
                     SnipData snipData = mDataset.get(currentPositionInDataset);
                     Context context = view.getContext();
-                    Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
-                    readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
-                    ((Activity)context).startActivityForResult(readsnipScreenIntent, context.getResources().getInteger(R.integer.activityCodeReadSnip));
+                    // TODO:: enter read snip
+
+                    //Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
+                    //readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
+                    //((Activity)context).startActivityForResult(readsnipScreenIntent, context.getResources().getInteger(R.integer.activityCodeReadSnip));
                 }
                 catch (IndexOutOfBoundsException e1)
                 {

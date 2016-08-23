@@ -4,10 +4,12 @@
     <item type="integer" name="numSnipsPerLoading" format="integer">10</item>
 
     <item type="integer" name="activityCodeLogin" format="integer">10</item>
-    <item type="integer" name="activityCodeSnoozed" format="integer">11</item>
-    <item type="integer" name="activityCodeLiked" format="integer">12</item>
-    <item type="integer" name="activityCodeMyActivity" format="integer">13</item>
-    <item type="integer" name="activityCodeFeedback" format="integer">14</item>
-    <item type="integer" name="activityCodeReadSnip" format="integer">15</item>
-    <item type="integer" name="activityCodeSignup" format="integer">16</item>
+    <item type="integer" name="activityCodeMain" format="integer">11</item>
+    <item type="integer" name="activityCodeFeedback" format="integer">12</item>
+    <item type="integer" name="activityCodeSignup" format="integer">13</item>
+
+    <item type="integer" name="fragmentCodeSnoozed" format="integer">101</item>
+    <item type="integer" name="fragmentCodeLiked" format="integer">102</item>
+    <item type="integer" name="fragmentCodeMain" format="integer">103</item>
+    <item type="integer" name="fragmentCodeReadSnip" format="integer">104</item>
 </resources>

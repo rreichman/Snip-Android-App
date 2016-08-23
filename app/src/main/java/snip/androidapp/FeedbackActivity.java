@@ -47,7 +47,7 @@ public class FeedbackActivity extends GenericSnipActivity
             // Do i really need this?
             CustomVolleyRequestQueue.getInstance(this.getApplicationContext());
             HashMap<String, String> headers =
-                    SnipCollectionInformation.getInstance().getTokenForWebsiteAccessAsHashMap();
+                    SnipCollectionInformation.getInstance(this).getTokenForWebsiteAccessAsHashMap();
 
             VolleyInternetOperator.responseFunctionInterface responseFunction =
                     new VolleyInternetOperator.responseFunctionInterface() {

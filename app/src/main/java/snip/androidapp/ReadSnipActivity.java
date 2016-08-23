@@ -220,7 +220,8 @@ public class ReadSnipActivity extends GenericSnipActivity
 
     public int getActivityCode()
     {
-        return getResources().getInteger(R.integer.activityCodeReadSnip);
+        //return getResources().getInteger(R.integer.activityCodeReadSnip);
+        return 0;
     }
 
     @Override
