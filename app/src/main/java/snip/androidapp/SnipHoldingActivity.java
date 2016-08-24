@@ -108,7 +108,6 @@ public abstract class SnipHoldingActivity extends GenericSnipActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        LogUserActions.logStartingActivity(this, getActivityCode());
         initializeImportantStuff();
 
         if (null == SnipCollectionInformation.getInstance(this).getTokenForWebsiteAccess(this))

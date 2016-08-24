@@ -111,9 +111,7 @@ public class FeedbackActivity extends GenericSnipActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feedback_activity);
-        BaseToolbar activityToolbar = new BaseToolbar();
-        activityToolbar.setupToolbar(this);
-        LogUserActions.logStartingActivity(this, getResources().getInteger(R.integer.activityCodeFeedback));
+        BaseToolbar.setupToolbar(this);
 
         final Button sendFeedbackButton = (Button)findViewById(R.id.sendFeedbackButton);
         mFeedbackBox = (EditText)findViewById(R.id.feedbackText);

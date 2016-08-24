@@ -23,7 +23,7 @@ public abstract class GenericSnipActivity extends AppCompatActivity
 
         Fabric.with(this, new Crashlytics());
         logUserIntoCrashlytics();
-        LogUserActions.logStartingActivity(this, getActivityCode());
+        LogUserActions.logCreate(this, "CreateActivity", getActivityCode());
 
         super.onCreate(savedInstanceState);
     }
@@ -31,22 +31,29 @@ public abstract class GenericSnipActivity extends AppCompatActivity
     @Override
     public void onStop()
     {
-        LogUserActions.logStopActivity(this, getActivityCode());
+        LogUserActions.logStop(this, "StopActivity", getActivityCode());
         super.onStop();
     }
 
     @Override
     public void onPause()
     {
-        LogUserActions.logPauseActivity(this, getActivityCode());
+        LogUserActions.logPause(this, "PauseActivity", getActivityCode());
         super.onPause();
     }
 
     @Override
     public void onResume()
     {
-        LogUserActions.logResumeActivity(this, getActivityCode());
+        LogUserActions.logResume(this, "ResumeActivity", getActivityCode());
         super.onResume();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        LogUserActions.logDestroy(this, "DestroyActivity", getActivityCode());
+        super.onDestroy();
     }
 
     protected abstract int getActivityCode();

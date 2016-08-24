@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -87,11 +89,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         Log.d("adding snips to list", Integer.toString(snips.size()));
         validateThatAddedDataIsntMultiple(snips);
 
-        for (int i = 0; i < snips.size(); i++)
+        /*for (int i = 0; i < snips.size(); i++)
         {
             SnipReactionsSingleton.getInstance().setReaction(
                     context, snips.get(i).mID, snips.get(i).mReaction);
-        }
+        }*/
 
         mDataset.addAll(snips);
     }
@@ -188,11 +190,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 {
                     SnipData snipData = mDataset.get(currentPositionInDataset);
                     Context context = view.getContext();
-                    // TODO:: enter read snip
+                    Bundle bundledSnipData = new Bundle();
+                    bundledSnipData.putSerializable("snipData", snipData);
 
-                    //Intent readsnipScreenIntent = new Intent(context, ReadSnipActivity.class);
-                    //readsnipScreenIntent.putExtra(SnipData.getSnipDataString(), (Serializable) snipData);
-                    //((Activity)context).startActivityForResult(readsnipScreenIntent, context.getResources().getInteger(R.integer.activityCodeReadSnip));
+                    FragmentOperations.openFragment(
+                            (AppCompatActivity)context,
+                            context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
+                            Long.toString(snipData.mID),
+                            bundledSnipData);
                 }
                 catch (IndexOutOfBoundsException e1)
                 {

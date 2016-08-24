@@ -157,12 +157,6 @@ public class CollectSnipsFromInternet
                 FragmentManager manager = ((MainActivity)context).getSupportFragmentManager();
                 SnipHoldingFragment fragment = (SnipHoldingFragment)manager.findFragmentById(R.id.fragmentPlaceholder);
                 fragment.populateFragment(mSnipsFromBackend);
-  //              SnipHoldingFragment fragment = (SnipHoldingFragment)
-//                        ((MainActivity)context).getFragmentManager().findFragmentById(R.id.fragmentPlaceholder);
-                //SnipHoldingFragment f;
-                //f.populateFragment(mSnipsFromBackend);
-                //Fragment fragment = ((MainActivity)context).findViewById(R.id.fragmentPlaceholder);
-                //((Fragment)context).populat(mSnipsFromBackend);
             }
 
             moveLoadingAnimationToBottom(context);
@@ -173,8 +167,10 @@ public class CollectSnipsFromInternet
             e.printStackTrace();
         }
 
+        Log.d("should unlock?", "Checking");
         if (SnipCollectionInformation.getInstance(context).mLock.isLocked())
         {
+            Log.d("unlocking", "Checked");
             SnipCollectionInformation.getInstance(context).mLock.unlock();
         }
     }
@@ -219,8 +215,10 @@ public class CollectSnipsFromInternet
             e.printStackTrace();
         }
 
+        Log.d("should unlock?", "Checking");
         if (SnipCollectionInformation.getInstance(context).mLock.isLocked())
         {
+            Log.d("unlocking", "Checked");
             SnipCollectionInformation.getInstance(context).mLock.unlock();
         }
     }

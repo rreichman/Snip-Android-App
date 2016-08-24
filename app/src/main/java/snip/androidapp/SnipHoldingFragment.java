@@ -21,25 +21,29 @@ import java.util.LinkedList;
 /**
  * Created by ranreichman on 8/23/16.
  */
-public abstract class SnipHoldingFragment extends Fragment
+public abstract class SnipHoldingFragment extends GenericSnipFragment
 {
     protected RecyclerView mRecyclerView;
     protected MyAdapter mAdapter;
     protected LinearLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeContainer;
+    View mRootView = null;
 
     @Override
     public void onResume()
     {
         super.onResume();
 
-        if (null != mAdapter) {
+        if (null != mAdapter)
+        {
             ((MyAdapter) mAdapter).removeIdsFromDataset(
                     SnipReactionsSingleton.getInstance().getIdsToRemoveFromDataset());
+
             // Here not using asyncNotifyDatasetChanged on purpose because i want the user to wait
             // TODO:: think if this is true
             mAdapter.notifyDataSetChanged();
         }
+        BaseToolbar.updateToolbarAccordingToFragment(getActivity(), getFragmentCode());
     }
 
     @Override
@@ -63,9 +67,25 @@ public abstract class SnipHoldingFragment extends Fragment
     }
 
     @Override
+    public void onDestroyView()
+    {
+        // this code is based on http://stackoverflow.com/questions/11353075/how-can-i-maintain-fragment-state-when-added-to-the-back-stack
+        if (null != mRootView.getParent())
+        {
+            ((ViewGroup)mRootView.getParent()).removeView(mRootView);
+        }
+        super.onDestroyView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.snip_holding_fragment, parent, false);
+        if (null == mRootView)
+        {
+            mRootView = inflater.inflate(R.layout.snip_holding_fragment, parent, false);
+        }
+
+        return mRootView;
     }
 
     @Override
@@ -100,9 +120,20 @@ public abstract class SnipHoldingFragment extends Fragment
         try
         {
             Log.d("operate after", "login");
-            LinkedList<SnipData> cachedSnips =
-                    DataCacheManagement.retrieveSavedDataFromBundleOrFile(
-                            getActivity(), savedInstanceState, getFragmentCode());
+            LinkedList<SnipData> cachedSnips = new LinkedList<>();
+
+            if (null == mAdapter)
+            {
+                cachedSnips =
+                        DataCacheManagement.retrieveSavedDataFromBundleOrFile(
+                                getActivity(), savedInstanceState, getFragmentCode());
+            }
+            else
+            {
+                cachedSnips = (LinkedList<SnipData>)mAdapter.getDataset().clone();
+                mAdapter.getDataset().clear();
+            }
+
             startFragmentOperation(cachedSnips);
         }
         catch (Exception e)
@@ -129,7 +160,6 @@ public abstract class SnipHoldingFragment extends Fragment
 
     protected void setFragmentVariables()
     {
-
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.snip_recycler_view_fragment);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -292,11 +322,7 @@ public abstract class SnipHoldingFragment extends Fragment
     public void onRefreshOperation()
     {
         SnipCollectionInformation.getInstance(getActivity()).setShouldRestartViewAfterCollection(true);
-        if (!SnipCollectionInformation.getInstance(getActivity()).mLock.isLocked())
-        {
-            SnipCollectionInformation.getInstance(getActivity()).mLock.lock();
-            deleteFragmentCacheAndStartOver();
-        }
+        deleteFragmentCacheAndStartOver();
         Log.d("Refreshed!", "So refreshing!");
     }
 

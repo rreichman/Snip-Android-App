@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
@@ -31,6 +32,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     {
         if (!SnipCollectionInformation.getInstance(view.getContext()).mLock.isLocked())
         {
+            Log.d("Locking", "for collection");
             SnipCollectionInformation.getInstance(view.getContext()).mLock.lock();
             if (!SnipCollectionInformation.getInstance(view.getContext()).
                     getLastSnipQueryForFragment(activityCode).equals("null"))
@@ -42,6 +44,12 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
                                 activityCode,
                                 showAnimation);
                 collectSnipsFromInternet.retrieveSnipsFromInternet(view.getContext());
+            }
+            else
+            {
+                // TODO:: Add a card that says "no more snips here" (probably with some nice pic)
+                //Toast.makeText(view.getContext(), "No more snips here...", Toast.LENGTH_SHORT).show();
+                SnipCollectionInformation.getInstance(view.getContext()).mLock.unlock();
             }
         }
     }

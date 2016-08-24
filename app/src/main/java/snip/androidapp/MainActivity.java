@@ -1,6 +1,9 @@
 package snip.androidapp;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +19,6 @@ import butterknife.ButterKnife;
  */
 public class MainActivity extends GenericSnipActivity
 {
-    BaseToolbar mBaseToolbar;
     int mCurrentFragmentCode;
 
     public int getActivityCode()
@@ -28,6 +30,7 @@ public class MainActivity extends GenericSnipActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        //DataCacheManagement.deleteAllInformationFiles(this);
         // TODO:: verify this
         mCurrentFragmentCode = getResources().getInteger(R.integer.fragmentCodeMain);
         startUI();
@@ -50,18 +53,34 @@ public class MainActivity extends GenericSnipActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        FragmentManager manager = getSupportFragmentManager();
+        int count = manager.getBackStackEntryCount();
+
+        if(count==0)
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            manager.popBackStack();
+        }
+    }
+
     private void startUI()
     {
         setContentView(R.layout.main_activity);
-        mBaseToolbar = new BaseToolbar();
-        mBaseToolbar.setupToolbar(this);
-        mBaseToolbar.updateToolbarAccordingToFragment(this, mCurrentFragmentCode);
+        BaseToolbar.setupToolbar(this);
+        BaseToolbar.updateToolbarAccordingToFragment(this, mCurrentFragmentCode);
     }
 
     private void addFragmentToScreen()
     {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentPlaceholder, new MainFragment());
+        String fragmentTag = Integer.toString(getResources().getInteger(R.integer.fragmentCodeMain));
+        ft.replace(R.id.fragmentPlaceholder, new MainFragment(), fragmentTag);
         ft.commit();
     }
 

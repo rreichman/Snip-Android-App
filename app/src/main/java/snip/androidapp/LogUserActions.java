@@ -23,37 +23,45 @@ public class LogUserActions
 {
     // TODO:: think about more things to track and put inside code
 
-    public static void logStartingActivity(Context context, int activityCode)
+    public static void logCreate(Context context, String str, int code)
     {
         LevelStartEvent levelStartEvent = new LevelStartEvent();
-        levelStartEvent.putLevelName(Integer.toString(activityCode));
+        levelStartEvent.putLevelName(Integer.toString(code));
 
         Answers.getInstance().logLevelStart(levelStartEvent);
-        sendLogToServer(context, "StartActivity", "", activityCode);
+        sendLogToServer(context, str, "", code);
     }
 
-    public static void logStopActivity(Context context, int activityCode)
+    public static void logStop(Context context, String str, int code)
     {
         CustomEvent stopEvent = new CustomEvent("StopEvent");
-        stopEvent.putCustomAttribute("ActivityCode", activityCode);
+        stopEvent.putCustomAttribute("Code", code);
         Answers.getInstance().logCustom(stopEvent);
-        sendLogToServer(context, "StopActivity", "", activityCode);
+        sendLogToServer(context, str, "", code);
     }
 
-    public static void logResumeActivity(Context context, int activityCode)
+    public static void logResume(Context context, String str, int code)
     {
         CustomEvent resumeEvent = new CustomEvent("ResumeEvent");
-        resumeEvent.putCustomAttribute("ActivityCode", activityCode);
+        resumeEvent.putCustomAttribute("Code", code);
         Answers.getInstance().logCustom(resumeEvent);
-        sendLogToServer(context, "ResumeActivity", "", activityCode);
+        sendLogToServer(context, str, "", code);
     }
 
-    public static void logPauseActivity(Context context, int activityCode)
+    public static void logPause(Context context, String str, int code)
     {
         CustomEvent pauseEvent = new CustomEvent("PauseEvent");
-        pauseEvent.putCustomAttribute("ActivityCode", activityCode);
+        pauseEvent.putCustomAttribute("Code", code);
         Answers.getInstance().logCustom(pauseEvent);
-        sendLogToServer(context, "PauseActivity", "", activityCode);
+        sendLogToServer(context, str, "", code);
+    }
+
+    public static void logDestroy(Context context, String str, int code)
+    {
+        CustomEvent pauseEvent = new CustomEvent("DestroyEvent");
+        pauseEvent.putCustomAttribute("Code", code);
+        Answers.getInstance().logCustom(pauseEvent);
+        sendLogToServer(context, str, "", code);
     }
 
     public static void logServerError(Context context)

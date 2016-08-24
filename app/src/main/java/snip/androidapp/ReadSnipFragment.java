@@ -9,7 +9,9 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
-import android.view.Menu;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -21,10 +23,58 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by ranreichman on 7/25/16.
+ * Created by ranreichman on 8/24/16.
  */
-public class ReadSnipActivity extends GenericSnipActivity
+public class ReadSnipFragment extends GenericSnipFragment
 {
+    View mRootView;
+
+    @Override
+    public void onDestroyView()
+    {
+        // this code is based on http://stackoverflow.com/questions/11353075/how-can-i-maintain-fragment-state-when-added-to-the-back-stack
+        if (null != mRootView.getParent())
+        {
+            ((ViewGroup)mRootView.getParent()).removeView(mRootView);
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+    {
+        if (null == mRootView)
+        {
+            mRootView = inflater.inflate(R.layout.clean_scrollable_fragment, parent, false);
+        }
+
+        return mRootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        Bundle bundle = getArguments();
+        mSnipData = (SnipData)bundle.getSerializable("snipData");
+        //mSnipData = getArguments()
+        //mSnipData = (SnipData)getIntent().getSerializableExtra(SnipData.getSnipDataString());
+
+        mLayout = (LinearLayout)getActivity().findViewById(R.id.clean_layout);
+        mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
+        mDefMarginVert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
+        mDefMarginHeadlineTop = (int) getResources().getDimension(R.dimen.snip_text_margin_headline_top);
+        mDefMarginImageTop = (int) getResources().getDimension(R.dimen.snip_text_margin_image_top);
+        mDefGravity = Gravity.RIGHT;
+        mDefTextStyle = Typeface.NORMAL;
+        buildSnipView();
+    }
+
+    @Override
+    protected int getFragmentCode()
+    {
+        return getResources().getInteger(R.integer.fragmentCodeReadSnip);
+    }
+
     protected SnipData mSnipData;
     protected LinearLayout mLayout;
     protected int mDefMarginHorz;
@@ -87,12 +137,12 @@ public class ReadSnipActivity extends GenericSnipActivity
         }
         return "";
     }
-    
+
     private void addTextDynamicallyToLayout(String text, boolean isLink, int styleId,
                                             int margin_horz, int margin_top, int margin_bottom, int align, int textStyle)
     {
 
-        SnipTextView textView = new SnipTextView(new ContextThemeWrapper(this, styleId), styleId);
+        SnipTextView textView = new SnipTextView(new ContextThemeWrapper(getActivity(), styleId), styleId);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -114,7 +164,7 @@ public class ReadSnipActivity extends GenericSnipActivity
     }
 
     private void fitImageHeightToScreen(ImageView curImage) {
-                int screen_height = getResources().getDisplayMetrics().heightPixels;
+        int screen_height = getResources().getDisplayMetrics().heightPixels;
         int image_height = curImage.getHeight();
         double SCREEN_IMAGE_RATIO = 0.75;
         if (image_height > (screen_height * SCREEN_IMAGE_RATIO )) {
@@ -124,7 +174,7 @@ public class ReadSnipActivity extends GenericSnipActivity
 
     private void addPictureDynamicallyToLayout(String url, int styleId, int margin_horz, int margin_top, int margin_bottom)
     {
-        ImageView imageView = new ImageView(this, null, styleId);
+        ImageView imageView = new ImageView(getActivity(), null, styleId);
         Bitmap curImage = SnipData.getBitmapFromUrl(url);
         imageView.setImageBitmap(curImage);
 //        fitImageHeightToScreen(ImageView curImage);
@@ -213,48 +263,6 @@ public class ReadSnipActivity extends GenericSnipActivity
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
             createLinkView(cur_link);
         }
-        ReactionBarCreator.addReactionBarToLayout(this, mLayout, mSnipData.mID);
-    }
-
-    public int getActivityCode()
-    {
-        //return getResources().getInteger(R.integer.activityCodeReadSnip);
-        return 0;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        mSnipData = (SnipData)getIntent().getSerializableExtra(SnipData.getSnipDataString());
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.clean_scrollable_fragment);
-        BaseToolbar activityToolbar = new BaseToolbar();
-        activityToolbar.setupToolbar(this);
-
-        LogUserActions.logContentView(this, "ReadSnip", Long.toString(mSnipData.mID));
-
-        mLayout = (LinearLayout)findViewById(R.id.clean_layout);
-        mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
-        mDefMarginVert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
-        mDefMarginHeadlineTop = (int) getResources().getDimension(R.dimen.snip_text_margin_headline_top);
-        mDefMarginImageTop = (int) getResources().getDimension(R.dimen.snip_text_margin_image_top);
-        mDefGravity = Gravity.RIGHT;
-        mDefTextStyle = Typeface.NORMAL;
-        buildSnipView();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        finish();
+        ReactionBarCreator.addReactionBarToLayout(getActivity(), mLayout, mSnipData.mID);
     }
 }

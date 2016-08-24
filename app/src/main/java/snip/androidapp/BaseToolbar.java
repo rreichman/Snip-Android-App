@@ -1,8 +1,12 @@
 package snip.androidapp;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -11,23 +15,7 @@ import android.widget.ImageView;
  */
 public class BaseToolbar
 {
-    private void openSearchResultFragment(final AppCompatActivity currentActivity, int param)
-    {
-        FragmentTransaction fragmentTransaction = currentActivity.getSupportFragmentManager().beginTransaction();
-        SearchResultFragment searchResultFragment = new SearchResultFragment();
-
-        Bundle b = new Bundle();
-        b.putInt("param", param);
-        searchResultFragment.setArguments(b);
-
-        fragmentTransaction.replace(R.id.fragmentPlaceholder, searchResultFragment);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        updateToolbarAccordingToFragment(currentActivity, param);
-    }
-
-    public void setupToolbar(final AppCompatActivity currentActivity)
+    public static void setupToolbar(final AppCompatActivity currentActivity)
     {
         android.support.v7.widget.Toolbar myToolbar =
                 (android.support.v7.widget.Toolbar) currentActivity.findViewById(R.id.toolbar);
@@ -42,7 +30,7 @@ public class BaseToolbar
         }
     }
 
-    private void restartImageViews(final AppCompatActivity currentActivity)
+    private static void restartImageViews(final FragmentActivity currentActivity)
     {
         ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
         curImage.setImageResource(R.drawable.heart_icon_hollow);
@@ -50,8 +38,8 @@ public class BaseToolbar
         curImage.setImageResource(R.drawable.snooze_black);
     }
 
-    public void updateToolbarAccordingToFragment(
-            final AppCompatActivity currentActivity, final int currentFragmentCode)
+    public static void updateToolbarAccordingToFragment(
+            final FragmentActivity currentActivity, final int currentFragmentCode)
     {
         restartImageViews(currentActivity);
 
@@ -73,7 +61,7 @@ public class BaseToolbar
                     {
                         if (view.getResources().getInteger(R.integer.fragmentCodeSnoozed) != currentFragmentCode)
                         {
-                            openSearchResultFragment(
+                            FragmentOperations.openFragment(
                                     currentActivity,
                                     view.getResources().getInteger(R.integer.fragmentCodeSnoozed));
                         }
@@ -87,9 +75,23 @@ public class BaseToolbar
                     public void onClick(View view) {
                         if (view.getResources().getInteger(R.integer.fragmentCodeLiked) != currentFragmentCode)
                         {
-                            openSearchResultFragment(
+                            FragmentOperations.openFragment(
                                     currentActivity,
                                     view.getResources().getInteger(R.integer.fragmentCodeLiked));
+                        }
+                    }
+                }
+        );
+
+        currentActivity.findViewById(R.id.snipLogoOnToolbar).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (view.getResources().getInteger(R.integer.fragmentCodeMain) != currentFragmentCode)
+                        {
+                            FragmentOperations.openFragment(
+                                    currentActivity,
+                                    view.getResources().getInteger(R.integer.fragmentCodeMain));
                         }
                     }
                 }
