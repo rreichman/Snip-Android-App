@@ -30,7 +30,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 {
     private RecyclerView mRecyclerView;
     private LinkedList<SnipData> mDataset;
-    private LinearLayoutManager mLinearLayoutManager;
+    public LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
     public int mActivityCode;
 

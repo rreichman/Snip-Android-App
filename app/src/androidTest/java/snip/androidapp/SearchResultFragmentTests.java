@@ -16,11 +16,11 @@ import java.util.Random;
 /**
  * Created by ranreichman on 8/18/16.
  */
-public class SearchResultActivityTests
+public class SearchResultFragmentTests
 {
     @Rule
-    public ActivityTestRule<MyActivity> mActivityRule =
-            new ActivityTestRule<>(MyActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule =
+            new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void testPassStubSearchResultActivity()
@@ -39,16 +39,16 @@ public class SearchResultActivityTests
     {
         TestUtils.waitForAdapterInActivity(mActivityRule);
 
-        TestUtils.enterSearchResultActivityAndRefresh(id);
+        TestUtils.enterSearchResultFragmentAndRefresh(id);
         TestUtils.swipeUpUntilThereAreNoNewSnips(mActivityRule);
 
-        LinkedList<SnipData> likedSnipsDataset = TestUtils.getCurrentDataset();
+        LinkedList<SnipData> searchResultSnipsDataset = TestUtils.getCurrentDataset();
 
         Espresso.pressBack();
-        TestUtils.waitForActivityToAppear(MyActivity.class);
+        TestUtils.waitForFragmentToAppear(MainFragment.class);
 
         Random rand = new Random();
-        int amountOfSnips = mActivityRule.getActivity().mAdapter.getItemCount();
+        int amountOfSnips = TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getItemCount();
 
         final int AMOUNT_OF_SNIPS_TO_LIKE = 2;
         int randomPositionToLike = 0;
@@ -56,15 +56,15 @@ public class SearchResultActivityTests
         for (int i = 0; i < AMOUNT_OF_SNIPS_TO_LIKE; i++)
         {
             // TODO:: this is problematic because the screen only holds 4 snips and can't click on the 15th for instance
-            randomPositionToLike = rand.nextInt(amountOfSnips);
+            //randomPositionToLike = rand.nextInt(amountOfSnips);
             TestUtils.swipeClickOrTapAccordingToId(id, randomPositionToLike);
         }
 
-        TestUtils.enterSearchResultActivityAndRefresh(id);
+        TestUtils.enterSearchResultFragmentAndRefresh(id);
         TestUtils.swipeUpUntilThereAreNoNewSnips(mActivityRule);
         LinkedList<SnipData> newLikedSnipsDataset = TestUtils.getCurrentDataset();
 
-        Assert.assertEquals(newLikedSnipsDataset.size() - AMOUNT_OF_SNIPS_TO_LIKE, likedSnipsDataset.size());
+        Assert.assertEquals(newLikedSnipsDataset.size() - AMOUNT_OF_SNIPS_TO_LIKE, searchResultSnipsDataset.size());
     }
 
     @Test

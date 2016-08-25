@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
@@ -23,8 +24,8 @@ import java.util.regex.Matcher;
 public class SpeedTests
 {
     @Rule
-    public ActivityTestRule<MyActivity> mActivityRule =
-            new ActivityTestRule<>(MyActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule =
+            new ActivityTestRule<>(MainActivity.class);
 
     // Check that things start fast enough (mostly ignore Internet connection)
     @Test
@@ -40,16 +41,17 @@ public class SpeedTests
         TestUtils.getToRefreshedItemList(mActivityRule);
 
         final int AMOUNT_OF_ITERATIONS = 15;
-        int amountOfSnips = mActivityRule.getActivity().mAdapter.getItemCount();
+        int amountOfSnips =
+                TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getItemCount();
         Random rand = new Random();
         int maxTimeWaitingForOpen = 0;
 
         for (int i = 0; i < AMOUNT_OF_ITERATIONS; i++)
         {
-            Espresso.onView(ViewMatchers.withId(R.id.snip_recycler_view)).perform(
+            Espresso.onView(ViewMatchers.withId(R.id.snip_recycler_view_fragment)).perform(
                     RecyclerViewActions.actionOnItemAtPosition(rand.nextInt(amountOfSnips), ViewActions.click()));
 
-            int timeWaitingForOpen = TestUtils.waitForActivityToAppear(ReadSnipActivity.class);
+            int timeWaitingForOpen = TestUtils.waitForFragmentToAppear(ReadSnipFragment.class);
             if (timeWaitingForOpen > maxTimeWaitingForOpen)
             {
                 maxTimeWaitingForOpen = timeWaitingForOpen;
@@ -78,7 +80,7 @@ public class SpeedTests
         TestUtils.getToRefreshedItemList(mActivityRule);
 
         Espresso.onView(ViewMatchers.withId(R.id.likeButtonOnToolbar)).perform(ViewActions.click());
-        int openSpeed = TestUtils.waitForActivityToAppear(SearchResultActivity.class);
+        int openSpeed = TestUtils.waitForFragmentToAppear(SearchResultFragment.class);
 
         Assert.assertTrue(openSpeed < 100);
     }
@@ -89,7 +91,7 @@ public class SpeedTests
         TestUtils.getToRefreshedItemList(mActivityRule);
 
         Espresso.onView(ViewMatchers.withId(R.id.snoozeButtonOnToolbar)).perform(ViewActions.click());
-        int openSpeed = TestUtils.waitForActivityToAppear(SearchResultActivity.class);
+        int openSpeed = TestUtils.waitForFragmentToAppear(SearchResultFragment.class);
 
         Assert.assertTrue(openSpeed < 100);
     }

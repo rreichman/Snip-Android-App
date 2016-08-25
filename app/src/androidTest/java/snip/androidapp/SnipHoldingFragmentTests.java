@@ -23,11 +23,11 @@ import java.util.LinkedList;
  * Created by ranreichman on 8/18/16.
  */
 @RunWith(AndroidJUnit4.class)
-public class SnipHoldingActivityTests
+public class SnipHoldingFragmentTests
 {
     @Rule
-    public ActivityTestRule<MyActivity> mActivityRule =
-        new ActivityTestRule<>(MyActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule =
+        new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void testPassStubSnipHoldingActivity()
@@ -42,40 +42,50 @@ public class SnipHoldingActivityTests
         final int DEFAULT_AMOUNT_OF_SNIPS = TestUtils.getDefaultAmountOfSnips();
 
         TestUtils.waitForAdapterInActivity(mActivityRule);
-        int currentSize = mActivityRule.getActivity().mAdapter.getDataset().size();
+        int currentSize = TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getDataset().size();
         if (currentSize > DEFAULT_AMOUNT_OF_SNIPS)
         {
             TestUtils.swipeDownScreen();
             TestUtils.safeSleep(2000);
             TestUtils.waitForAdapterInActivityToChange(currentSize, mActivityRule);
         }
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS);
+        Assert.assertEquals(
+                TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getDataset().size(),
+                DEFAULT_AMOUNT_OF_SNIPS);
 
         TestUtils.swipeUpScreen();
         TestUtils.swipeUpScreen();
 
         TestUtils.safeSleep(3000);
         TestUtils.waitForAdapterInActivityToChange(DEFAULT_AMOUNT_OF_SNIPS, mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS * 2);
+        Assert.assertEquals(
+                TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getDataset().size(),
+                DEFAULT_AMOUNT_OF_SNIPS * 2);
 
         TestUtils.swipeDownScreen();
         TestUtils.swipeDownScreen();
         TestUtils.swipeDownScreen();
 
         TestUtils.waitForAdapterInActivityToChange(DEFAULT_AMOUNT_OF_SNIPS * 2, mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS);
+        Assert.assertEquals(
+                TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getDataset().size(),
+                DEFAULT_AMOUNT_OF_SNIPS);
 
         TestUtils.swipeUpScreen();
         TestUtils.swipeUpScreen();
 
         TestUtils.waitForAdapterInActivityToChange(DEFAULT_AMOUNT_OF_SNIPS, mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS * 2);
+        Assert.assertEquals(
+                TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getDataset().size(),
+                DEFAULT_AMOUNT_OF_SNIPS * 2);
 
         mActivityRule.getActivity().finish();
         TestUtils.safeSleep(3000);
         mActivityRule.launchActivity(null);
 
         TestUtils.waitForAdapterInActivity(mActivityRule);
-        Assert.assertEquals(mActivityRule.getActivity().mAdapter.getDataset().size(), DEFAULT_AMOUNT_OF_SNIPS * 2);
+        Assert.assertEquals(
+                TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getDataset().size(),
+                DEFAULT_AMOUNT_OF_SNIPS * 2);
     }
 }

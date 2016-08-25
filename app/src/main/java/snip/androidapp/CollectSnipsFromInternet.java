@@ -154,8 +154,11 @@ public class CollectSnipsFromInternet
             {
                 //SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
                 Log.d("setting collected snips", Integer.toString(mSnipsFromBackend.size()));
-                FragmentManager manager = ((MainActivity)context).getSupportFragmentManager();
-                SnipHoldingFragment fragment = (SnipHoldingFragment)manager.findFragmentById(R.id.fragmentPlaceholder);
+                SnipHoldingFragment fragment =
+                        (SnipHoldingFragment)FragmentOperations.getFragmentFromActivity(
+                                (MainActivity)context,
+                                R.id.fragmentPlaceholder);
+
                 fragment.populateFragment(mSnipsFromBackend);
             }
 

@@ -13,6 +13,13 @@ import android.util.Log;
  */
 public class FragmentOperations
 {
+    public static Fragment getFragmentFromActivity(FragmentActivity activity, int id)
+    {
+        FragmentManager manager = activity.getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentById(R.id.fragmentPlaceholder);
+        return fragment;
+    }
+
     public static void openFragment(final FragmentActivity currentActivity, int fragmentCode)
     {
         Bundle b = new Bundle();
