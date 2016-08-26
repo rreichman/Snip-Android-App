@@ -52,8 +52,8 @@ public class NotificationUtils {
                     };
 
             String baseAccessURL = context.getResources().getString(R.string.baseAccessURL);
-            String reactionBaseUrl = context.getResources().getString(R.string.reactionBaseURL);
-            String url = baseAccessURL + reactionBaseUrl;
+            String notificationBaseUrl = context.getResources().getString(R.string.notificationTokenBaseURL);
+            String url = baseAccessURL + notificationBaseUrl;
 
             JSONObject params = new JSONObject();
             try {
