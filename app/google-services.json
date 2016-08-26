@@ -1,20 +1,35 @@
 {
   "project_info": {
-    "project_number": "1063327640252",
-    "project_id": "firebase-snip"
+    "project_number": "43246965211",
+    "firebase_url": "https://snipreader.firebaseio.com",
+    "project_id": "snipreader",
+    "storage_bucket": "snipreader.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1063327640252:android:152d52a99a09dab6",
+        "mobilesdk_app_id": "1:43246965211:android:828122dded0b6637",
         "android_client_info": {
           "package_name": "snip.androidapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "43246965211-l9lgt7lrmp7n4d3jpn3k9p37jnf966hj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "snip.androidapp",
+            "certificate_hash": "86BD6F750E1075945CC1D7AFC2E7904645E53A84"
+          }
+        },
+        {
+          "client_id": "43246965211-gmkesn8jbm5qllf39onqd8ibidmaiffi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDLmeFS0rUwQAxiDQiiGNAyiiTLyxar7aM"
+          "current_key": "AIzaSyBgZA5PRz9sKkVU8QZPo_PypMwheuPpZz0"
         }
       ],
       "services": {
@@ -22,11 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "43246965211-gmkesn8jbm5qllf39onqd8ibidmaiffi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }
