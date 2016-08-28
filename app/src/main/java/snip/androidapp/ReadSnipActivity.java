@@ -47,47 +47,6 @@ public class ReadSnipActivity extends GenericSnipActivity
     }
 
 
-    private String getDateDiff(Date startDate, Date endDate) {
-
-        //milliseconds
-        long different = endDate.getTime() - startDate.getTime();
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-        long weeksInMilli = daysInMilli * 7;
-
-        long elapsedWeeks = different / weeksInMilli;
-        if (elapsedWeeks > 0) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, ''yy"); // Set your date format
-            return sdf.format(startDate);
-        }
-
-        String timeDiffStr = "";
-
-        long elapsedDays = different / daysInMilli;
-        if (elapsedDays > 0) {
-            return Long.toString(elapsedDays) + " day" + isTimePlural(elapsedDays);
-        }
-
-        long elapsedHours = different / hoursInMilli;
-        if (elapsedHours > 0) {
-            String prefix = "hr";
-            return Long.toString(elapsedHours) + " hr" + isTimePlural(elapsedHours);
-        }
-
-        long elapsedMinutes = different / minutesInMilli;
-        return Long.toString(elapsedMinutes) + " min" + isTimePlural(elapsedMinutes);
-    }
-
-    private String isTimePlural(long elapsedTime) {
-        if (elapsedTime > 1) {
-            return "s";
-        }
-        return "";
-    }
-    
     private void addTextDynamicallyToLayout(String text, boolean isLink, int styleId,
                                             int margin_horz, int margin_top, int margin_bottom, int align, int textStyle)
     {
@@ -194,7 +153,7 @@ public class ReadSnipActivity extends GenericSnipActivity
                     mDefMarginHorz, 0, 0, mDefGravity, mDefTextStyle);
         }
 
-        addTextDynamicallyToLayout(getDateDiff(mSnipData.mDate, new Date()), false,
+        addTextDynamicallyToLayout(DatetimeUtils.getDateDiff(mSnipData.mDate, new Date()), false,
                 R.style.SingleSnip_Text_Author, mDefMarginHorz, 0, 0, mDefGravity, mDefTextStyle);
     }
 

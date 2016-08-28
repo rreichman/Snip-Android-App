@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Set;
@@ -252,6 +253,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         {
             holder.mSnipThumbnail.setImageBitmap(SnipData.getBitmapFromUrl(currentSnip.mThumbnailUrl));
         }
+
+        holder.mSnipPublishAge.setText(DatetimeUtils.getDateDiff(currentSnip.mDate, new Date()));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

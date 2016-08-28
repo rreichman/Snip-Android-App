@@ -25,6 +25,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder
     public SnipTextView mSnipHeadline;
     public ImageView mSnipThumbnail;
     public SnipTextView mSnipPublisher;
+    public SnipTextView mSnipPublishAge;
     public ImageView mHeartImage;
 
     private DisplayMetrics getScreenDimensions(Context context)
@@ -43,6 +44,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder
         this.mSwipeBackgroundRight = (RelativeLayout)view.findViewById(R.id.clipSwipeBackgroundRight);
         this.mSnipHeadline = (SnipTextView) view.findViewById(R.id.headline);
         this.mSnipPublisher = (SnipTextView) view.findViewById(R.id.publisher);
+        this.mSnipPublishAge = (SnipTextView) view.findViewById(R.id.publish_age);
         this.mSnipThumbnail = (ImageView)view.findViewById(R.id.thumbnail);
         this.mHeartImage = (ImageView)view.findViewById(R.id.heart_anim);
 
