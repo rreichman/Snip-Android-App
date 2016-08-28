@@ -2,8 +2,10 @@ package snip.androidapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -72,10 +74,14 @@ public class SnipCollectionInformation
         mShouldRestartViewAfterCollection = value;
     }
 
-    private String getWebsiteTokenFromFile(Context context)
+    private String getWebsiteTokenFromPreferences(Context context)
     {
-        String userTokenFile = context.getResources().getString(R.string.userTokenFile);
-        String tokenJsonAsString =
+        String userToken = context.getResources().getString(R.string.userTokenStringInPreferences);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String token = sharedPreferences.getString(userToken, null);
+        return token;
+
+        /*String tokenJsonAsString =
                 (String)DataCacheManagement.retrieveObjectFromFile(context, userTokenFile);
         try
         {
@@ -90,7 +96,7 @@ public class SnipCollectionInformation
             e.printStackTrace();
         }
 
-        return null;
+        return null;*/
     }
 
     public void setTokenForWebsiteAccess(String token)
@@ -101,16 +107,15 @@ public class SnipCollectionInformation
     public void deleteTokenForWebsiteAccess(Context context)
     {
         mTokenForWebsiteAccess = null;
-        String userTokenFile = context.getResources().getString(R.string.userTokenFile);
-        DataCacheManagement.deleteFileOnDisk(
-                DataCacheManagement.getFullPathOfFile(context, userTokenFile));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().remove(context.getResources().getString(R.string.userTokenStringInPreferences));
     }
 
     public String getTokenForWebsiteAccess(Context context)
     {
         if (null == mTokenForWebsiteAccess)
         {
-            mTokenForWebsiteAccess = getWebsiteTokenFromFile(context);
+            mTokenForWebsiteAccess = getWebsiteTokenFromPreferences(context);
         }
 
         return mTokenForWebsiteAccess;

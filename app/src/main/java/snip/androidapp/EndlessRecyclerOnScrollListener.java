@@ -62,7 +62,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         {
             int visibleItemCount = recyclerView.getChildCount();
             int totalItemCount = recyclerView.getAdapter().getItemCount();
-            int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int firstVisibleItem = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
             final int visibleThreshold = 4;
 
             if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
