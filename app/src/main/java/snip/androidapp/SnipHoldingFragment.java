@@ -144,7 +144,11 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
 
     protected void startFragmentOperation(LinkedList<SnipData> snipsToStartWith)
     {
-        setFragmentVariables();
+        // Only initialize the layout on the first time
+        if (null == mLayoutManager)
+        {
+            setFragmentVariables();
+        }
         if (null != snipsToStartWith)
         {
             if (snipsToStartWith.size() > 0)
