@@ -1,10 +1,14 @@
 package snip.androidapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,15 +30,39 @@ public class MainActivity extends GenericSnipActivity
         return getResources().getInteger(R.integer.activityCodeMain);
     }
 
+    private void launch_notification_intent() {
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
+    }
+
+
+
+    private void handle_intent() {
+        if (getIntent().getExtras() != null) {
+            int notification_request_code = 80;
+            Log.d("test", getIntent().getStringExtra("snip_id"));
+            int request_code = getIntent().getIntExtra("RequestCode", -1);
+            if (notification_request_code == request_code) {
+                String snip_id = getIntent().getStringExtra("snip_id");
+                if (null != snip_id) {
+                    NotificationUtils.showSnip(this.getApplicationContext(), snip_id);
+                }
+            }
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        launch_notification_intent();
         //DataCacheManagement.deleteAllInformationFiles(this);
         // TODO:: verify this
         mCurrentFragmentCode = getResources().getInteger(R.integer.fragmentCodeMain);
         startUI();
         initializeImportantStuff();
+        handle_intent();
         addFragmentToScreen();
     }
 

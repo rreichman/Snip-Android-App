@@ -33,7 +33,7 @@ public class BaseToolbar
     private static void restartImageViews(final FragmentActivity currentActivity)
     {
         ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
-        curImage.setImageResource(R.drawable.heart_icon_hollow);
+        curImage.setImageResource(R.drawable.heart_icon_hollow_black);
         curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
         curImage.setImageResource(R.drawable.snooze_black);
     }

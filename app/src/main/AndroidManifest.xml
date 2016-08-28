@@ -28,6 +28,22 @@
         <activity android:name=".LoginActivity" android:theme="@style/LoginAppTheme.Dark" />
         <activity android:name=".FeedbackActivity" android:theme="@style/LoginAppTheme.Dark" />
         <activity android:name=".SignupActivity" android:theme="@style/LoginAppTheme.Dark" />
+
+        <service android:name=".RegistrationIntentService" android:exported="false"/>
+        <service
+            android:name=".MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".FCMMessageHandler">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="87a4baaa9ab22614a389ca46db56234144791982" />

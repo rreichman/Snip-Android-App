@@ -182,7 +182,7 @@ public class CollectSnipsFromInternet
     {
         try
         {
-            InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
+            InetAddress ipAddr = InetAddress.getByName("google.com"); //TODO: You can replace it with your name
             InetAddress ipAddr2 = InetAddress.getByName("twitter.com");
             return (!ipAddr.equals("") && !ipAddr2.equals(""));
         }
