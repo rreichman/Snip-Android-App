@@ -40,7 +40,6 @@ public class MainActivity extends GenericSnipActivity
     private void handle_intent() {
         if (getIntent().getExtras() != null) {
             int notification_request_code = getResources().getInteger(R.integer.notificationRequestCode);
-            Log.d("test", getIntent().getStringExtra("snip_id"));
             int request_code = getIntent().getIntExtra("RequestCode", -1);
             if (notification_request_code == request_code) {
                 String snip_id = getIntent().getStringExtra("snip_id");
