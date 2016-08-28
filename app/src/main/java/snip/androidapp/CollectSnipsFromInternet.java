@@ -152,7 +152,6 @@ public class CollectSnipsFromInternet
             }
             else
             {
-                //SnipCollectionInformation.getInstance().setCollectedSnips(mSnipsFromBackend);
                 Log.d("setting collected snips", Integer.toString(mSnipsFromBackend.size()));
                 SnipHoldingFragment fragment =
                         (SnipHoldingFragment)FragmentOperations.getFragmentFromActivity(

@@ -6,7 +6,9 @@ package snip.androidapp;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.content.Intent;
@@ -44,8 +46,8 @@ public class LoginActivity extends GenericSnipActivity
     @BindString(R.string.signInProgressBar) String signInProgressBarText;
     @BindString(R.string.passField) String passField;
     @BindString(R.string.tokenField) String tokenField;
-    @BindString(R.string.userTokenFile) String userTokenFile;
-    @BindString(R.string.userEmailFile) String userEmailFile;
+    @BindString(R.string.userTokenStringInPreferences) String userTokenStringInPreferences;
+    @BindString(R.string.userEmailStringInPreferences) String userEmailStringInPreferences;
 
     public int getActivityCode()
     {
@@ -94,9 +96,12 @@ public class LoginActivity extends GenericSnipActivity
             JSONObject tokenJson = getTokenJson(response, loginParams);
             _loginButton.setEnabled(true);
             mProgressDialog.hide();
+
             SnipCollectionInformation.getInstance(context).setTokenForWebsiteAccess(response.getString(tokenField));
-            DataCacheManagement.saveObjectToFile(context, tokenJson.toString(), userTokenFile);
-            DataCacheManagement.saveObjectToFile(context, loginParams.getString(emailField), userEmailFile);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+            sharedPreferences.edit().putString(userTokenStringInPreferences, tokenJson.getString(tokenField)).commit();
+            sharedPreferences.edit().putString(userEmailStringInPreferences, tokenJson.getString(emailField)).commit();
         }
         catch (JSONException e)
         {

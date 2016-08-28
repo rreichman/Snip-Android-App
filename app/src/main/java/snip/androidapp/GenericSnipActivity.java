@@ -1,6 +1,8 @@
 package snip.androidapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 
@@ -14,7 +16,7 @@ import io.fabric.sdk.android.Fabric;
  */
 public abstract class GenericSnipActivity extends AppCompatActivity
 {
-    @BindString(R.string.userEmailFile) String userEmailFile;
+    @BindString(R.string.userEmailStringInPreferences) String userEmailStringInPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -68,7 +70,8 @@ public abstract class GenericSnipActivity extends AppCompatActivity
         String emailOfUser = null;
         try
         {
-            emailOfUser = (String)DataCacheManagement.retrieveObjectFromFile(this, userEmailFile);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            emailOfUser = sharedPreferences.getString(userEmailStringInPreferences, null);
             if (null == emailOfUser)
             {
                 throw new Exception();

@@ -2,6 +2,8 @@ package snip.androidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
@@ -43,6 +45,9 @@ public class MenuHandler
         SnipCollectionInformation.getInstance(activity).deleteTokenForWebsiteAccess(activity);
         SnipCollectionInformation.getInstance(activity).setShouldRestartViewAfterCollection(true);
         DataCacheManagement.deleteAllInformationFiles(activity);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        sharedPreferences.edit().remove(activity.getResources().getString(R.string.userTokenStringInPreferences)).commit();
+        sharedPreferences.edit().remove(activity.getResources().getString(R.string.userEmailStringInPreferences)).commit();
         LogUserActions.logUserLogout(activity);
     }
 }

@@ -29,7 +29,7 @@ public class NotificationUtils {
     public static void sendRegistrationToServer(Context context, String token, Boolean forceUpdate) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (forceUpdate || (!sharedPreferences.getBoolean(SENT_TOKEN_TO_SERVER, false))) {
-            sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, false).apply();
+            sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, false).commit();
 
             HashMap<String,String> headers =
                     SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
@@ -71,7 +71,7 @@ public class NotificationUtils {
 
     private static void updateTokenToServerStatus(Context context, boolean status) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, status).apply();
+        sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, status).commit();
     }
 
 
@@ -136,10 +136,10 @@ public class NotificationUtils {
         Bundle bundledSnipData = new Bundle();
         bundledSnipData.putSerializable("snipData", snipData);
         // TODO: load snip fragment
-//        FragmentOperations.openFragment((FragmentActivity) context,
-//                context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
-//                Long.toString(snipData.mID),
-//                bundledSnipData);
+        FragmentOperations.openFragment((FragmentActivity) context,
+                context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
+                Long.toString(snipData.mID),
+                bundledSnipData);
 
     }
 

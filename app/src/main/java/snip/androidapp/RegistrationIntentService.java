@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -28,12 +29,9 @@ public class RegistrationIntentService extends IntentService {
         String token = sharedPreferences.getString(FCM_TOKEN, null);
         if (null == token) {
             token = FirebaseInstanceId.getInstance().getToken();
-            sharedPreferences.edit().putString(FCM_TOKEN, token).apply();
+            sharedPreferences.edit().putString(FCM_TOKEN, token).commit();
         }
+        Log.d("Token is", token);
         NotificationUtils.sendRegistrationToServer(this, token, false);
-
-
     }
-
-
 }

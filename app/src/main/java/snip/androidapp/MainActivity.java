@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends GenericSnipActivity
 {
     int mCurrentFragmentCode;
+    boolean mShouldRestartFragment = false;
 
     public int getActivityCode()
     {
@@ -32,20 +33,19 @@ public class MainActivity extends GenericSnipActivity
 
     private void launch_notification_intent() {
         Intent intent = new Intent(this, RegistrationIntentService.class);
+        // TODO:: Think if it's ok to start the service again and again
         startService(intent);
     }
 
-
-
     private void handle_intent() {
         if (getIntent().getExtras() != null) {
-            int notification_request_code = 80;
+            int notification_request_code = getResources().getInteger(R.integer.notificationRequestCode);
             Log.d("test", getIntent().getStringExtra("snip_id"));
             int request_code = getIntent().getIntExtra("RequestCode", -1);
             if (notification_request_code == request_code) {
                 String snip_id = getIntent().getStringExtra("snip_id");
                 if (null != snip_id) {
-                    NotificationUtils.showSnip(this.getApplicationContext(), snip_id);
+                    NotificationUtils.showSnip(this, snip_id);
                 }
             }
 
@@ -56,14 +56,41 @@ public class MainActivity extends GenericSnipActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        launch_notification_intent();
-        //DataCacheManagement.deleteAllInformationFiles(this);
-        // TODO:: verify this
+        // TODO: verify this
         mCurrentFragmentCode = getResources().getInteger(R.integer.fragmentCodeMain);
         startUI();
         initializeImportantStuff();
-        handle_intent();
         addFragmentToScreen();
+        launch_notification_intent();
+        if (null != SnipCollectionInformation.getInstance(this).getTokenForWebsiteAccess(this))
+        {
+            handle_intent();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == getResources().getInteger(R.integer.activityCodeLogin))
+        {
+            if (resultCode == MyActivity.RESULT_OK)
+            {
+                // We want to do this in onResume and not in onActivityResult because otherwise Android
+                // gets very mad. See http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html
+                mShouldRestartFragment = true;
+            }
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        if (mShouldRestartFragment)
+        {
+            addFragmentToScreen();
+            mShouldRestartFragment = false;
+        }
+        super.onResume();
     }
 
     @Override
