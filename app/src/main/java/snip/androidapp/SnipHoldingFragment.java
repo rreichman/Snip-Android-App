@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -190,9 +191,13 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
             }
             else
             {
-                ((MyAdapter)mAdapter).addAll(getActivity(), addedSnips);
+                ((MyAdapter)mAdapter).addAll(getActivity(), addedSnips, true);
+                SnipTempManagement.getInstance(getActivity()).clearSnipsToLoadInFragment(getFragmentCode());
                 asyncNotifyDatasetChanged();
             }
+            ((MyAdapter)mAdapter).addAll(getActivity(),
+                    SnipTempManagement.getInstance(getActivity()).mSnipsToLoadInFragment.get(getFragmentCode()),
+                    false);
             addPicturesToSnips();
         }
     }
@@ -244,8 +249,15 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
                     ReactionManager.userLikedSnip(mAdapter.getDataset().get(currentPositionInDataset).mID);
+                    SnipData snipToLike = mAdapter.getDataset().get(currentPositionInDataset);
+
                     mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
+
+                    FragmentOperations.addSnipToOtherFragment(
+                            (FragmentActivity)getActivity(),
+                            snipToLike,
+                            getActivity().getResources().getInteger(R.integer.fragmentCodeLiked));
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
                             mRecyclerView, mLayoutManager, getBaseSnipsQueryForFragment(), getFragmentCode(), false);
                 }

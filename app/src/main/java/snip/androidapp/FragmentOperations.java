@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,6 +8,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ShareCompat;
 import android.util.Log;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 /**
  * Created by ranreichman on 8/24/16.
@@ -58,5 +63,27 @@ public class FragmentOperations
         fragmentTransaction.commit();
         BaseToolbar.updateToolbarAccordingToFragment(currentActivity, fragmentCode);
         Log.d("finished new","fragment");
+    }
+
+    public static void addSnipToOtherFragment(
+            FragmentActivity fragmentActivity, SnipData snipData, int targetFragmentCode)
+    {
+        // TODO:: this needs to not be null
+        // TODO:: also, this needs to survive closing the app
+        SnipHoldingFragment targetFragment = (SnipHoldingFragment)
+                fragmentActivity.getSupportFragmentManager().findFragmentByTag(Integer.toString(targetFragmentCode));
+
+        if (null != targetFragment)
+        {
+            targetFragment.mAdapter.getDataset().add(0, snipData);
+            targetFragment.mAdapter.notifyDataSetChanged();
+        }
+        else
+        {
+            LinkedList<SnipData> currentListForFragment =
+                    SnipTempManagement.getInstance(fragmentActivity).mSnipsToLoadInFragment.get(targetFragmentCode);
+            currentListForFragment.add(0, snipData);
+            SnipTempManagement.getInstance(fragmentActivity).mSnipsToLoadInFragment.put(targetFragmentCode, currentListForFragment);
+        }
     }
 }

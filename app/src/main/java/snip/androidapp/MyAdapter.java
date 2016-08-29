@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +44,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         mDataset = new LinkedList<SnipData>();
         if (null != dataset)
         {
-            addAll(context, dataset);
+            addAll(context, dataset, true);
         }
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
@@ -62,8 +63,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         return mDataset;
     }
 
-    private void addUniqueSnipsToDataset(LinkedList<SnipData> snips)
+    public void addAll(Context context, LinkedList<SnipData> snips, boolean atEnd)
     {
+        Log.d("Adapter size", Integer.toString(mDataset.size()));
+        Log.d("adding snips to list", Integer.toString(snips.size()));
+
         for (int i = 0; i < snips.size(); i++)
         {
             boolean notMultiple = true;
@@ -80,22 +84,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    LogUserActions.logAppError(context, "Identical IDs in dataset");
                     notMultiple = false;
                     break;
                 }
             }
             if (notMultiple)
             {
-                mDataset.add(snips.get(i));
+                if (atEnd)
+                {
+                    mDataset.add(snips.get(i));
+                }
+                else
+                {
+                    mDataset.add(0, snips.get(i));
+                }
             }
         }
-    }
 
-    public void addAll(Context context, LinkedList<SnipData> snips)
-    {
-        Log.d("Adapter size", Integer.toString(mDataset.size()));
-        Log.d("adding snips to list", Integer.toString(snips.size()));
-        addUniqueSnipsToDataset(snips);
         Log.d("Adapter size", Integer.toString(mDataset.size()));
     }
 
@@ -137,7 +143,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                         Animation snoozeAnimation =
                                 AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
 
-                        final int DURATION_OF_ANIMATION_IN_MS = 400;
+                        final int DURATION_OF_ANIMATION_IN_MS = 300;
                         snoozeAnimation.setDuration(DURATION_OF_ANIMATION_IN_MS);
                         snoozeAnimation.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -149,8 +155,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                             @Override
                             public void onAnimationEnd(Animation animation) {
                                 cardHolder.mHeartImage.setVisibility(View.GONE);
+                                SnipData snipToSnooze = mDataset.get(currentPositionInDataset);
+
                                 mDataset.remove(currentPositionInDataset);
                                 mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
+                                FragmentOperations.addSnipToOtherFragment(
+                                        (FragmentActivity)parent.getContext(),
+                                        snipToSnooze,
+                                        parent.getContext().getResources().getInteger(R.integer.fragmentCodeSnoozed));
                                 EndlessRecyclerOnScrollListener.onScrolledLogic(
                                         mRecyclerView, mLinearLayoutManager, mDefaultQuery, mActivityCode, false);
                             }
