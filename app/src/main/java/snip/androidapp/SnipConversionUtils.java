@@ -35,7 +35,8 @@ public class SnipConversionUtils
         }
         catch (ParseException e)
         {
-            e.printStackTrace();
+            // TODO:: return this later
+            //e.printStackTrace();
         }
 
         return date;

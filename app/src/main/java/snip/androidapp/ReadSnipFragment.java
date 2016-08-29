@@ -1,19 +1,25 @@
 package snip.androidapp;
 
 import android.graphics.Bitmap;
+import android.graphics.Picture;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,13 +27,16 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by ranreichman on 8/24/16.
  */
-public class ReadSnipFragment extends GenericSnipFragment
+public class ReadSnipFragment extends GenericSnipFragment implements OnTaskCompleted
 {
     View mRootView;
+    int mCurrentPictureCount = 0;
+    HashMap<Integer,String> mMappingBetweenPictureNumberAndUrl = new HashMap<>();
 
     @Override
     public void onDestroyView()
@@ -56,8 +65,6 @@ public class ReadSnipFragment extends GenericSnipFragment
     {
         Bundle bundle = getArguments();
         mSnipData = (SnipData)bundle.getSerializable("snipData");
-        //mSnipData = getArguments()
-        //mSnipData = (SnipData)getIntent().getSerializableExtra(SnipData.getSnipDataString());
 
         mLayout = (LinearLayout)getActivity().findViewById(R.id.clean_layout);
         mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
@@ -174,16 +181,27 @@ public class ReadSnipFragment extends GenericSnipFragment
 
     private void addPictureDynamicallyToLayout(String url, int styleId, int margin_horz, int margin_top, int margin_bottom)
     {
-        ImageView imageView = new ImageView(getActivity(), null, styleId);
-        Bitmap curImage = SnipData.getBitmapFromUrl(url);
-        imageView.setImageBitmap(curImage);
-//        fitImageHeightToScreen(ImageView curImage);
+        ImageView imageViewStub = new ImageView(getActivity(), null, styleId);
+        imageViewStub.setId(mCurrentPictureCount);
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(margin_horz, margin_top, margin_horz, margin_bottom);
-        imageView.setAdjustViewBounds(true);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        mLayout.addView(imageView, params);
+        imageViewStub.setAdjustViewBounds(true);
+        imageViewStub.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        mMappingBetweenPictureNumberAndUrl.put(mCurrentPictureCount, url);
+        mCurrentPictureCount++;
+
+        mLayout.addView(imageViewStub, params);
+    }
+
+    public void addPicturesToLayout()
+    {
+        for (int i = 0; i < mCurrentPictureCount; i++)
+        {
+            Log.d("getting pic", Integer.toString(i));
+            Bitmap curImage = SnipData.getBitmapFromUrl(mMappingBetweenPictureNumberAndUrl.get(i));
+        }
     }
 
     private void parseSnipBodyAndCreateView() {
@@ -248,7 +266,9 @@ public class ReadSnipFragment extends GenericSnipFragment
                 R.style.SingleSnip_Text_Author, mDefMarginHorz, 0, 0, mDefGravity, mDefTextStyle);
     }
 
-    private void buildSnipView() {
+    private void buildSnipView()
+    {
+        Log.d("started", "presenting snip");
         addTextDynamicallyToLayout(mSnipData.mHeadline, false, R.style.SingleSnip_Text_Headline,
                 mDefMarginHorz, mDefMarginHeadlineTop, mDefMarginVert, mDefGravity, Typeface.BOLD);
         addSnipMetaDataToLayout();
@@ -263,6 +283,24 @@ public class ReadSnipFragment extends GenericSnipFragment
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
             createLinkView(cur_link);
         }
+
         ReactionBarCreator.addReactionBarToLayout(getActivity(), mLayout, mSnipData.mID);
+
+        PictureCacher pictureCacher = new PictureCacher(this);
+        pictureCacher.execute();
+
+        Log.d("finished", "presenting snip");
+    }
+
+    @Override
+    public void onTaskCompleted()
+    {
+        for (int i = 0; i < mCurrentPictureCount; i++)
+        {
+            Log.d("after caching pics", Integer.toString(i));
+            ImageView imageView = (ImageView)mLayout.findViewById(i);
+            Bitmap curImage = SnipData.getBitmapFromUrl(mMappingBetweenPictureNumberAndUrl.get(i));
+            imageView.setImageBitmap(curImage);
+        }
     }
 }

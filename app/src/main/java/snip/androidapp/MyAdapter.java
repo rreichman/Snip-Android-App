@@ -62,24 +62,31 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         return mDataset;
     }
 
-    private void validateThatAddedDataIsntMultiple(LinkedList<SnipData> snips)
+    private void addUniqueSnipsToDataset(LinkedList<SnipData> snips)
     {
-        for (int i = 0; i < mDataset.size(); i++)
+        for (int i = 0; i < snips.size(); i++)
         {
-            for (int j = 0; j < snips.size(); j++)
+            boolean notMultiple = true;
+            for (int j = 0; j < mDataset.size(); j++)
             {
-                if (mDataset.get(i).mID == snips.get(j).mID)
+                if (mDataset.get(j).mID == snips.get(i).mID)
                 {
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
-                    Log.d("headline is", snips.get(j).mHeadline);
+                    Log.d("headline is", snips.get(i).mHeadline);
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    notMultiple = false;
+                    break;
                 }
+            }
+            if (notMultiple)
+            {
+                mDataset.add(snips.get(i));
             }
         }
     }
@@ -88,15 +95,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     {
         Log.d("Adapter size", Integer.toString(mDataset.size()));
         Log.d("adding snips to list", Integer.toString(snips.size()));
-        validateThatAddedDataIsntMultiple(snips);
-
-        /*for (int i = 0; i < snips.size(); i++)
-        {
-            SnipReactionsSingleton.getInstance().setReaction(
-                    context, snips.get(i).mID, snips.get(i).mReaction);
-        }*/
-
-        mDataset.addAll(snips);
+        addUniqueSnipsToDataset(snips);
+        Log.d("Adapter size", Integer.toString(mDataset.size()));
     }
 
     public void removeIdsFromDataset(Set<Long> ids)

@@ -94,7 +94,7 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
         if (null == SnipCollectionInformation.getInstance(getActivity()).getTokenForWebsiteAccess(getActivity()))
         {
             Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeLogin));
+            getActivity().startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeLogin));
         }
         else
         {
@@ -334,6 +334,8 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
     {
         SnipCollectionInformation.getInstance(getActivity()).cleanLastSnipQuery(getFragmentCode());
         DataCacheManagement.deleteFragmentInformationFiles(getActivity(), getFragmentCode());
+        mAdapter.getDataset().clear();
+        mAdapter.notifyDataSetChanged();
         startFragmentOperation(null);
     }
 

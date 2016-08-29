@@ -80,9 +80,9 @@ public class SearchActivity extends Activity
         }
         String url = baseAccessURL + categoriesBaseUrl;
 
-        VolleyInternetOperator.accessWebsiteWithVolley(
+        /*VolleyInternetOperator.accessWebsiteWithVolley(
                 context, url, Request.Method.GET, null, headers,
-                responseFunction, errorFunction);
+                responseFunction, errorFunction);*/
     }
 
 
@@ -113,9 +113,9 @@ public class SearchActivity extends Activity
         String searchBaseUrl = context.getResources().getString(R.string.searchBaseURL);
         String url = baseAccessURL + searchBaseUrl + searchBaseQuery + searchString;
 
-        VolleyInternetOperator.accessWebsiteWithVolley(
+        /*VolleyInternetOperator.accessWebsiteWithVolley(
                 context, url, Request.Method.GET, null, headers,
-                responseFunction, errorFunction);
+                responseFunction, errorFunction);*/
     }
 
 

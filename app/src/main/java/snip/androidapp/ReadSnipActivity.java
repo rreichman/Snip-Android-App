@@ -8,6 +8,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.ImageView;
@@ -98,7 +99,9 @@ public class ReadSnipActivity extends GenericSnipActivity
     private void parseSnipBodyAndCreateView() {
         try {
             JSONArray bodyElements = new JSONArray(mSnipData.mBody);
-            for (int i = 0; i < bodyElements.length(); ++i) {
+            for (int i = 0; i < bodyElements.length(); ++i)
+            {
+                Log.d("Adding element", Integer.toString(i));
                 JSONObject bodyElem = bodyElements.getJSONObject(i);
                 String cur_type = bodyElem.getString("type");
                 switch (cur_type) {

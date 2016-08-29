@@ -30,18 +30,18 @@ public class CollectSnipsFromInternet
 {
     private int mSnipsToCollect;
     private int mAmountOfSnipsCollectedInCurrentSession;
-    private int mActivityCode;
+    private int mFragmentCode;
     public String mBasicQuery;
     public boolean mShowAnimation;
 
     LinkedList<SnipData> mSnipsFromBackend = new LinkedList<SnipData>();
 
-    public CollectSnipsFromInternet(Context context, String basicQuery, int activityCode, boolean showAnimation)
+    public CollectSnipsFromInternet(Context context, String basicQuery, int fragmentCode, boolean showAnimation)
     {
         mSnipsToCollect = context.getResources().getInteger(R.integer.numSnipsPerLoading);
         mAmountOfSnipsCollectedInCurrentSession = 0;
         mBasicQuery = basicQuery;
-        mActivityCode = activityCode;
+        mFragmentCode = fragmentCode;
         mShowAnimation = showAnimation;
     }
 
@@ -80,49 +80,62 @@ public class CollectSnipsFromInternet
     public void retrieveSnipsFromInternet(
             final Context context, String queryFromServer, boolean showAnimation)
     {
-        showHideLoadingAnimation(context, showAnimation);
-        JSONObject loginJsonParams = new JSONObject();
-
-        HashMap<String,String> headers =
-                SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
-
-        VolleyInternetOperator.responseFunctionInterface responseFunction =
-                new VolleyInternetOperator.responseFunctionInterface() {
-                    @Override
-                    public void apply(Context context, JSONObject response, JSONObject params)
-                    {
-                        showHideLoadingAnimation(context, false);
-                        responseFunctionImplementation(context, response, params);
-                    }
-                };
-        VolleyInternetOperator.errorFunctionInterface errorFunction =
-                new VolleyInternetOperator.errorFunctionInterface() {
-                    @Override
-                    public void apply(Context context, VolleyError error, JSONObject params)
-                    {
-                        showHideLoadingAnimation(context, false);
-                        errorFunctionImplementation(context, error, params);
-                    }
-                };
-
-        if (null == queryFromServer)
+        if (SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).isLocked())
         {
-            Log.d("gettings snips", "here");
-            Log.d("basic query is", mBasicQuery);
-            VolleyInternetOperator.accessWebsiteWithVolley(
-                    context,
-                    mBasicQuery + SnipCollectionInformation.getInstance(context).getLastSnipQueryForFragment(mActivityCode),
-                    Request.Method.GET,
-                    loginJsonParams,
-                    headers,
-                    responseFunction, errorFunction);
+            Log.d("no retrieve", "locked");
+            return;
         }
-        else
+        Log.d("retreive", "not locked, locking");
+
+        SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).lock();
+        try
         {
-            Log.d("retrieving snips", queryFromServer);
-            VolleyInternetOperator.accessWebsiteWithVolley(
-                    context, queryFromServer, Request.Method.GET, loginJsonParams, headers,
-                    responseFunction, errorFunction);
+            showHideLoadingAnimation(context, showAnimation);
+            JSONObject loginJsonParams = new JSONObject();
+
+            HashMap<String, String> headers =
+                    SnipCollectionInformation.getInstance(context).getTokenForWebsiteAccessAsHashMap();
+
+            VolleyInternetOperator.responseFunctionInterface responseFunction =
+                    new VolleyInternetOperator.responseFunctionInterface() {
+                        @Override
+                        public void apply(Context context, JSONObject response, JSONObject params) {
+                            showHideLoadingAnimation(context, false);
+                            responseFunctionImplementation(context, response, params);
+                        }
+                    };
+            VolleyInternetOperator.errorFunctionInterface errorFunction =
+                    new VolleyInternetOperator.errorFunctionInterface() {
+                        @Override
+                        public void apply(Context context, VolleyError error, JSONObject params) {
+                            showHideLoadingAnimation(context, false);
+                            errorFunctionImplementation(context, error, params);
+                        }
+                    };
+
+            if (null == queryFromServer) {
+                Log.d("gettings snips", "here");
+                Log.d("basic query is", mBasicQuery);
+                VolleyInternetOperator.accessWebsiteWithVolley(
+                        context,
+                        mBasicQuery + SnipCollectionInformation.getInstance(context).getLastSnipQueryForFragment(mFragmentCode),
+                        Request.Method.GET,
+                        loginJsonParams,
+                        headers,
+                        responseFunction, errorFunction);
+            } else {
+                Log.d("retrieving snips", queryFromServer);
+                VolleyInternetOperator.accessWebsiteWithVolley(
+                        context, queryFromServer, Request.Method.GET, loginJsonParams, headers,
+                        responseFunction, errorFunction);
+            }
+        }
+        catch (Exception e)
+        {
+            if (SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).isLocked())
+            {
+                SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).unlock();
+            }
         }
     }
 
@@ -137,13 +150,13 @@ public class CollectSnipsFromInternet
             String fullNextRequest = response.getString("next");
             if (fullNextRequest.equals("null"))
             {
-                SnipCollectionInformation.getInstance(context).setLastSnipQuery(mActivityCode, fullNextRequest);
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(mFragmentCode, fullNextRequest);
             }
             else
             {
                 String[] splittedFullNextRequest = fullNextRequest.split("/");
                 String nextQueryString = splittedFullNextRequest[splittedFullNextRequest.length - 1];
-                SnipCollectionInformation.getInstance(context).setLastSnipQuery(mActivityCode, nextQueryString);
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(mFragmentCode, nextQueryString);
             }
 
             if ((!fullNextRequest.equals("null")) && (mAmountOfSnipsCollectedInCurrentSession < mSnipsToCollect))
@@ -154,9 +167,8 @@ public class CollectSnipsFromInternet
             {
                 Log.d("setting collected snips", Integer.toString(mSnipsFromBackend.size()));
                 SnipHoldingFragment fragment =
-                        (SnipHoldingFragment)FragmentOperations.getFragmentFromActivity(
-                                (MainActivity)context,
-                                R.id.fragmentPlaceholder);
+                        (SnipHoldingFragment)((MainActivity)context).getSupportFragmentManager().
+                                findFragmentByTag(Integer.toString(mFragmentCode));
 
                 fragment.populateFragment(mSnipsFromBackend);
             }
@@ -170,10 +182,10 @@ public class CollectSnipsFromInternet
         }
 
         Log.d("should unlock?", "Checking");
-        if (SnipCollectionInformation.getInstance(context).mLock.isLocked())
+        if (SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).isLocked())
         {
             Log.d("unlocking", "Checked");
-            SnipCollectionInformation.getInstance(context).mLock.unlock();
+            SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).unlock();
         }
     }
 
@@ -218,18 +230,23 @@ public class CollectSnipsFromInternet
         }
 
         Log.d("should unlock?", "Checking");
-        if (SnipCollectionInformation.getInstance(context).mLock.isLocked())
+        if (SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).isLocked())
         {
             Log.d("unlocking", "Checked");
-            SnipCollectionInformation.getInstance(context).mLock.unlock();
+            SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).lock();
         }
     }
 
     private void checkUserPermissionStartLoginActivity(Context context, int errorCode) {
-        if (errorCode == 403)
+        final int FORBIDDEN_ERROR_IN_WEBSITE = 403;
+        if (errorCode == FORBIDDEN_ERROR_IN_WEBSITE)
         {
             Intent intent = new Intent(context, LoginActivity.class);
-            ((MyActivity) context).startActivityForResult(intent, context.getResources().getInteger(R.integer.activityCodeLogin));
+            ((MainActivity) context).startActivityForResult(intent, context.getResources().getInteger(R.integer.activityCodeLogin));
+        }
+        else
+        {
+            LogUserActions.logAppError(context, "PermissionError", errorCode);
         }
     }
 

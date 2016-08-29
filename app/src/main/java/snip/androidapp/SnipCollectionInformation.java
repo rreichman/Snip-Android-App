@@ -30,7 +30,7 @@ public class SnipCollectionInformation
     private static SnipCollectionInformation mInstance = null;
 
     private HashMap<Integer,String> mLastSnipQueryPerFragment;
-    public ReentrantLock mLock;
+    public HashMap<Integer,ReentrantLock> mLocks;
     private String mTokenForWebsiteAccess;
     private boolean mShouldRestartViewAfterCollection;
 
@@ -50,7 +50,11 @@ public class SnipCollectionInformation
     protected SnipCollectionInformation(Context context)
     {
         initializeLastQueries(context);
-        mLock = new ReentrantLock();
+        mLocks = new HashMap<Integer, ReentrantLock>();
+        mLocks.put(context.getResources().getInteger(R.integer.fragmentCodeMain), new ReentrantLock());
+        mLocks.put(context.getResources().getInteger(R.integer.fragmentCodeLiked), new ReentrantLock());
+        mLocks.put(context.getResources().getInteger(R.integer.fragmentCodeSnoozed), new ReentrantLock());
+
         mTokenForWebsiteAccess = null;
         mShouldRestartViewAfterCollection = false;
     }

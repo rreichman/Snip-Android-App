@@ -27,20 +27,17 @@ import javax.net.ssl.SSLSocketFactory;
 /**
  * Created by ranreichman on 8/7/16.
  */
-public class VolleyInternetOperator
-{
-    public interface responseFunctionInterface
-    {
+public class VolleyInternetOperator {
+    public interface responseFunctionInterface {
         void apply(Context context, JSONObject response, JSONObject params);
     }
 
-    public interface errorFunctionInterface
-    {
+    public interface errorFunctionInterface {
         void apply(Context context, VolleyError error, JSONObject params);
     }
 
-    public static String parseNetworkErrorResponse(VolleyError volleyError){
-        if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+    public static String parseNetworkErrorResponse(VolleyError volleyError) {
+        if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
             return new String(volleyError.networkResponse.data);
         }
         return null;
@@ -49,7 +46,8 @@ public class VolleyInternetOperator
     public static void accessWebsiteWithVolley(
             final Context context, String url, int requestMethod,
             final JSONObject params, final HashMap<String, String> additionalHeaders,
-            final responseFunctionInterface responseFunction, final errorFunctionInterface errorFunction)
+            final responseFunctionInterface responseFunction,
+            final errorFunctionInterface errorFunction)
     {
         Log.d("accessing website", url);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)

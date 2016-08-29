@@ -112,8 +112,6 @@ public class SignupActivity extends AppCompatActivity {
                 requestMethod, signupJsonParams, null, successFun, failedFun);
     }
 
-
-
     public void onSignupSuccess() {
         Toast.makeText(getBaseContext(), "Thanks for signing up. Please check your email for confirmation!", Toast.LENGTH_LONG).show();
         Intent returnIntent = new Intent();
