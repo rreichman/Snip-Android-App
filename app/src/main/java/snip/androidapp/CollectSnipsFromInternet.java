@@ -170,7 +170,15 @@ public class CollectSnipsFromInternet
                         (SnipHoldingFragment)((MainActivity)context).getSupportFragmentManager().
                                 findFragmentByTag(Integer.toString(mFragmentCode));
 
-                fragment.populateFragment(mSnipsFromBackend);
+                if (null != fragment)
+                {
+                    fragment.populateFragment(mSnipsFromBackend);
+                }
+                else
+                {
+                    SnipTempManagement.getInstance(context).
+                            mSnipsToLoadInFragment.get(mFragmentCode).addAll(mSnipsFromBackend);
+                }
             }
 
             moveLoadingAnimationToBottom(context);

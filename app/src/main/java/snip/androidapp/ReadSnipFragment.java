@@ -170,15 +170,6 @@ public class ReadSnipFragment extends GenericSnipFragment implements OnTaskCompl
         mLayout.addView(textView, params);
     }
 
-    private void fitImageHeightToScreen(ImageView curImage) {
-        int screen_height = getResources().getDisplayMetrics().heightPixels;
-        int image_height = curImage.getHeight();
-        double SCREEN_IMAGE_RATIO = 0.75;
-        if (image_height > (screen_height * SCREEN_IMAGE_RATIO )) {
-            image_height = (int) (screen_height * SCREEN_IMAGE_RATIO );
-        }
-    }
-
     private void addPictureDynamicallyToLayout(String url, int styleId, int margin_horz, int margin_top, int margin_bottom)
     {
         ImageView imageViewStub = new ImageView(getActivity(), null, styleId);
