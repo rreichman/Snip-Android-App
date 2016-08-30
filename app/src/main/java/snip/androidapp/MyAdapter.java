@@ -34,11 +34,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     private LinkedList<SnipData> mDataset;
     public LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
-    public int mActivityCode;
+    public int mFragmentCode;
 
     public MyAdapter(
             Context context, RecyclerView recyclerView, LinkedList<SnipData> dataset,
-            LinearLayoutManager linearLayoutManager, String defaultQuery, int activityCode)
+            LinearLayoutManager linearLayoutManager, String defaultQuery, int fragmentCode)
     {
         mRecyclerView = recyclerView;
         mDataset = new LinkedList<SnipData>();
@@ -48,7 +48,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         }
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
-        mActivityCode = activityCode;
+        mFragmentCode = fragmentCode;
     }
 
     public void remove(int id)
@@ -132,7 +132,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 final int SNOOZE_SCREEN_CODE =
                         parent.getContext().getResources().getInteger(R.integer.fragmentCodeSnoozed);
 
-                if (SNOOZE_SCREEN_CODE != mActivityCode)
+                if (SNOOZE_SCREEN_CODE != mFragmentCode)
                 {
                     try
                     {
@@ -164,7 +164,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                                         snipToSnooze,
                                         parent.getContext().getResources().getInteger(R.integer.fragmentCodeSnoozed));
                                 EndlessRecyclerOnScrollListener.onScrolledLogic(
-                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mActivityCode, false);
+                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mFragmentCode, false);
                             }
 
                             @Override
@@ -208,8 +208,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 
                     FragmentOperations.openFragment(
                             (AppCompatActivity)context,
+                            mFragmentCode,
                             context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
-                            Long.toString(snipData.mID),
+                            FragmentOperations.getReadSnipFragmentTag(mFragmentCode, snipData.mID),
                             bundledSnipData);
                 }
                 catch (IndexOutOfBoundsException e1)

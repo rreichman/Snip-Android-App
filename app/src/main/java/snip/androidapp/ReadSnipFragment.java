@@ -1,11 +1,13 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
 import android.text.Spanned;
@@ -20,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +40,10 @@ public class ReadSnipFragment extends GenericSnipFragment implements OnTaskCompl
     View mRootView;
     int mCurrentPictureCount = 0;
     HashMap<Integer,String> mMappingBetweenPictureNumberAndUrl = new HashMap<>();
+    int mFragmentCodeOfCaller;
+
+    //ViewPager mViewPager;
+    //PagerAdapter mPagerAdapter;
 
     @Override
     public void onDestroyView()
@@ -64,9 +71,28 @@ public class ReadSnipFragment extends GenericSnipFragment implements OnTaskCompl
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         Bundle bundle = getArguments();
+        if (null == bundle)
+        {
+            return;
+        }
+
         mSnipData = (SnipData)bundle.getSerializable("snipData");
+        mFragmentCodeOfCaller = bundle.getInt("fragmentCodeOfCaller");
 
         mLayout = (LinearLayout)getActivity().findViewById(R.id.clean_layout);
+        mLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeRight()
+            {
+                FragmentOperations.openOtherReadSnipFragment(getActivity(), true, mSnipData.mID, mFragmentCodeOfCaller);
+                //Toast.makeText(getActivity(), "right", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeLeft()
+            {
+                FragmentOperations.openOtherReadSnipFragment(getActivity(),false, mSnipData.mID, mFragmentCodeOfCaller);
+                //Toast.makeText(getActivity(), "left", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         mDefMarginHorz = (int) getResources().getDimension(R.dimen.snip_text_margin_horz);
         mDefMarginVert = (int) getResources().getDimension(R.dimen.snip_text_margin_vert);
         mDefMarginHeadlineTop = (int) getResources().getDimension(R.dimen.snip_text_margin_headline_top);
@@ -74,6 +100,10 @@ public class ReadSnipFragment extends GenericSnipFragment implements OnTaskCompl
         mDefGravity = Gravity.RIGHT;
         mDefTextStyle = Typeface.NORMAL;
         buildSnipView();
+
+        //mViewPager = (ViewPager)getActivity().findViewById(R.id.pager);
+        //mPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager());
+        //mViewPager.setAdapter(mPagerAdapter);
     }
 
     @Override

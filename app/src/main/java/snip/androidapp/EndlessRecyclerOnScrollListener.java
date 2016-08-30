@@ -27,7 +27,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         mFragmentCode = fragmentCode;
     }
 
-    private static void loadMore(
+    public static void loadMore(
             RecyclerView view, String baseQuery, int fragmentCode, boolean showAnimation)
     {
         if (!SnipCollectionInformation.getInstance(view.getContext()).
@@ -50,6 +50,11 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
         }
     }
 
+    public static int getVisibleThreshold()
+    {
+        return 4;
+    }
+
     public static void onScrolledLogic(
             RecyclerView recyclerView, LinearLayoutManager linearLayoutManager,
             String baseQuery, int fragmentCode, boolean showAnimation)
@@ -59,9 +64,8 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             int visibleItemCount = recyclerView.getChildCount();
             int totalItemCount = recyclerView.getAdapter().getItemCount();
             int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-            final int visibleThreshold = 4;
 
-            if (totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold) {
+            if (totalItemCount - visibleItemCount <= firstVisibleItem + getVisibleThreshold()) {
                 loadMore(recyclerView, baseQuery, fragmentCode, showAnimation);
             }
         }
