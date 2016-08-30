@@ -84,23 +84,6 @@ public class SnipCollectionInformation
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String token = sharedPreferences.getString(userToken, null);
         return token;
-
-        /*String tokenJsonAsString =
-                (String)DataCacheManagement.retrieveObjectFromFile(context, userTokenFile);
-        try
-        {
-            if (null != tokenJsonAsString)
-            {
-                JSONObject tokenJson = new JSONObject(tokenJsonAsString);
-                return tokenJson.getString(context.getResources().getString(R.string.tokenField));
-            }
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;*/
     }
 
     public void setTokenForWebsiteAccess(String token)
