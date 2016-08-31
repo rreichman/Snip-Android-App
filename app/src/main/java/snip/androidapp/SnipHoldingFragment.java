@@ -6,9 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
 
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,9 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.sql.Date;
-import java.util.Calendar;
 import java.util.LinkedList;
+
+// TODO:: fix this file
 
 /**
  * Created by ranreichman on 8/23/16.

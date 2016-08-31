@@ -36,24 +36,13 @@ public class BaseToolbar
         curImage.setImageResource(R.drawable.heart_icon_hollow_black);
         curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
         curImage.setImageResource(R.drawable.snooze_black);
+        curImage = (ImageView) currentActivity.findViewById(R.id.homeButtonOnToolbar);
+        curImage.setImageResource(R.drawable.home_icon_gray);
     }
 
-    public static void updateToolbarAccordingToFragment(
+    private static void createButtonsOnToolbar(
             final FragmentActivity currentActivity, final int currentFragmentCode)
     {
-        restartImageViews(currentActivity);
-
-        if (currentActivity.getResources().getInteger(R.integer.fragmentCodeLiked) == currentFragmentCode)
-        {
-            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
-            curImage.setImageResource(R.drawable.heart_icon_full);
-        }
-        else if (currentActivity.getResources().getInteger(R.integer.fragmentCodeSnoozed) == currentFragmentCode)
-        {
-            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
-            curImage.setImageResource(R.drawable.snooze_blue);
-        }
-
         currentActivity.findViewById(R.id.snoozeButtonOnToolbar).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -83,7 +72,7 @@ public class BaseToolbar
                 }
         );
 
-        currentActivity.findViewById(R.id.snipLogoOnToolbar).setOnClickListener(
+        currentActivity.findViewById(R.id.homeButtonOnToolbar).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -96,5 +85,29 @@ public class BaseToolbar
                     }
                 }
         );
+    }
+
+    public static void updateToolbarAccordingToFragment(
+            final FragmentActivity currentActivity, final int currentFragmentCode)
+    {
+        restartImageViews(currentActivity);
+
+        if (currentActivity.getResources().getInteger(R.integer.fragmentCodeLiked) == currentFragmentCode)
+        {
+            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.likeButtonOnToolbar);
+            curImage.setImageResource(R.drawable.heart_icon_full);
+        }
+        else if (currentActivity.getResources().getInteger(R.integer.fragmentCodeSnoozed) == currentFragmentCode)
+        {
+            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.snoozeButtonOnToolbar);
+            curImage.setImageResource(R.drawable.snooze_blue);
+        }
+        else if (currentActivity.getResources().getInteger(R.integer.fragmentCodeMain) == currentFragmentCode)
+        {
+            ImageView curImage = (ImageView) currentActivity.findViewById(R.id.homeButtonOnToolbar);
+            curImage.setImageResource(R.drawable.home_icon);
+        }
+
+        createButtonsOnToolbar(currentActivity, currentFragmentCode);
     }
 }

@@ -1,20 +1,13 @@
 package snip.androidapp;
 
-import android.graphics.Bitmap;
-import android.util.Pair;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.TimeZone;
 
 /**
@@ -35,8 +28,7 @@ public class SnipConversionUtils
         }
         catch (ParseException e)
         {
-            // TODO:: return this later
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         return date;
@@ -80,11 +72,14 @@ public class SnipConversionUtils
         LinkedList<SnipData> snipDataLinkedList = new LinkedList<SnipData>();
         for (int i = 0; i < jsonArray.length(); ++i)
         {
-            try {
+            try
+            {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 SnipData snipData = convertJsonObjectToSnipData(jsonObject);
                 snipDataLinkedList.addLast(snipData);
-            } catch (JSONException e) {
+            }
+            catch (JSONException e)
+            {
                 e.printStackTrace();
             }
 

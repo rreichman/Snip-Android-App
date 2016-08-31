@@ -91,13 +91,6 @@ public class DataCacheManagement
         }
     }
 
-//    // TODO:: delete this
-//    public static void deleteActivityInformationFiles(Context context, int activityCode)
-//    {
-//        deleteFileOnDisk(getFullPathForSnipData(context, activityCode));
-//        deleteFileOnDisk(getFullPathForSnipQuery(context, activityCode));
-//    }
-
     public static void deleteFragmentInformationFiles(Context context, int fragmentCode)
     {
         deleteFileOnDisk(getFullPathForSnipData(context, fragmentCode));

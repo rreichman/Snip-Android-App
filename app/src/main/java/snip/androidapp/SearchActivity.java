@@ -6,10 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;

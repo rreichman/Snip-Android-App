@@ -12,6 +12,40 @@ import android.widget.RelativeLayout;
  */
 public class ReactionBarCreator
 {
+    private static void handleDislikeClick(View view, long snipId)
+    {
+        if (SnipReactionsSingleton.getInstance().isDisliked(snipId)) { // user already disliked it  and now undoing
+            ReactionManager.userUnDislikedSnip(snipId);
+            setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_hollow_gray);
+            SnipReactionsSingleton.getInstance().setNoReaction(snipId);
+
+        }
+        else {
+            ReactionManager.userDislikedSnip(snipId);
+            setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_full);
+            setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonLikeImage, R.drawable.heart_icon_hollow);
+            SnipReactionsSingleton.getInstance().setDisliked(snipId);
+        }
+    }
+
+    private static void handleLikeClick(View view, long snipId)
+    {
+        if (SnipReactionsSingleton.getInstance().isLiked(snipId))
+        {
+            // user already liked it and now undoing
+            ReactionManager.userUnLikedSnip(snipId);
+            setImageResource(view, R.id.ReactionButtonLikeImage, R.drawable.heart_icon_hollow);
+            SnipReactionsSingleton.getInstance().setNoReaction(snipId);
+        }
+        else
+        {
+            ReactionManager.userLikedSnip(snipId);
+            setImageResource(view, R.id.ReactionButtonLikeImage, R.drawable.heart_icon_full);
+            setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_hollow_gray);
+            SnipReactionsSingleton.getInstance().setLiked(snipId);
+        }
+    }
+
     public static void addReactionBarToLayout(Context context, LinearLayout snipLayout, final long snipId) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -19,19 +53,9 @@ public class ReactionBarCreator
 
         RelativeLayout dislikeLayout = (RelativeLayout) reactionLayout.findViewById(R.id.ReactionButtonDislike);
         View.OnClickListener dislikeListener = new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (SnipReactionsSingleton.getInstance().isDisliked(snipId)) { // user already disliked it  and now undoing
-                    ReactionManager.userUnDislikedSnip(snipId);
-                    setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_hollow_gray);
-                    SnipReactionsSingleton.getInstance().setNoReaction(snipId);
-
-                }
-                else {
-                    ReactionManager.userDislikedSnip(snipId);
-                    setImageResource(view, R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_full);
-                    setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonLikeImage, R.drawable.heart_icon_hollow);
-                    SnipReactionsSingleton.getInstance().setDisliked(snipId);
-                }
+            @Override public void onClick(View view)
+            {
+                handleDislikeClick(view, snipId);
             }
         };
         dislikeLayout.setOnClickListener(dislikeListener);
@@ -40,17 +64,7 @@ public class ReactionBarCreator
         RelativeLayout likeLayout = (RelativeLayout) reactionLayout.findViewById(R.id.ReactionButtonLike);
         View.OnClickListener likeListener = new View.OnClickListener() {
             @Override public void onClick(View view) {
-                if (SnipReactionsSingleton.getInstance().isLiked(snipId)) { // user already liked it and now undoing
-                    ReactionManager.userUnLikedSnip(snipId);
-                    setImageResource(view, R.id.ReactionButtonLikeImage, R.drawable.heart_icon_hollow);
-                    SnipReactionsSingleton.getInstance().setNoReaction(snipId);
-                }
-                else {
-                    ReactionManager.userLikedSnip(snipId);
-                    setImageResource(view, R.id.ReactionButtonLikeImage, R.drawable.heart_icon_full);
-                    setImageResource((LinearLayout) view.getParent(), R.id.ReactionButtonDislikeImage, R.drawable.thumb_down_hollow_gray);
-                    SnipReactionsSingleton.getInstance().setLiked(snipId);
-                }
+                handleLikeClick(view, snipId);
             }
         };
         likeLayout.setOnClickListener(likeListener);

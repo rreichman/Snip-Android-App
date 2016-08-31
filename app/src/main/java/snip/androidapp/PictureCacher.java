@@ -18,7 +18,7 @@ public class PictureCacher extends AsyncTask<Void, Void, Void>
     @Override
     protected Void doInBackground(Void... voids)
     {
-        ((ReadSnipFragment)mListener).addPicturesToLayout();
+        ((ReadSnipFragment)mListener).mSnipDesigner.addPicturesToLayout();
         return null;
     }
 

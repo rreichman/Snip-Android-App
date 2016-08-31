@@ -1,18 +1,14 @@
 package snip.androidapp;
 
 import android.graphics.Bitmap;
-import android.graphics.Picture;
 import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-import android.util.Pair;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -91,7 +87,8 @@ public class SnipData implements Parcelable, Serializable {
 
     private static Bitmap getBitmapFromUrlInSeperateThread(String thumbnailUrl)
     {
-        // TODO:: think if counting on the cache here is smart. Maybe we should receive the Bitmap
+        // FUTURE:: think if counting on the cache here is smart. Maybe we should receive the Bitmap
+        // Note - probably OK
         try {
             ImageInternetAccessor accessor = new ImageInternetAccessor();
             return accessor.execute(thumbnailUrl).get();

@@ -1,26 +1,12 @@
 package snip.androidapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.sql.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
 import java.util.concurrent.locks.ReentrantLock;
-
-import butterknife.BindInt;
-import butterknife.BindString;
 
 /**
  * Created by ranreichman on 7/31/16.

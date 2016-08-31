@@ -28,11 +28,6 @@ public class SnipTextView extends TextView {
         setFont();
     }
 
-    public SnipTextView(Context context, String fontName) {
-        super(context);
-        setFont(fontName);
-    }
-
     private void setFont(String fontName) {
         Typeface fontType = Typeface.createFromAsset(this.getContext().getAssets(), baseFontsFolder + fontName);
         this.setTypeface(fontType);

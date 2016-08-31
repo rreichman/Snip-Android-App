@@ -70,9 +70,12 @@ public class FeedbackActivity extends GenericSnipActivity
             String url = baseAccessURL + feedbackBaseUrl;
 
             JSONObject params = new JSONObject();
-            try {
+            try
+            {
                 params.put("feedback", feedbackText);
-            } catch (JSONException e) {
+            }
+            catch (JSONException e)
+            {
                 e.printStackTrace();
             }
             VolleyInternetOperator.accessWebsiteWithVolley(

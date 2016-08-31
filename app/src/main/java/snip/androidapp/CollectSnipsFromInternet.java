@@ -50,32 +50,7 @@ public class CollectSnipsFromInternet
         retrieveSnipsFromInternet(context, null, mShowAnimation);
     }
 
-    private void showHideLoadingAnimation(Context context, boolean toShow) {
-        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi_fragment);
-        if (null != avi) {
-            if (toShow) {
-                avi.setVisibility(avi.VISIBLE);
-                avi.show();
-            } else {
-                avi.hide();
-            }
-        }
-    }
-
-    private void moveLoadingAnimationToBottom(Context context) {
-        try
-        {
-            AVLoadingIndicatorView avi = (AVLoadingIndicatorView) ((Activity) context).findViewById(R.id.avi_fragment);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) avi.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            avi.setLayoutParams(params);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
+    // TODO:: fix this function
     // If the queryFromServer is null then we use the default query
     public void retrieveSnipsFromInternet(
             final Context context, String queryFromServer, boolean showAnimation)
@@ -90,7 +65,8 @@ public class CollectSnipsFromInternet
         SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).lock();
         try
         {
-            showHideLoadingAnimation(context, showAnimation);
+            // TODO:: check this
+            //showHideLoadingAnimation(context, showAnimation);
             JSONObject loginJsonParams = new JSONObject();
 
             HashMap<String, String> headers =
@@ -100,7 +76,7 @@ public class CollectSnipsFromInternet
                     new VolleyInternetOperator.responseFunctionInterface() {
                         @Override
                         public void apply(Context context, JSONObject response, JSONObject params) {
-                            showHideLoadingAnimation(context, false);
+                            AnimationUtils.showHideLoadingAnimation(context, false);
                             responseFunctionImplementation(context, response, params);
                         }
                     };
@@ -108,7 +84,7 @@ public class CollectSnipsFromInternet
                     new VolleyInternetOperator.errorFunctionInterface() {
                         @Override
                         public void apply(Context context, VolleyError error, JSONObject params) {
-                            showHideLoadingAnimation(context, false);
+                            AnimationUtils.showHideLoadingAnimation(context, false);
                             errorFunctionImplementation(context, error, params);
                         }
                     };
@@ -137,14 +113,18 @@ public class CollectSnipsFromInternet
                 SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).unlock();
             }
         }
+        Log.d("End of retrieve snips", "end");
     }
 
+    // TODO:: fix this function
     public void responseFunctionImplementation(
             Context context, JSONObject response, JSONObject params)
     {
+        Log.d("Starting", "response");
         try {
             JSONArray jsonArray = response.getJSONArray("results");
             mSnipsFromBackend.addAll(SnipConversionUtils.convertJsonArrayToSnipList(jsonArray));
+            Log.d("Added snips", "from backend");
             int mLastSnipsCollection = jsonArray.length();
             mAmountOfSnipsCollectedInCurrentSession += mLastSnipsCollection;
             String fullNextRequest = response.getString("next");
@@ -181,8 +161,7 @@ public class CollectSnipsFromInternet
                 }
             }
 
-            moveLoadingAnimationToBottom(context);
-
+            AnimationUtils.moveLoadingAnimationToBottom(context);
         }
         catch (JSONException e)
         {
@@ -194,19 +173,6 @@ public class CollectSnipsFromInternet
         {
             Log.d("unlocking", "Checked");
             SnipCollectionInformation.getInstance(context).mLocks.get(mFragmentCode).unlock();
-        }
-    }
-
-    private boolean isInternetAvailable()
-    {
-        try
-        {
-            InetAddress ipAddr = InetAddress.getByName("google.com"); //TODO: You can replace it with your name
-            InetAddress ipAddr2 = InetAddress.getByName("twitter.com");
-            return (!ipAddr.equals("") && !ipAddr2.equals(""));
-        }
-        catch (Exception e) {
-            return false;
         }
     }
 
@@ -222,7 +188,7 @@ public class CollectSnipsFromInternet
             else if (error instanceof NoConnectionError)
             {
                 String toastText = "Unable to load snips. Are you connected to the Internet?";
-                if (isInternetAvailable())
+                if (InternetUtils.isInternetAvailable())
                 {
                     toastText = "We seem to be having server problems. Sorry about that";
                     LogUserActions.logServerError(context);

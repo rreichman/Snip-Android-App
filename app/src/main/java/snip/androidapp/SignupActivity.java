@@ -3,7 +3,6 @@ package snip.androidapp;
 /**
  * Created by ranihorev on 07/08/2016.
  */
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -43,7 +42,8 @@ public class SignupActivity extends AppCompatActivity {
     @BindString(R.string.passField) String passField;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
@@ -64,7 +64,8 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public void signup() {
+    public void signup()
+    {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
@@ -112,7 +113,8 @@ public class SignupActivity extends AppCompatActivity {
                 requestMethod, signupJsonParams, null, successFun, failedFun);
     }
 
-    public void onSignupSuccess() {
+    public void onSignupSuccess()
+    {
         Toast.makeText(getBaseContext(), "Thanks for signing up. Please check your email for confirmation!", Toast.LENGTH_LONG).show();
         Intent returnIntent = new Intent();
         returnIntent.putExtra(emailField,_emailText.getText().toString());
@@ -121,7 +123,8 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onSignupFailed(VolleyError error, String err_msg) {
+    public void onSignupFailed(VolleyError error, String err_msg)
+    {
         if (null != error) {
             Log.d("signUp error", VolleyInternetOperator.parseNetworkErrorResponse(error));
         }
@@ -136,7 +139,8 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setEnabled(true);
     }
 
-    public boolean validate() {
+    public boolean validate()
+    {
         boolean valid = true;
         String msg_err = "";
 
@@ -163,6 +167,4 @@ public class SignupActivity extends AppCompatActivity {
 
         return valid;
     }
-
-
 }
