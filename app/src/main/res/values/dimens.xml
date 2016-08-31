@@ -6,8 +6,8 @@
     <dimen name="snip_text_margin_headline_top">10dp</dimen>
     <dimen name="snip_text_margin_image_top">6dp</dimen>
     <dimen name="basic_margin_horz">12dp</dimen>
-    <dimen name="single_snip_text_line_spacing">-4dp</dimen>
-    <dimen name="card_text_line_spacing">-2dp</dimen>
+    <dimen name="single_snip_text_line_spacing">0dp</dimen>
+    <dimen name="card_text_line_spacing">0dp</dimen>
     <dimen name="loading_animation_size">25dp</dimen>
     <dimen name="toolbar_item_size">22dp</dimen>
     <dimen name="toolbar_height">44dp</dimen>
