@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,21 +34,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     private LinkedList<SnipData> mDataset;
     public LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
-    public int mActivityCode;
+    public int mFragmentCode;
 
     public MyAdapter(
             Context context, RecyclerView recyclerView, LinkedList<SnipData> dataset,
-            LinearLayoutManager linearLayoutManager, String defaultQuery, int activityCode)
+            LinearLayoutManager linearLayoutManager, String defaultQuery, int fragmentCode)
     {
         mRecyclerView = recyclerView;
         mDataset = new LinkedList<SnipData>();
         if (null != dataset)
         {
-            addAll(context, dataset);
+            addAll(context, dataset, true);
         }
         mLinearLayoutManager = linearLayoutManager;
         mDefaultQuery = defaultQuery;
-        mActivityCode = activityCode;
+        mFragmentCode = fragmentCode;
     }
 
     public void remove(int id)
@@ -62,41 +63,46 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
         return mDataset;
     }
 
-    private void validateThatAddedDataIsntMultiple(LinkedList<SnipData> snips)
+    public void addAll(Context context, LinkedList<SnipData> snips, boolean atEnd)
     {
-        for (int i = 0; i < mDataset.size(); i++)
+        Log.d("Adapter size", Integer.toString(mDataset.size()));
+        Log.d("adding snips to list", Integer.toString(snips.size()));
+
+        for (int i = 0; i < snips.size(); i++)
         {
-            for (int j = 0; j < snips.size(); j++)
+            boolean notMultiple = true;
+            for (int j = 0; j < mDataset.size(); j++)
             {
-                if (mDataset.get(i).mID == snips.get(j).mID)
+                if (mDataset.get(j).mID == snips.get(i).mID)
                 {
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
-                    Log.d("headline is", snips.get(j).mHeadline);
+                    Log.d("headline is", snips.get(i).mHeadline);
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
                     Log.d("bug!!!!!!!!!!!!!", "two identical IDs in dataset");
+                    LogUserActions.logAppError(context, "Identical IDs in dataset");
+                    notMultiple = false;
+                    break;
+                }
+            }
+            if (notMultiple)
+            {
+                if (atEnd)
+                {
+                    mDataset.add(snips.get(i));
+                }
+                else
+                {
+                    mDataset.add(0, snips.get(i));
                 }
             }
         }
-    }
 
-    public void addAll(Context context, LinkedList<SnipData> snips)
-    {
         Log.d("Adapter size", Integer.toString(mDataset.size()));
-        Log.d("adding snips to list", Integer.toString(snips.size()));
-        validateThatAddedDataIsntMultiple(snips);
-
-        /*for (int i = 0; i < snips.size(); i++)
-        {
-            SnipReactionsSingleton.getInstance().setReaction(
-                    context, snips.get(i).mID, snips.get(i).mReaction);
-        }*/
-
-        mDataset.addAll(snips);
     }
 
     public void removeIdsFromDataset(Set<Long> ids)
@@ -126,7 +132,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                 final int SNOOZE_SCREEN_CODE =
                         parent.getContext().getResources().getInteger(R.integer.fragmentCodeSnoozed);
 
-                if (SNOOZE_SCREEN_CODE != mActivityCode)
+                if (SNOOZE_SCREEN_CODE != mFragmentCode)
                 {
                     try
                     {
@@ -137,7 +143,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                         Animation snoozeAnimation =
                                 AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_fade_in);
 
-                        final int DURATION_OF_ANIMATION_IN_MS = 400;
+                        final int DURATION_OF_ANIMATION_IN_MS = 300;
                         snoozeAnimation.setDuration(DURATION_OF_ANIMATION_IN_MS);
                         snoozeAnimation.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -149,10 +155,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
                             @Override
                             public void onAnimationEnd(Animation animation) {
                                 cardHolder.mHeartImage.setVisibility(View.GONE);
+                                SnipData snipToSnooze = mDataset.get(currentPositionInDataset);
+
                                 mDataset.remove(currentPositionInDataset);
                                 mRecyclerView.getAdapter().notifyItemRemoved(currentPositionInDataset);
+                                FragmentOperations.addSnipToOtherFragment(
+                                        (FragmentActivity)parent.getContext(),
+                                        snipToSnooze,
+                                        parent.getContext().getResources().getInteger(R.integer.fragmentCodeSnoozed));
                                 EndlessRecyclerOnScrollListener.onScrolledLogic(
-                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mActivityCode, false);
+                                        mRecyclerView, mLinearLayoutManager, mDefaultQuery, mFragmentCode, false);
                             }
 
                             @Override
@@ -196,8 +208,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 
                     FragmentOperations.openFragment(
                             (AppCompatActivity)context,
+                            mFragmentCode,
                             context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
-                            Long.toString(snipData.mID),
+                            FragmentOperations.getReadSnipFragmentTag(mFragmentCode, snipData.mID),
                             bundledSnipData);
                 }
                 catch (IndexOutOfBoundsException e1)

@@ -137,6 +137,7 @@ public class NotificationUtils {
         bundledSnipData.putSerializable("snipData", snipData);
         // TODO: load snip fragment
         FragmentOperations.openFragment((FragmentActivity) context,
+                -1,
                 context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
                 Long.toString(snipData.mID),
                 bundledSnipData);

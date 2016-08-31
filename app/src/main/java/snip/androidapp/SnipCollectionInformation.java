@@ -30,7 +30,7 @@ public class SnipCollectionInformation
     private static SnipCollectionInformation mInstance = null;
 
     private HashMap<Integer,String> mLastSnipQueryPerFragment;
-    public ReentrantLock mLock;
+    public HashMap<Integer,ReentrantLock> mLocks;
     private String mTokenForWebsiteAccess;
     private boolean mShouldRestartViewAfterCollection;
 
@@ -50,7 +50,11 @@ public class SnipCollectionInformation
     protected SnipCollectionInformation(Context context)
     {
         initializeLastQueries(context);
-        mLock = new ReentrantLock();
+        mLocks = new HashMap<Integer, ReentrantLock>();
+        mLocks.put(context.getResources().getInteger(R.integer.fragmentCodeMain), new ReentrantLock());
+        mLocks.put(context.getResources().getInteger(R.integer.fragmentCodeLiked), new ReentrantLock());
+        mLocks.put(context.getResources().getInteger(R.integer.fragmentCodeSnoozed), new ReentrantLock());
+
         mTokenForWebsiteAccess = null;
         mShouldRestartViewAfterCollection = false;
     }
@@ -60,6 +64,11 @@ public class SnipCollectionInformation
         Log.d("snipQueryForActivity" + Integer.toString(fragmentCode),
                 mLastSnipQueryPerFragment.get(fragmentCode));
         return mLastSnipQueryPerFragment.get(fragmentCode);
+    }
+
+    public boolean getShouldRestartViewAfterCollection()
+    {
+        return mShouldRestartViewAfterCollection;
     }
 
     public boolean getShouldRestartViewAfterCollectionAndReset()
@@ -80,23 +89,6 @@ public class SnipCollectionInformation
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String token = sharedPreferences.getString(userToken, null);
         return token;
-
-        /*String tokenJsonAsString =
-                (String)DataCacheManagement.retrieveObjectFromFile(context, userTokenFile);
-        try
-        {
-            if (null != tokenJsonAsString)
-            {
-                JSONObject tokenJson = new JSONObject(tokenJsonAsString);
-                return tokenJson.getString(context.getResources().getString(R.string.tokenField));
-            }
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;*/
     }
 
     public void setTokenForWebsiteAccess(String token)

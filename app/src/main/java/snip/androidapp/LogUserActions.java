@@ -71,6 +71,18 @@ public class LogUserActions
         sendLogToServer(context, "ServerError", "", 0);
     }
 
+    public static void logAppError(Context context, String msg, int errorCode)
+    {
+        CustomEvent customEvent = new CustomEvent("AppError");
+        Answers.getInstance().logCustom(customEvent);
+        sendLogToServer(context, "AppError", msg, errorCode);
+    }
+
+    public static void logAppError(Context context, String msg)
+    {
+        logAppError(context, msg, 0);
+    }
+
     public static void logContentView(Context context, String contentName, String contentID)
     {
         // TODO:: think about custom attributes
@@ -94,7 +106,8 @@ public class LogUserActions
         Log.d("success!", "good");
     }
 
-    public static void errorFunctionImplementation(Context context, VolleyError error, JSONObject params)
+    public static void errorFunctionImplementation(
+            Context context, VolleyError error, JSONObject params)
     {
         Log.d("error!", "bad");
         String errorStr = VolleyInternetOperator.parseNetworkErrorResponse(error);

@@ -1,5 +1,6 @@
 package snip.androidapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -72,7 +73,7 @@ public class MainActivity extends GenericSnipActivity
     {
         if (requestCode == getResources().getInteger(R.integer.activityCodeLogin))
         {
-            if (resultCode == MyActivity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK)
             {
                 // We want to do this in onResume and not in onActivityResult because otherwise Android
                 // gets very mad. See http://www.androiddesignpatterns.com/2013/08/fragment-transaction-commit-state-loss.html

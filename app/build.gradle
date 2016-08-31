@@ -30,9 +30,9 @@ android {
         applicationId "snip.androidapp"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 112
+        versionCode 120
 
-        versionName "1.12"
+        versionName "1.20"
 
         jackOptions
                 {

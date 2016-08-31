@@ -1,16 +1,7 @@
 package snip.androidapp;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
-import android.os.Parcelable;
-
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
 
 /**
  * Created by ranreichman on 8/17/16.

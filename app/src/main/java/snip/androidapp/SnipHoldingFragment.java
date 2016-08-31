@@ -1,11 +1,15 @@
 package snip.androidapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.LinkedList;
 
 /**
@@ -27,7 +33,24 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
     protected MyAdapter mAdapter;
     protected LinearLayoutManager mLayoutManager;
     protected SwipeRefreshLayout mSwipeContainer;
+    // This is in Unix time
+    protected long mLastFragmentUpdateTime = 0;
     View mRootView = null;
+
+    final long ONE_HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
+
+    private long getLastFragmentUpdateTime()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        long preferencesUpdateTime = sharedPreferences.getLong(getLastUpdateString(), 0);
+        return Math.max(preferencesUpdateTime, mLastFragmentUpdateTime);
+    }
+
+    private String getLastUpdateString()
+    {
+        final String LAST_UPDATE_TIME_FOR_FRAGMENT_STRING = "LastUpdateTimeForFragment";
+        return LAST_UPDATE_TIME_FOR_FRAGMENT_STRING + Integer.toString(getFragmentCode());
+    }
 
     @Override
     public void onResume()
@@ -39,9 +62,11 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
             ((MyAdapter) mAdapter).removeIdsFromDataset(
                     SnipReactionsSingleton.getInstance().getIdsToRemoveFromDataset());
 
-            // Here not using asyncNotifyDatasetChanged on purpose because i want the user to wait
-            // TODO:: think if this is true
             mAdapter.notifyDataSetChanged();
+            if (getLastFragmentUpdateTime() < System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS)
+            {
+                deleteFragmentInformationAndStartOver();
+            }
         }
         BaseToolbar.updateToolbarAccordingToFragment(getActivity(), getFragmentCode());
     }
@@ -94,7 +119,7 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
         if (null == SnipCollectionInformation.getInstance(getActivity()).getTokenForWebsiteAccess(getActivity()))
         {
             Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeLogin));
+            getActivity().startActivityForResult(intent, getResources().getInteger(R.integer.activityCodeLogin));
         }
         else
         {
@@ -124,9 +149,12 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
 
             if (null == mAdapter)
             {
-                cachedSnips =
-                        DataCacheManagement.retrieveSavedDataFromBundleOrFile(
-                                getActivity(), savedInstanceState, getFragmentCode());
+                if (!SnipCollectionInformation.getInstance(getActivity()).getShouldRestartViewAfterCollection())
+                {
+                    cachedSnips =
+                            DataCacheManagement.retrieveSavedDataFromBundleOrFile(
+                                    getActivity(), savedInstanceState, getFragmentCode());
+                }
             }
             else
             {
@@ -144,11 +172,17 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
 
     protected void startFragmentOperation(LinkedList<SnipData> snipsToStartWith)
     {
-        setFragmentVariables();
-        if (null != snipsToStartWith)
+        if (getLastFragmentUpdateTime() < System.currentTimeMillis() - ONE_HOUR_IN_MILLISECONDS)
         {
-            if (snipsToStartWith.size() > 0)
-            {
+            deleteFragmentInformation();
+        }
+
+        // Only initialize the layout on the first time
+        if (null == mLayoutManager) {
+            setFragmentVariables();
+        }
+        if (null != snipsToStartWith) {
+            if (snipsToStartWith.size() > 0) {
                 populateFragment(snipsToStartWith);
                 return;
             }
@@ -186,9 +220,15 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
             }
             else
             {
-                ((MyAdapter)mAdapter).addAll(getActivity(), addedSnips);
+                ((MyAdapter)mAdapter).addAll(getActivity(), addedSnips, true);
+                SnipTempManagement.getInstance(getActivity()).clearSnipsToLoadInFragment(getFragmentCode());
                 asyncNotifyDatasetChanged();
             }
+
+            ((MyAdapter)mAdapter).addAll(getActivity(),
+                    SnipTempManagement.getInstance(getActivity()).mSnipsToLoadInFragment.get(getFragmentCode()),
+                    false);
+
             addPicturesToSnips();
         }
     }
@@ -240,8 +280,15 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
                 if (ItemTouchHelper.RIGHT == swipeDirection)
                 {
                     ReactionManager.userLikedSnip(mAdapter.getDataset().get(currentPositionInDataset).mID);
+                    SnipData snipToLike = mAdapter.getDataset().get(currentPositionInDataset);
+
                     mAdapter.remove(currentPositionInDataset);
                     mAdapter.notifyItemRemoved(currentPositionInDataset);
+
+                    FragmentOperations.addSnipToOtherFragment(
+                            (FragmentActivity)getActivity(),
+                            snipToLike,
+                            getActivity().getResources().getInteger(R.integer.fragmentCodeLiked));
                     EndlessRecyclerOnScrollListener.onScrolledLogic(
                             mRecyclerView, mLayoutManager, getBaseSnipsQueryForFragment(), getFragmentCode(), false);
                 }
@@ -322,19 +369,33 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
     public void onRefreshOperation()
     {
         SnipCollectionInformation.getInstance(getActivity()).setShouldRestartViewAfterCollection(true);
-        deleteFragmentCacheAndStartOver();
+        deleteFragmentInformationAndStartOver();
         Log.d("Refreshed!", "So refreshing!");
     }
 
-    private void deleteFragmentCacheAndStartOver()
+    private void deleteFragmentInformation()
     {
         SnipCollectionInformation.getInstance(getActivity()).cleanLastSnipQuery(getFragmentCode());
         DataCacheManagement.deleteFragmentInformationFiles(getActivity(), getFragmentCode());
+        if (null != mAdapter)
+        {
+            mAdapter.getDataset().clear();
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void deleteFragmentInformationAndStartOver()
+    {
+        deleteFragmentInformation();
         startFragmentOperation(null);
     }
 
     protected void collectData()
     {
+        mLastFragmentUpdateTime = System.currentTimeMillis();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences.edit().putLong(getLastUpdateString(), mLastFragmentUpdateTime).apply();
+
         CollectSnipsFromInternet snipCollector = new CollectSnipsFromInternet(
                 getActivity(),
                 getBaseSnipsQueryForFragment() +

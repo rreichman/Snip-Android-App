@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ReadSnipActivity"
-            android:theme="@style/SingleSnip">
-        </activity>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
@@ -24,7 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchResultActivity"/>
         <activity android:name=".LoginActivity" android:theme="@style/LoginAppTheme.Dark" />
         <activity android:name=".FeedbackActivity" android:theme="@style/LoginAppTheme.Dark" />
         <activity android:name=".SignupActivity" android:theme="@style/LoginAppTheme.Dark" />

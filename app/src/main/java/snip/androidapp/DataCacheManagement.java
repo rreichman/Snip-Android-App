@@ -3,6 +3,7 @@ package snip.androidapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,7 +83,11 @@ public class DataCacheManagement
         File file = new File(fullPathOfFile);
         if (file.exists())
         {
-            file.delete();
+            boolean deleteSuccessful = file.delete();
+            if (!deleteSuccessful)
+            {
+                Log.d("delete not successful", "delete not successful");
+            }
         }
     }
 
@@ -113,7 +118,7 @@ public class DataCacheManagement
     }
 
     public static LinkedList<SnipData> retrieveSnipDataFromBundle(
-            Context context, Bundle savedInstanceState, int activityCode)
+            Context context, Bundle savedInstanceState, int fragmentCode)
     {
         if (null != savedInstanceState) {
             if (!savedInstanceState.isEmpty()) {
@@ -126,7 +131,7 @@ public class DataCacheManagement
                     collectedSnips.addLast(currentSnip);
                 }
 
-                SnipCollectionInformation.getInstance(context).setLastSnipQuery(activityCode,
+                SnipCollectionInformation.getInstance(context).setLastSnipQuery(fragmentCode,
                         savedInstanceState.getString(
                                 context.getResources().getString(R.string.SnipQueryStringInBundle)));
 
@@ -201,19 +206,19 @@ public class DataCacheManagement
     }
 
     public static LinkedList<SnipData> retrieveSavedDataFromBundleOrFile(
-            Context context, Bundle savedInstanceState, int activityCode)
+            Context context, Bundle savedInstanceState, int fragmentCode)
     {
-        LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(context, savedInstanceState, activityCode);
+        LinkedList<SnipData> outputSnips = retrieveSnipDataFromBundle(context, savedInstanceState, fragmentCode);
         if (null == outputSnips)
         {
-            LinkedList<SnipData> collectedSnips = retrieveSnipDataFromFile(context, activityCode);
-            String collectedSnipQuery = retrieveSnipQueryFromFile(context, activityCode);
+            LinkedList<SnipData> collectedSnips = retrieveSnipDataFromFile(context, fragmentCode);
+            String collectedSnipQuery = retrieveSnipQueryFromFile(context, fragmentCode);
 
             if ((null != collectedSnips) && (null != collectedSnipQuery))
             {
                 outputSnips = collectedSnips;
                 SnipCollectionInformation.getInstance(context).setLastSnipQuery(
-                        activityCode, retrieveSnipQueryFromFile(context, activityCode));
+                        fragmentCode, retrieveSnipQueryFromFile(context, fragmentCode));
             }
         }
         return outputSnips;
