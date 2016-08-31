@@ -66,6 +66,11 @@ public class SnipCollectionInformation
         return mLastSnipQueryPerFragment.get(fragmentCode);
     }
 
+    public boolean getShouldRestartViewAfterCollection()
+    {
+        return mShouldRestartViewAfterCollection;
+    }
+
     public boolean getShouldRestartViewAfterCollectionAndReset()
     {
         boolean returnValue = mShouldRestartViewAfterCollection;

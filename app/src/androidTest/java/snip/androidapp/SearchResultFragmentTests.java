@@ -29,20 +29,14 @@ public class SearchResultFragmentTests
         Assert.assertTrue(true);
     }
 
-    @Test
-    public void testLikeSnipsAndSeeThemInLikedScreenWithoutRefresh()
-    {
-        Assert.fail();
-    }
-
-    private void removeItemsFromMainScreenAndFindThemInOtherScreen(int id)
+    private void removeItemsFromMainScreenAndFindThemInOtherScreen(int id, boolean shouldRefresh)
     {
         TestUtils.waitForAdapterInActivity(mActivityRule);
 
         TestUtils.enterSearchResultFragmentAndRefresh(id);
         TestUtils.swipeUpUntilThereAreNoNewSnips(mActivityRule);
 
-        LinkedList<SnipData> searchResultSnipsDataset = TestUtils.getCurrentDataset();
+        int originalSize = TestUtils.getCurrentDataset().size();
 
         Espresso.pressBack();
         TestUtils.waitForFragmentToAppear(MainFragment.class);
@@ -50,38 +44,53 @@ public class SearchResultFragmentTests
         Random rand = new Random();
         int amountOfSnips = TestUtils.getFragmentAdapterFromActivity(mActivityRule.getActivity()).getItemCount();
 
-        final int AMOUNT_OF_SNIPS_TO_LIKE = 2;
-        int randomPositionToLike = 0;
+        final int AMOUNT_OF_SNIPS_TO_LIKE_SNOOZE = 2;
+        int randomPositionToLikeSnooze = 0;
 
-        for (int i = 0; i < AMOUNT_OF_SNIPS_TO_LIKE; i++)
+        for (int i = 0; i < AMOUNT_OF_SNIPS_TO_LIKE_SNOOZE; i++)
         {
             // TODO:: this is problematic because the screen only holds 4 snips and can't click on the 15th for instance
             //randomPositionToLike = rand.nextInt(amountOfSnips);
-            TestUtils.swipeClickOrTapAccordingToId(id, randomPositionToLike);
+            TestUtils.swipeClickOrTapAccordingToId(id, randomPositionToLikeSnooze);
+            TestUtils.safeSleep(500);
         }
 
-        TestUtils.enterSearchResultFragmentAndRefresh(id);
+        if (shouldRefresh) {
+            TestUtils.enterSearchResultFragmentAndRefresh(id);
+        }
+        else
+        {
+            Espresso.onView(ViewMatchers.withId(id)).perform(ViewActions.click());
+            // TODO:: this is problematic when coming from the snoozed
+            TestUtils.waitForFragmentToAppear(SearchResultFragment.class);
+        }
         TestUtils.swipeUpUntilThereAreNoNewSnips(mActivityRule);
-        LinkedList<SnipData> newLikedSnipsDataset = TestUtils.getCurrentDataset();
+        LinkedList<SnipData> newSearchResultSnipsDataset = TestUtils.getCurrentDataset();
 
-        Assert.assertEquals(newLikedSnipsDataset.size() - AMOUNT_OF_SNIPS_TO_LIKE, searchResultSnipsDataset.size());
+        Assert.assertEquals(newSearchResultSnipsDataset.size() - AMOUNT_OF_SNIPS_TO_LIKE_SNOOZE, originalSize);
+    }
+
+    @Test
+    public void testLikeSnipsAndSeeThemInLikedScreenWithoutRefresh()
+    {
+        removeItemsFromMainScreenAndFindThemInOtherScreen(R.id.likeButtonOnToolbar, false);
     }
 
     @Test
     public void testLikeSnipsAndSeeThemInLikedScreenAfterRefresh()
     {
-        removeItemsFromMainScreenAndFindThemInOtherScreen(R.id.likeButtonOnToolbar);
+        removeItemsFromMainScreenAndFindThemInOtherScreen(R.id.likeButtonOnToolbar, true);
     }
 
     @Test
     public void testSnoozeSnipsAndSeeThemInSnoozedScreenWithoutRefresh()
     {
-        Assert.fail();
+        removeItemsFromMainScreenAndFindThemInOtherScreen(R.id.snoozeButtonOnToolbar, false);
     }
 
     @Test
     public void testSnoozeSnipsAndSeeThemInSnoozedScreenAfterRefresh()
     {
-        removeItemsFromMainScreenAndFindThemInOtherScreen(R.id.snoozeButtonOnToolbar);
+        removeItemsFromMainScreenAndFindThemInOtherScreen(R.id.snoozeButtonOnToolbar, true);
     }
 }

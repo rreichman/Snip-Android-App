@@ -149,9 +149,12 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
 
             if (null == mAdapter)
             {
-                cachedSnips =
-                        DataCacheManagement.retrieveSavedDataFromBundleOrFile(
-                                getActivity(), savedInstanceState, getFragmentCode());
+                if (!SnipCollectionInformation.getInstance(getActivity()).getShouldRestartViewAfterCollection())
+                {
+                    cachedSnips =
+                            DataCacheManagement.retrieveSavedDataFromBundleOrFile(
+                                    getActivity(), savedInstanceState, getFragmentCode());
+                }
             }
             else
             {
@@ -225,6 +228,7 @@ public abstract class SnipHoldingFragment extends GenericSnipFragment
             ((MyAdapter)mAdapter).addAll(getActivity(),
                     SnipTempManagement.getInstance(getActivity()).mSnipsToLoadInFragment.get(getFragmentCode()),
                     false);
+
             addPicturesToSnips();
         }
     }

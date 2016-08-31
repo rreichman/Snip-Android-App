@@ -126,7 +126,7 @@ public class TestUtils
         }
 
         TestUtils.swipeDownScreen();
-        // TODO:: this is problematic when coming from the snoozed, but will change with fragments anyway
+        // TODO:: this is problematic when coming from the snoozed
         TestUtils.waitForFragmentToAppear(SearchResultFragment.class);
     }
 
@@ -270,10 +270,12 @@ public class TestUtils
 
     public static void loginIfLoggedOut()
     {
-        // This is in case the current user isn't logged in
-        if (LoginActivity.class == TestUtils.getActivityInstance().getClass())
+        if (null != TestUtils.getActivityInstance())
         {
-            loginUser();
+            // This is in case the current user isn't logged in
+            if (LoginActivity.class == TestUtils.getActivityInstance().getClass()) {
+                loginUser();
+            }
         }
     }
 
