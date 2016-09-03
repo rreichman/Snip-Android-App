@@ -5,5 +5,5 @@ package snip.androidapp;
  */
 public interface OnTaskCompleted
 {
-    void onTaskCompleted();
+    void onTaskCompleted(Long snipID);
 }

@@ -28,14 +28,6 @@ public class MyViewHolder extends RecyclerView.ViewHolder
     public SnipTextView mSnipPublishAge;
     public ImageView mHeartImage;
 
-    private DisplayMetrics getScreenDimensions(Context context)
-    {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dimension = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(dimension);
-        return dimension;
-    }
-
     public MyViewHolder(View view)
     {
         super(view);

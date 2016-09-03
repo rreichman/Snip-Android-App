@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 
@@ -24,14 +25,22 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        try
+        {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        String token = sharedPreferences.getString(FCM_TOKEN, null);
-        if (null == token) {
-            token = FirebaseInstanceId.getInstance().getToken();
-            sharedPreferences.edit().putString(FCM_TOKEN, token).commit();
+            String token = sharedPreferences.getString(FCM_TOKEN, null);
+            if (null == token) {
+                token = FirebaseInstanceId.getInstance().getToken();
+                sharedPreferences.edit().putString(FCM_TOKEN, token).commit();
+            }
+            Log.d("Token is", token);
+            NotificationUtils.sendRegistrationToServer(this, token, false);
         }
-        Log.d("Token is", token);
-        NotificationUtils.sendRegistrationToServer(this, token, false);
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
 }

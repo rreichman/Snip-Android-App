@@ -2,6 +2,8 @@ package snip.androidapp;
 
 import android.graphics.Picture;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.LinearLayout;
 
 /**
  * Created by ranreichman on 8/29/16.
@@ -9,23 +11,30 @@ import android.os.AsyncTask;
 public class PictureCacher extends AsyncTask<Void, Void, Void>
 {
     private OnTaskCompleted mListener;
+    private Long mSnipID;
 
-    public PictureCacher(OnTaskCompleted listener)
+    public PictureCacher(OnTaskCompleted listener, Long snipID)
     {
         mListener = listener;
+        mSnipID = snipID;
     }
 
     @Override
     protected Void doInBackground(Void... voids)
     {
-        ((ReadSnipFragment)mListener).mSnipDesigner.addPicturesToLayout();
+        try {
+            ((ScreenSlidePagerAdapter) mListener).mSnipDesigners.get(mSnipID).addPicturesToLayout();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(Void o)
     {
-        // your stuff
-        mListener.onTaskCompleted();
+        mListener.onTaskCompleted(mSnipID);
     }
 }

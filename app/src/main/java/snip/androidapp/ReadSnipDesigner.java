@@ -1,6 +1,7 @@
 package snip.androidapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -20,6 +22,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Created by ranreichman on 8/31/16.
@@ -31,12 +34,14 @@ public class ReadSnipDesigner
     SnipData mSnipData;
     private int mCurrentPictureCount = 0;
     private HashMap<Integer,String> mMappingBetweenPictureNumberAndUrl = new HashMap<>();
+    LinkedList<View> mImageViewList;
 
-    public ReadSnipDesigner(Fragment fragment, LinearLayout layout, SnipData snipData)
+    public ReadSnipDesigner(Context context, LinearLayout layout, SnipData snipData)
     {
         mLayout = layout;
         mSnipData = snipData;
-        mStyling = new ReadSnipStyling(fragment);
+        mStyling = new ReadSnipStyling(context);
+        mImageViewList = new LinkedList<>();
     }
 
     public static Spanned fromHtml(String htmlString)
@@ -89,6 +94,9 @@ public class ReadSnipDesigner
         imageViewStub.setScaleType(ImageView.ScaleType.FIT_XY);
 
         mMappingBetweenPictureNumberAndUrl.put(mCurrentPictureCount, url);
+
+        mImageViewList.addLast(imageViewStub);
+
         mCurrentPictureCount++;
 
         mLayout.addView(imageViewStub, params);
@@ -154,15 +162,16 @@ public class ReadSnipDesigner
     private void addSnipMetaDataToLayout(Activity activity)
     {
         String text = "";
-        if ((!mSnipData.mPublisher.isEmpty()) && (!mSnipData.mAuthor.isEmpty())) {
-            text += mSnipData.mPublisher + ", " + mSnipData.mAuthor;
-        }
-        else if (!mSnipData.mAuthor.isEmpty()) {
+
+        if (!mSnipData.mAuthor.isEmpty())
+        {
             text += mSnipData.mAuthor;
         }
-        else if (!mSnipData.mPublisher.isEmpty()) {
+        else if (!mSnipData.mPublisher.isEmpty() && !mSnipData.mPublisher.equals("סניפ"))
+        {
             text += mSnipData.mPublisher;
         }
+
         if (!text.isEmpty()) {
             addTextDynamicallyToLayout(activity, text, false, R.style.SingleSnip_Text_Author,
                     mStyling.mDefMarginHorz, 0, 0, mStyling.mDefGravity, mStyling.mDefTextStyle);
@@ -173,30 +182,30 @@ public class ReadSnipDesigner
                 mStyling.mDefGravity, mStyling.mDefTextStyle);
     }
 
-    public void buildSnipView(ReadSnipFragment fragment)
+    public void buildSnipView(Activity activity, ScreenSlidePagerAdapter adapter, Long snipID)
     {
         Log.d("started", "presenting snip");
-        addTextDynamicallyToLayout(fragment.getActivity(), mSnipData.mHeadline, false, R.style.SingleSnip_Text_Headline,
+        addTextDynamicallyToLayout(activity, mSnipData.mHeadline, false, R.style.SingleSnip_Text_Headline,
                 mStyling.mDefMarginHorz, mStyling.mDefMarginHeadlineTop, mStyling.mDefMarginVert,
                 mStyling.mDefGravity, Typeface.BOLD);
-        addSnipMetaDataToLayout(fragment.getActivity());
+        addSnipMetaDataToLayout(activity);
 
-        parseSnipBodyAndCreateView(fragment.getActivity());
+        parseSnipBodyAndCreateView(activity);
 
-        String externalLinksTitle = fragment.getResources().getString(R.string.ExternalLinksTitle);
-        addTextDynamicallyToLayout(fragment.getActivity(), externalLinksTitle, false, R.style.SingleSnip_Text,
+        String externalLinksTitle = activity.getResources().getString(R.string.ExternalLinksTitle);
+        addTextDynamicallyToLayout(activity, externalLinksTitle, false, R.style.SingleSnip_Text,
                 mStyling.mDefMarginHorz, mStyling.mDefMarginVert, mStyling.mDefMarginVert,
                 mStyling.mDefGravity, Typeface.BOLD);
 
         for (int i = 0; i < mSnipData.mExternalLinks.mExternalLinks.size(); ++i)
         {
             ExternalLinkData cur_link = mSnipData.mExternalLinks.mExternalLinks.get(i);
-            createLinkView(fragment.getActivity(), cur_link);
+            createLinkView(activity, cur_link);
         }
 
-        ReactionBarCreator.addReactionBarToLayout(fragment.getActivity(), mLayout, mSnipData.mID);
+        ReactionBarCreator.addReactionBarToLayout(activity, mLayout, mSnipData.mID);
 
-        PictureCacher pictureCacher = new PictureCacher(fragment);
+        PictureCacher pictureCacher = new PictureCacher(adapter, snipID);
         pictureCacher.execute();
 
         Log.d("finished", "presenting snip");
@@ -214,12 +223,12 @@ public class ReadSnipDesigner
                 mStyling.mDefGravity, mStyling.mDefTextStyle);
     }
 
-    public void displayPhotos()
+    public void displayPhotos(LinearLayout layout)
     {
         for (int i = 0; i < mCurrentPictureCount; i++)
         {
             Log.d("after caching pics", Integer.toString(i));
-            ImageView imageView = (ImageView)mLayout.findViewById(i);
+            ImageView imageView = (ImageView)layout.findViewById(i);
             Bitmap curImage = SnipData.getBitmapFromUrl(mMappingBetweenPictureNumberAndUrl.get(i));
             imageView.setImageBitmap(curImage);
         }

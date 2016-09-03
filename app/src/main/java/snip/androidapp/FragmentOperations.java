@@ -1,17 +1,14 @@
 package snip.androidapp;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ShareCompat;
 import android.util.Log;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.crashlytics.android.Crashlytics;
+
 import java.util.LinkedList;
 
 /**
@@ -26,13 +23,68 @@ public class FragmentOperations
         return fragment;
     }
 
+    public static int getCurrentFragmentCodeOfActivity(FragmentActivity fragmentActivity)
+    {
+        FragmentManager manager = fragmentActivity.getSupportFragmentManager();
+        GenericSnipFragment fragment = (GenericSnipFragment)manager.findFragmentById(R.id.fragmentPlaceholder);
+        return fragment.getFragmentCode();
+    }
+
     public static void openFragment(
             final FragmentActivity currentActivity, int fragmentCodeToOpen)
     {
         Bundle b = new Bundle();
         b.putInt("param", fragmentCodeToOpen);
 
-        openFragment(currentActivity, -1, fragmentCodeToOpen, Integer.toString(fragmentCodeToOpen), b);
+        openFragment(currentActivity, getCurrentFragmentCodeOfActivity(currentActivity),
+                fragmentCodeToOpen, Integer.toString(fragmentCodeToOpen), b);
+    }
+
+    public static String getPagerFragmentTag(int fragmentCodeOfCaller, int fragmentCodeToOpen)
+    {
+        return Integer.toString(fragmentCodeToOpen) + "-" + Integer.toString(fragmentCodeOfCaller);
+    }
+
+    public static void openFragmentInPosition(
+            final FragmentActivity currentActivity, int fragmentCodeToOpen, int position)
+    {
+        Bundle b = new Bundle();
+        b.putInt("param", fragmentCodeToOpen);
+        b.putInt("position", position);
+
+        int fragmentCodeOfCaller = getCurrentFragmentCodeOfActivity(currentActivity);
+
+        openFragment(currentActivity, fragmentCodeOfCaller, fragmentCodeToOpen,
+                getPagerFragmentTag(fragmentCodeOfCaller, fragmentCodeToOpen), b);
+    }
+
+    public static Fragment getOrCreateFragment(
+            final FragmentActivity currentActivity, int fragmentCodeOfCaller, int fragmentCodeToOpen,
+            String fragmentTag, Bundle passedData)
+    {
+        Fragment fragment = currentActivity.getSupportFragmentManager().findFragmentByTag(fragmentTag);
+
+        if (null == fragment)
+        {
+            // No switch/case here because the values aren't const :(
+            if (fragmentCodeToOpen == currentActivity.getResources().getInteger(R.integer.fragmentCodeMain))
+            {
+                fragment = new MainFragment();
+            }
+            else if (fragmentCodeToOpen == currentActivity.getResources().getInteger(R.integer.fragmentCodePager))
+            {
+                fragment = new ScreenSlidePageFragment();
+                passedData.putInt("fragmentCodeOfCaller", fragmentCodeOfCaller);
+            }
+            else
+            {
+                fragment = new SearchResultFragment();
+            }
+
+            fragment.setArguments(passedData);
+        }
+
+        return fragment;
     }
 
     public static void openFragment(final FragmentActivity currentActivity,
@@ -44,22 +96,8 @@ public class FragmentOperations
         Log.d("opened new", "fragment");
         FragmentManager fragmentManager = currentActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = fragmentManager.findFragmentByTag(fragmentTag);
-
-        if (null == fragment)
-        {
-            if (fragmentCodeToOpen == currentActivity.getResources().getInteger(R.integer.fragmentCodeReadSnip))
-            {
-                fragment = new ReadSnipFragment();
-                passedData.putInt("fragmentCodeOfCaller", fragmentCodeOfCaller);
-            }
-            else
-            {
-                fragment = new SearchResultFragment();
-            }
-
-            fragment.setArguments(passedData);
-        }
+        Fragment fragment = getOrCreateFragment(currentActivity,
+                fragmentCodeOfCaller, fragmentCodeToOpen, fragmentTag, passedData);
 
         fragmentTransaction.replace(R.id.fragmentPlaceholder, fragment, fragmentTag);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -206,7 +244,7 @@ public class FragmentOperations
         catch (Exception e)
         {
             e.printStackTrace();
-            LogUserActions.logAppError(activity, "OpeningOtherReadSnip");
+            Crashlytics.logException(e);
         }
     }
 }

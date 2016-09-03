@@ -263,8 +263,10 @@ public class TestUtils
 
     public static MyAdapter getFragmentAdapterFromActivity(FragmentActivity activity)
     {
-        SnipHoldingFragment fragment = (SnipHoldingFragment)
-                FragmentOperations.getFragmentFromActivity(activity, R.id.fragmentPlaceholder);
+        SnipHoldingFragment fragment = new MainFragment();
+        // TODO:: return this
+        /*SnipHoldingFragment fragment = (SnipHoldingFragment)
+                FragmentOperations.getFragmentFromActivity(activity, R.id.fragmentPlaceholder);*/
         return fragment.mAdapter;
     }
 

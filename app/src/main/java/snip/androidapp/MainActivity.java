@@ -8,10 +8,13 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -24,8 +27,11 @@ import butterknife.ButterKnife;
  */
 public class MainActivity extends GenericSnipActivity
 {
-    int mCurrentFragmentCode;
     boolean mShouldRestartFragment = false;
+
+    // TODO:: expand this to liked and snoozed
+//    ViewPager mPager;
+//    ViewPagerAdapter mPagerAdapter;
 
     public int getActivityCode()
     {
@@ -56,9 +62,7 @@ public class MainActivity extends GenericSnipActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        // TODO: verify this
-        mCurrentFragmentCode = getResources().getInteger(R.integer.fragmentCodeMain);
-        startUI();
+        startUI(getResources().getInteger(R.integer.fragmentCodeMain));
         initializeImportantStuff();
         addFragmentToScreen();
         launch_notification_intent();
@@ -66,6 +70,16 @@ public class MainActivity extends GenericSnipActivity
         {
             handle_intent();
         }
+
+        /*if (null == mPagerAdapter)
+        {
+            mPagerAdapter = new ScreenSlidePagerAdapter(
+                    getSupportFragmentManager(), this, mCurrentFragmentCode);
+        }*/
+        /*mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setVisibility(View.INVISIBLE);*/
     }
 
     @Override
@@ -124,11 +138,11 @@ public class MainActivity extends GenericSnipActivity
         }
     }
 
-    private void startUI()
+    private void startUI(int currentFragmentCode)
     {
         setContentView(R.layout.main_activity);
         BaseToolbar.setupToolbar(this);
-        BaseToolbar.updateToolbarAccordingToFragment(this, mCurrentFragmentCode);
+        BaseToolbar.updateToolbarAccordingToFragment(this, currentFragmentCode);
     }
 
     private void addFragmentToScreen()

@@ -13,5 +13,7 @@
     <item type="integer" name="fragmentCodeLiked" format="integer">102</item>
     <item type="integer" name="fragmentCodeMain" format="integer">103</item>
     <item type="integer" name="fragmentCodeReadSnip" format="integer">104</item>
+    <item type="integer" name="fragmentCodePager" format="integer">105</item>
+
 
 </resources>

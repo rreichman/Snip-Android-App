@@ -6,18 +6,24 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -35,6 +41,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public LinearLayoutManager mLinearLayoutManager;
     private String mDefaultQuery;
     public int mFragmentCode;
+
+    private int mCount = 0;
 
     public MyAdapter(
             Context context, RecyclerView recyclerView, LinkedList<SnipData> dataset,
@@ -199,28 +207,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
             public boolean onSingleTapConfirmed(MotionEvent e)
             {
                 final int currentPositionInDataset = viewHolder.getAdapterPosition();
-                try
-                {
-                    SnipData snipData = mDataset.get(currentPositionInDataset);
-                    Context context = view.getContext();
-                    Bundle bundledSnipData = new Bundle();
-                    bundledSnipData.putSerializable("snipData", snipData);
+                Context context = view.getContext();
 
-                    FragmentOperations.openFragment(
-                            (AppCompatActivity)context,
-                            mFragmentCode,
-                            context.getResources().getInteger(R.integer.fragmentCodeReadSnip),
-                            FragmentOperations.getReadSnipFragmentTag(mFragmentCode, snipData.mID),
-                            bundledSnipData);
-                }
-                catch (IndexOutOfBoundsException e1)
-                {
-                    e1.printStackTrace();
-                }
-                catch (NullPointerException e2)
-                {
-                    e2.printStackTrace();
-                }
+                FragmentOperations.openFragmentInPosition(
+                        (FragmentActivity)context,
+                        context.getResources().getInteger(R.integer.fragmentCodePager),
+                        currentPositionInDataset);
 
                 return super.onSingleTapConfirmed(e);
             }
@@ -252,9 +244,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     {
         SnipData currentSnip = mDataset.get(position);
         holder.mSnipHeadline.setText(currentSnip.mHeadline);
-        String authorPublisher = currentSnip.mPublisher;
-        if (!currentSnip.mAuthor.isEmpty()) {
-            authorPublisher += ", " + currentSnip.mAuthor;
+        String authorPublisher = "";
+
+        if (!currentSnip.mPublisher.equals("סניפ"))
+        {
+            authorPublisher += currentSnip.mPublisher;
+        }
+        if (!currentSnip.mAuthor.isEmpty())
+        {
+            authorPublisher += currentSnip.mAuthor;
         }
         holder.mSnipPublisher.setText(authorPublisher);
 
